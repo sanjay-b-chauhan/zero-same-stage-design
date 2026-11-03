@@ -10,6 +10,8 @@ import StageTurn from './stage/parts/StageTurn';
 import { useFlow } from './engine/store';
 import { isRoomScreen } from './types';
 import { Hud } from './hud';
+import { LiveRun } from './present/Live';
+import { leaveStage } from './same/leave';
 
 export default function FlowRoot() {
   const screen = useFlow((s) => s.screen);
@@ -22,7 +24,8 @@ export default function FlowRoot() {
         <Hud />
       </div>
       <StageTurn />
-      <span className="z-stamp">{import.meta.env.VITE_DS === '2' ? 'ds b35' : import.meta.env.VITE_DS === '1' ? 'ds b1' : import.meta.env.VITE_D1 === '1' ? 'd1 b1' : 'b24'}</span>
+      <LiveRun onDone={() => void leaveStage('deck')} />
+      <span className="z-stamp">{import.meta.env.VITE_DS === '2' ? 'ds b36' : import.meta.env.VITE_DS === '1' ? 'ds b1' : import.meta.env.VITE_D1 === '1' ? 'd1 b1' : 'b24'}</span>
     </div>
   );
 }

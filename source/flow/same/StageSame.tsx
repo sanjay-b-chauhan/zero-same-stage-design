@@ -49,7 +49,8 @@ import {
 import { looksPrivate } from './linkAccess';
 import { leaveStage } from './leave';
 import { frame, shotName, snip } from './snip';
-import { Hold, PouMeter, Thread, Typed, useSpaceTalk } from '../room/pou/PouView';
+import { Hold, PouMeter, Typed, useSpaceTalk } from '../room/pou/PouView';
+import { CheckThread } from './CheckThread';
 import { canHear, useHoldUi } from '../room/hold';
 import { pouAnswerForMe, usePou } from '../room/pou';
 import { useDevAction } from '../dev/store';
@@ -68,7 +69,8 @@ import ClaudeApp from '../pip/desktop/ClaudeApp';
 import { parse } from '../data/csv';
 import { openDesktopApp, spot } from '../pip/desktop/deskStore';
 import { BRIEF_PARTS, d1, fixesOf, minutesIn, slotAt, useD1, type Item } from './store';
-import { specOf } from './stages';
+import { specOf, workOf, type Slide, type Work } from './stages';
+import { joinCall } from '../present/Live';
 
 const I = { size: 14, strokeWidth: 1.75 };
 
@@ -486,12 +488,23 @@ function Asks({ s }: { s: D1 }) {
    her to-dos as one list in three parts. A part opens when you reach it, each line fills when you get it right in the chat */
 const TODO_BLANK = '--';
 type TodoState = 'done' | 'now' | 'next';
+/* b36 (his note: "when we click on Prompt ... the Read More button should be there so we can see the whole bigger prompt") */
+const LONG_TODO = 90;
 function TodoRow({ on, text, pop, copy }: { on: boolean; text?: string; pop?: number; copy?: boolean }) {
+  const [open, setOpen] = useState(false);
+  const long = !!copy && on && (text?.length ?? 0) > LONG_TODO;
   return (
     <li className="ds-td-row" data-on={on || undefined} data-pop={pop} data-copy={(copy && on) || undefined}>
       <span className="ds-td-m">{on && <Check size={15} strokeWidth={2.4} />}</span>
-      <span className="ds-td-t" data-blank={!on || undefined}>
-        {on ? text : TODO_BLANK}
+      <span className="ds-td-tw">
+        <span className="ds-td-t" data-blank={!on || undefined} data-open={open || undefined}>
+          {on ? text : TODO_BLANK}
+        </span>
+        {long && (
+          <button type="button" className="ds-td-more" onClick={() => setOpen((v) => !v)}>
+            {open ? 'Show less' : 'Read more'}
+          </button>
+        )}
       </span>
       {copy && on && text && <CopyKey text={text} label="Copy the prompt" />}
       {pop !== undefined && (
@@ -535,10 +548,12 @@ function Todos({ s }: { s: D1 }) {
   return (
     <div className="ds-tds">
       <TodoPart title={ASK_GROUPS[0].title} state={st(0)}>
-        {ISSUES.map((it) => {
-          const got = s.found.includes(it.id);
-          return <TodoRow key={it.id} on={got} text={it.label} pop={s.pop?.id === it.id ? s.pop.n : undefined} />;
-        })}
+        {/* b36 (his note: "why do we have an empty space at the bottom ... if we are not identifying that, it should not be
+            there"): only the issues you have named, one blank line until the first */}
+        {ISSUES.filter((it) => s.found.includes(it.id)).map((it) => (
+          <TodoRow key={it.id} on text={it.label} pop={s.pop?.id === it.id ? s.pop.n : undefined} />
+        ))}
+        {!ISSUES.some((it) => s.found.includes(it.id)) && <TodoRow on={false} />}
       </TodoPart>
       <TodoPart title={ASK_GROUPS[1].title} state={st(1)}>
         <TodoRow on={!!s.prompt} text={s.prompt} copy />
@@ -1118,10 +1133,10 @@ function ToolLink() {
    on the AI icon, it should just open up on the right-hand side as a divider") ---------- */
 /* b28 (his note: "I don't want it in another container ... the same white container, a divider ... resizable"): w is the
    width you dragged it to, 0 until you do; drag is true while you hold its edge */
-const useSide = create<{ view: 'sheet' | 'claude' | null; w: number; drag: boolean }>(() => ({ view: null, w: 0, drag: false }));
+const useSide = create<{ view: 'sheet' | 'claude' | 'work' | null; w: number; drag: boolean }>(() => ({ view: null, w: 0, drag: false }));
 const PV_MIN = 340;
 const CHAT_MIN = 400;
-const openSide = (view: 'sheet' | 'claude') => useSide.setState({ view });
+const openSide = (view: 'sheet' | 'claude' | 'work') => useSide.setState({ view });
 const RAW: Record<string, { text: string | null; p: Promise<string> | null }> = {};
 function useRawText(own?: string) {
   const f = useFile();
@@ -1220,12 +1235,166 @@ function FileCard() {
   );
 }
 
+const LINK_LOGO: Record<string, string> = { 'Google Docs': 'static/logos/logo-docs.svg', 'Google Slides': 'static/logos/logo-slides.svg' };
+
+/* the whole sheet as Google Sheets draws it: letters across, numbers down, the header row held */
+function GsTable({ url }: { url?: string }) {
+  const text = useRawText(url);
+  const table = useMemo(() => (text ? parse(text) : null), [text]);
+  if (!table) return null;
+  return (
+    <table className="ds-gs">
+      <thead>
+        <tr>
+          <th className="ds-gs-n" />
+          {table.cols.map((_, j) => (
+            <th key={j}>{colName(j)}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {[table.cols, ...table.rows].map((r, i) => (
+          <tr key={i} data-head={i === 0 || undefined}>
+            <td className="ds-gs-n">{i + 1}</td>
+            {table.cols.map((_, j) => (
+              <td key={j}>{r[j] ?? ''}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+/* b36: in the stage 5 presentation the deck turns to the slide her question is about */
+function useSlideAt(n: number) {
+  const sp = specOf(useD1((s) => s.stageId));
+  const lastHer = usePou((s) => [...s.thread].reverse().find((m) => m.from === 'her')?.text ?? '');
+  const ended = usePou((s) => s.ended);
+  const at = sp ? sp.check.findIndex((c) => c.q === lastHer || c.more.includes(lastHer)) : -1;
+  return Math.max(0, Math.min(n - 1, at < 0 ? (ended ? n - 1 : 0) : at));
+}
+
+function SlideFace({ s, i }: { s: Slide; i: number }) {
+  const top = s.bars ? Math.max(...s.bars.map((b) => b.v)) : 1;
+  return (
+    <div className="ds-sl" data-n={i + 1}>
+      <h3 className="ds-sl-t">{s.title}</h3>
+      {s.big && <p className="ds-sl-big d1-num">{s.big}</p>}
+      {s.bars && (
+        <div className="ds-sl-bars">
+          {s.bars.map((b) => (
+            <span key={b.label} className="ds-sl-bar" data-hi={b.hi || undefined}>
+              <span className="ds-sl-bl">{b.label}</span>
+              <span className="ds-sl-bt">
+                <i style={{ width: `${(b.v / top) * 100}%` }} />
+              </span>
+              <span className="ds-sl-bv d1-num">${b.v.toFixed(2)}</span>
+            </span>
+          ))}
+        </div>
+      )}
+      {s.lines && (
+        <ul className="ds-sl-ls">
+          {s.lines.map((l) => (
+            <li key={l}>{l}</li>
+          ))}
+        </ul>
+      )}
+      {s.sub && <p className="ds-sl-sub">{s.sub}</p>}
+    </div>
+  );
+}
+
+function DeckPane({ work }: { work: Extract<Work, { kind: 'deck' }> }) {
+  const at = useSlideAt(work.slides.length);
+  const [pick, setPick] = useState<number | null>(null);
+  useEffect(() => setPick(null), [at]);
+  const on = pick ?? at;
+  const stage = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => rise(stage.current, { y: 10, blur: 8, ms: 460 }), [on]);
+  return (
+    <div className="ds-pv-deck">
+      <div ref={stage} className="ds-sl-stage" key={on}>
+        <SlideFace s={work.slides[on]} i={on} />
+      </div>
+      <div className="ds-sl-strip">
+        {work.slides.map((s, i) => (
+          <button key={s.title} type="button" className="ds-sl-th" data-on={i === on || undefined} aria-label={`Slide ${i + 1}`} onClick={() => setPick(i)}>
+            <span className="ds-sl-thn d1-num">{i + 1}</span>
+            <span className="ds-sl-thf">
+              <SlideFace s={s} i={i} />
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DocPane({ work }: { work: Extract<Work, { kind: 'doc' }> }) {
+  return (
+    <div className="ds-pv-doc">
+      <article className="ds-doc">
+        {work.to && <p className="ds-doc-to">{work.to}</p>}
+        <h3 className="ds-doc-t">{work.title}</h3>
+        {work.blocks.map((b, i) => (
+          <section key={i} className="ds-doc-b" data-lead={i === 0 || undefined}>
+            {b.h && <h4 className="ds-doc-h">{b.h}</h4>}
+            {b.p && <p className="ds-doc-p">{b.p}</p>}
+            {b.rows && (
+              <table className="ds-doc-tb">
+                <thead>
+                  <tr>
+                    {b.rows[0].map((c) => (
+                      <th key={c}>{c}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {b.rows.slice(1).map((r) => (
+                    <tr key={r[0]}>
+                      {r.map((c, j) => (
+                        <td key={j} className={j ? 'd1-num' : undefined}>
+                          {c}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {b.link && (
+              <span className="ds-doc-link">
+                <img src="static/logos/logo-sheets.svg" alt="" />
+                {b.link}
+              </span>
+            )}
+          </section>
+        ))}
+      </article>
+    </div>
+  );
+}
+
+function WorkPane({ work }: { work: Work }) {
+  if (work.kind === 'sheet')
+    return (
+      <div className="ds-pv-sheet">
+        <div className="ds-gs-box">
+          <GsTable url={work.file.url} />
+        </div>
+      </div>
+    );
+  if (work.kind === 'doc') return <DocPane work={work} />;
+  return <DeckPane work={work} />;
+}
+
 /* the right side, behind one hairline: the whole sheet, or Claude. Esc or the X closes it */
 function Side() {
   const view = useSide((s) => s.view);
-  const text = useRawText();
   const RAW_FILE = useFile();
-  const table = useMemo(() => (text ? parse(text) : null), [text]);
+  const work = workOf(useD1((s) => s.stageId));
   const box = useRef<HTMLElement>(null);
   useEffect(() => {
     if (!view) return;
@@ -1239,7 +1408,7 @@ function Side() {
       easing: 'cubic-bezier(0.32, 0.72, 0, 1)',
     });
   }, [view]);
-  if (!view) return null;
+  if (!view || (view === 'work' && !work)) return null;
   const close = () => useSide.setState({ view: null });
   /* its left edge is the divider: hold it and drag, the chat gives way or takes the room back */
   const grip = (e: React.PointerEvent<HTMLSpanElement>) => {
@@ -1265,8 +1434,24 @@ function Side() {
     g.addEventListener('pointercancel', up);
   };
   return (
-    <aside ref={box} className="ds-pv" data-view={view} aria-label={view === 'sheet' ? RAW_FILE.name : 'Claude'}>
+    <aside ref={box} className="ds-pv" data-view={view} aria-label={view === 'work' && work ? work.name : view === 'sheet' ? RAW_FILE.name : 'Claude'}>
       <span className="ds-pv-grip" role="separator" aria-orientation="vertical" aria-label="Resize" onPointerDown={grip} onDoubleClick={() => useSide.setState({ w: 0 })} />
+      {view === 'work' && work ? (
+        <header className="ds-pv-h">
+          {work.logo ? <img className="ds-pv-ico" src={work.logo} alt="" /> : <FileText className="ds-pv-ico" size={16} strokeWidth={1.75} />}
+          <span className="ds-pv-t">{work.name}</span>
+          <span className="ds-pv-m d1-num">{work.meta}</span>
+          <span className="d1-grow" />
+          {work.kind === 'sheet' && (
+            <a className="d1-ghost" href={work.file.url} download aria-label={`Download ${work.name}`} title="Download">
+              <Download {...I} />
+            </a>
+          )}
+          <button type="button" className="d1-ghost" aria-label="Close" onClick={close}>
+            <X {...I} />
+          </button>
+        </header>
+      ) : (
       <header className="ds-pv-h">
         <img className="ds-pv-ico" src={view === 'sheet' ? 'static/logos/logo-sheets.svg' : 'static/logos/logo-claude.svg'} alt="" />
         <span className="ds-pv-t">{view === 'sheet' ? RAW_FILE.name : 'Claude'}</span>
@@ -1288,30 +1473,14 @@ function Side() {
           <X {...I} />
         </button>
       </header>
-      {view === 'sheet' ? (
+      )}
+      {view === 'work' && work ? (
+        <WorkPane work={work} />
+      ) : view === 'sheet' ? (
         <div className="ds-pv-sheet">
-          {table && (
-            <table className="ds-gs">
-              <thead>
-                <tr>
-                  <th className="ds-gs-n" />
-                  {table.cols.map((_, j) => (
-                    <th key={j}>{colName(j)}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[table.cols, ...table.rows].map((r, i) => (
-                  <tr key={i} data-head={i === 0 || undefined}>
-                    <td className="ds-gs-n">{i + 1}</td>
-                    {table.cols.map((_, j) => (
-                      <td key={j}>{r[j] ?? ''}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <div className="ds-gs-box">
+            <GsTable />
+          </div>
         </div>
       ) : (
         <div className="ds-pv-cl">
@@ -1484,10 +1653,10 @@ function Row({ it }: { it: Item }) {
       );
     case 'seen':
       return (
-        <div ref={row} className="d1-row d1-row-me">
-          <p className="ds-seen">
+        <div ref={row} className="d1-row d1-row-her">
+          <p className="ds-seen" tabIndex={0} aria-label="Eryn viewed your screen">
             {it.img && <img src={it.img} alt="" />}
-            Viewed your screen
+            <span className="ds-seen-t">Viewed your screen</span>
           </p>
         </div>
       );
@@ -1506,15 +1675,15 @@ function Row({ it }: { it: Item }) {
         );
       return (
         <div ref={row} className="d1-row d1-row-me">
-          <div className="ds-att">
-            <span className="ds-att-i" aria-hidden="true" data-img={it.img ? '' : undefined}>
-              {it.img ? <img src={it.img} alt="" draggable={false} /> : it.link ? <Link2 size={15} strokeWidth={1.75} /> : <FileText size={15} strokeWidth={1.75} />}
+          <button type="button" className="ds-att" aria-label={`Open ${it.name}`} onClick={() => openSide('work')}>
+            <span className="ds-att-i" aria-hidden="true" data-logo={LINK_LOGO[it.meta] ? '' : undefined}>
+              {LINK_LOGO[it.meta] ? <img src={LINK_LOGO[it.meta]} alt="" draggable={false} /> : it.link ? <Link2 size={15} strokeWidth={1.75} /> : <FileText size={15} strokeWidth={1.75} />}
             </span>
             <span className="d1-file-t">
               <span>{it.name}</span>
               <span className="d1-dim">{it.meta}</span>
             </span>
-          </div>
+          </button>
         </div>
       );
     case 'me':
@@ -1857,7 +2026,7 @@ function Composer() {
     const stages = project?.stages ?? [];
     const at = stages.findIndex((x) => x.id === stageId);
     const next = stages[at + 1];
-    if (!next) return phase === 'done' ? <Cta label="Finish the project" onClick={() => void leaveStage(stageId)} /> : null;
+    if (!next) return phase === 'done' ? (stageId === 'deck' ? <Cta label="Join the call" onClick={joinCall} /> : <Cta label="Finish the project" onClick={() => void leaveStage(stageId)} />) : null;
     return <Cta label={`Continue to stage ${at + 2}`} onClick={() => void leaveStage(stageId)} />;
   }
   const send = () => {
@@ -2005,10 +2174,10 @@ function Chat() {
     pad.style.height = '0px';
     /* b31 (his note: "when it goes to explain ... the whole chat and all just scroll super up. Then ... the bar meter comes
        up slowly ... and then she sends the first voice note"): the check-in gets a clear page, its notes run from the top */
-    if (checking) {
-      const th = el.querySelector<HTMLElement>('.ds-pou-th');
-      pad.style.height = `${Math.max(0, el.clientHeight - (th?.offsetHeight ?? 0) - CHECK_ROOM)}px`;
-    }
+    /* b36 (his note: "why do we have that spacing at the bottom ... let's have a normal thing"): the key sits right under
+       her last note, the room goes under the key */
+    /* b36 (his note: "the stage screen just gets removed ... It should not get deleted, right? It's a bug"): the check-in
+       no longer clears the page, it carries on under the chat like any other turn */
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [thread.length, typing, started, pouN, pouSpeaking, pouRec, pouEnded, sending, checking]);
 
@@ -2025,8 +2194,13 @@ function Chat() {
     return () => io.disconnect();
   }, [thread.some((i) => i.k === 'brief')]);
   const showKey = gone || drop;
-  const pv = useSide((s) => !!s.view);
+  const pv = useSide((s) => !!s.view && (s.view !== 'work' || !!workOf(stageId)));
   const pvW = useSide((s) => s.w);
+  /* b36: through the check-in what you made stays open on the right, behind the divider */
+  useEffect(() => {
+    if (checking && workOf(stageId)) useSide.setState({ view: 'work' });
+    else if (!checking && useSide.getState().view === 'work') useSide.setState({ view: null });
+  }, [checking, stageId]);
   const pvDrag = useSide((s) => s.drag);
   return (
     <section className="d1-chat" data-enter data-pv={pv || undefined} data-drag={pvDrag || undefined} style={pvW ? ({ '--pv-w': `${pvW}px` } as React.CSSProperties) : undefined}>
@@ -2061,11 +2235,7 @@ function Chat() {
           {thread.map((it) => (
             <Row key={it.id} it={it} />
           ))}
-          {checking && (
-            <div className="d1-row ds-pou ds-pou-th b-light">
-              <Thread />
-            </div>
-          )}
+          {checking && <CheckThread />}
           {typing && (
             <div className="d1-row d1-row-her">
               <div className="d1-typing" aria-label="Eryn is typing">
@@ -2076,10 +2246,15 @@ function Chat() {
             </div>
           )}
         </div>
+        {checking && (
+          <div className="d1-comp-wrap ds-key-in">
+            <Composer />
+          </div>
+        )}
         <div ref={spacer} className="ds-turn-room" aria-hidden />
       </div>
-      <div className="d1-comp-wrap">
-        <Composer />
+      <div className="d1-comp-wrap" hidden={checking || undefined}>
+        {!checking && <Composer />}
       </div>
       <BriefDrop />
       <Side />
@@ -2090,7 +2265,9 @@ function Chat() {
 /* ---------- PiP ---------- */
 function PipKey() {
   const phase = useD1((s) => s.phase);
-  if (phase === 'brief') return null;
+  const stageId = useD1((s) => s.stageId);
+  /* b36 (his note: "make sure the PiP is only for stage 1") */
+  if (phase === 'brief' || stageId !== 'clean') return null;
   return (
     <button
       type="button"
@@ -2135,7 +2312,8 @@ const useZq = create<{
   shown: number;
   tip: string | null;
   near: boolean;
-}>(() => ({ body: null, r: 15, b: 78, w: 320, mode: 'rest', said: '', heard: 0, t0: 0, frame: null, her: '', shown: 0, tip: null, near: false }));
+  paused: boolean;
+}>(() => ({ body: null, r: 15, b: 78, w: 320, mode: 'rest', said: '', heard: 0, t0: 0, frame: null, her: '', shown: 0, tip: null, near: false, paused: false }));
 
 const zq = {
   run: 0,
@@ -2180,21 +2358,33 @@ const zq = {
       return;
     }
     const n = her.text.split(/\s+/).length;
-    useZq.setState({ mode: 'say', her: her.text, shown: 0 });
+    useZq.setState({ mode: 'say', her: her.text, shown: 0, paused: false });
     zq.timer = window.setInterval(() => {
-      if (zq.run !== me) return;
+      if (zq.run !== me || useZq.getState().paused) return;
       const k = useZq.getState().shown + 1;
       useZq.setState({ shown: k });
       if (k >= n) {
         zq.stop();
-        zq.timer = window.setTimeout(() => zq.run === me && zq.rest(), ZQ_HOLD_MS);
+        zq.timer = window.setTimeout(() => zq.run === me && !useZq.getState().paused && zq.rest(), ZQ_HOLD_MS);
       }
     }, ZQ_WORD_MS);
   },
   rest() {
     zq.stop();
     zq.run++;
-    useZq.setState({ mode: 'rest', said: '', heard: 0, her: '', shown: 0 });
+    useZq.setState({ mode: 'rest', said: '', heard: 0, her: '', shown: 0, paused: false });
+  },
+  /* b36 (his note: "I don't have anything to pause"): her answer in the bar holds where it is until you play it on */
+  pause() {
+    const z = useZq.getState();
+    if (z.mode !== 'say') return;
+    const words = z.her.split(/\s+/).length;
+    if (!z.paused) return useZq.setState({ paused: true });
+    useZq.setState({ paused: false });
+    if (z.shown >= words) {
+      const me = zq.run;
+      zq.timer = window.setTimeout(() => zq.run === me && zq.rest(), ZQ_HOLD_MS);
+    }
   },
 };
 
@@ -2238,13 +2428,25 @@ function ZqWords({ text, n }: { text: string; n: number }) {
 }
 
 function ZqZone() {
-  const { mode, said, heard, frame: img, her, shown, body } = useZq();
+  const mode = useZq((z) => z.mode);
+  const said = useZq((z) => z.said);
+  const heard = useZq((z) => z.heard);
+  const img = useZq((z) => z.frame);
+  const her = useZq((z) => z.her);
+  const shown = useZq((z) => z.shown);
+  const body = useZq((z) => z.body);
+  const paused = useZq((z) => z.paused);
   if (mode === 'rest') return null;
   return (
     <div className="ds-zq-zone" data-mode={mode}>
       {mode === 'held' && (
         <div key="held" className="ds-zq-listen">
-          {body !== 'chat' && <ZqWords text={said} n={heard} />}
+          {/* b36 (his note: "that visual indication is not there, like 'Mic is on' and a sample transcript"): faked, no real mic */}
+          <span className="ds-zq-micon">
+            <Mic size={13} strokeWidth={2} />
+            Mic is on
+          </span>
+          {body !== 'chat' ? <ZqWords text={said} n={heard} /> : <span className="d1-grow" />}
           <span className="ds-zq-voice">
             <ZqBars />
             <ZqClock />
@@ -2260,6 +2462,9 @@ function ZqZone() {
       {mode === 'say' && (
         <div key="say" className="ds-zq-say">
           <ZqWords text={her} n={shown} />
+          <button type="button" className="ds-zq-key ds-zq-pause" aria-label={paused ? 'Play' : 'Pause'} onClick={() => zq.pause()}>
+            {paused ? <Play size={13} strokeWidth={2} fill="currentColor" /> : <Pause size={13} strokeWidth={2} fill="currentColor" />}
+          </button>
         </div>
       )}
     </div>
@@ -2292,7 +2497,7 @@ function ZqFace() {
     <button
       type="button"
       className="ds-zq-face"
-      aria-label={`Hold to talk with ${m?.name ?? 'her'}`}
+      aria-label={`Press this button to talk to ${m?.name ?? 'her'}`}
       onPointerEnter={() => useZq.setState({ tip: 'face' })}
       onPointerLeave={() => useZq.setState({ tip: null })}
       onFocus={() => useZq.setState({ tip: 'face' })}
@@ -2336,8 +2541,8 @@ function ZqTip() {
     <div key={tip} className="ds-zq-tip" role="tooltip">
       {tip === 'face' ? (
         <>
-          <span>Hold to talk with {name}</span>
-          <span className="ds-zq-tip-2">She sees your screen</span>
+          {/* b36 (his note: "Hold to talk, Eryn ... too much. Let's just say 'Press this button to talk to Eryn'") */}
+          <span>Press this button to talk to {name}</span>
           <span className="ds-zq-tip-keys">
             {ZQ_KEYS.map((k) => (
               <kbd key={k}>{k}</kbd>
@@ -2416,7 +2621,9 @@ function ZqChat({ home }: { home: () => void }) {
   const zf = useFile();
   const typing = useD1((s) => s.typing);
   const stuck = useD1((s) => s.stuck);
-  const { mode, said, heard } = useZq();
+  const mode = useZq((z) => z.mode);
+  const said = useZq((z) => z.said);
+  const heard = useZq((z) => (z.mode === 'held' ? z.heard : 0));
   const scroller = useRef<HTMLDivElement>(null);
   const box = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState('');
@@ -2466,10 +2673,15 @@ function ZqChat({ home }: { home: () => void }) {
                 <Download size={14} strokeWidth={1.75} />
               </a>
             </div>
-          ) : it.k === 'seen' || (it.k === 'att' && it.img) ? (
+          ) : it.k === 'seen' ? (
+            <p key={it.id} className="ds-zq-look ds-zq-seenrow" tabIndex={0} aria-label="Eryn viewed your screen">
+              {it.img ? <img src={it.img} alt="" /> : <i className="ds-zq-seen-blank" />}
+              <span className="ds-zq-seen-t">Viewed your screen</span>
+            </p>
+          ) : it.k === 'att' && it.img ? (
             <p key={it.id} className="ds-zq-look">
-              {it.img && <img src={it.img} alt="" />}
-              {it.k === 'seen' ? 'Viewed your screen' : it.name}
+              <img src={it.img} alt="" />
+              {it.name}
             </p>
           ) : it.k === 'shot' || it.k === 'att' ? (
             <p key={it.id} className="ds-zq-look">
@@ -2529,7 +2741,11 @@ function ZqChat({ home }: { home: () => void }) {
 }
 
 function ZeroPip() {
-  const { body, r, b, w, mode } = useZq();
+  const body = useZq((z) => z.body);
+  const r = useZq((z) => z.r);
+  const b = useZq((z) => z.b);
+  const w = useZq((z) => z.w);
+  const mode = useZq((z) => z.mode);
   const wrap = useRef<HTMLDivElement>(null);
   const win = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; r: number; b: number } | null>(null);
@@ -2549,11 +2765,16 @@ function ZeroPip() {
   useEffect(() => () => zq.rest(), []);
   /* Control Option Command Space talks from anywhere on the desktop */
   useEffect(() => {
+    /* b36: macOS keeps Control Command Space for its own emoji window, so the page may never hear the combo. Holding
+       Space anywhere outside a text box talks too */
+    const typingIn = (t: EventTarget | null) => t instanceof HTMLElement && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
     const down = (e: KeyboardEvent) => {
-      if (e.code === 'Space' && e.ctrlKey && e.altKey && e.metaKey && !e.repeat) {
-        e.preventDefault();
-        zq.hold();
-      }
+      if (e.code !== 'Space' || e.repeat) return;
+      const combo = e.ctrlKey && e.altKey && e.metaKey;
+      if (!combo && (e.ctrlKey || e.altKey || e.metaKey || typingIn(e.target))) return;
+      e.preventDefault();
+      e.stopPropagation();
+      zq.hold();
     };
     const up = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.key === 'Meta' || e.key === 'Control' || e.key === 'Alt') void zq.release();
@@ -2579,7 +2800,8 @@ function ZeroPip() {
   /* b32 (his note: "not on hover, it should be smaller ... by 75%. [On hover] it should be 100%"): at rest the whole PiP
      sits at 75% from its corner; your pointer on it, or her talking, brings it to full size */
   const near = useZq((z) => z.near);
-  const full = near || talking;
+  /* b36 (his note: "When the chat is open, it should not condense to a smaller version"): open is always full size */
+  const full = near || talking || !!body;
   const width = body ? w : talking ? ZQ.talk : ZQ.rest;
   return (
     <div
@@ -2623,8 +2845,11 @@ function ZeroPip() {
               b: Math.max(8, Math.min(window.innerHeight - 60, d.b - (e.clientY - d.y))),
             });
           }}
-          onPointerUp={() => {
+          onPointerUp={(e) => {
+            const d = drag.current;
             drag.current = null;
+            /* b36 (his note: "When I click on it, the whole chat mode and all should collapse"): a click on the bar, not a drag */
+            if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 4 && body) useZq.setState({ body: null });
             if (!wrap.current?.matches(':hover')) useZq.setState({ near: false });
           }}
         >

@@ -1134,3 +1134,58 @@
   scale: var(--zs, 1);
   transform-origin: 0 0;
 }
+
+/* b36 (his note: "Make this overlay little smaller please and same for the project brief"): the map's project card and
+   the brief both come down about 15 percent, every part in proportion */
+.zo-card {
+  width: 360px;
+  gap: 20px;
+  padding: 14px;
+  border-radius: 32px;
+}
+.zo-card .zo-copill {
+  height: 34px;
+  padding: 0 14px 0 4px;
+  gap: 8px;
+  font-size: 13px;
+}
+.zo-card .zo-lg28 {
+  width: 26px;
+  height: 26px;
+}
+.zo-card .zo-round,
+.zo-card[data-art] .zo-round {
+  width: 34px;
+  height: 34px;
+}
+.zo-card .zo-round svg {
+  width: 16px;
+  height: 16px;
+}
+.zo-card .zo-art2 {
+  border-radius: 20px;
+}
+.zo-card .zo-card-t,
+.zo-card[data-art] .zo-card-t {
+  max-width: 300px;
+  font-size: 19px;
+}
+.zo-card .zo-k3 {
+  height: 48px;
+}
+.zo-card .zo-k3 b {
+  font-size: 18px;
+}
+.zo-card[data-title] {
+  padding-top: 22px;
+}
+.zo-card[data-title] .zo-card-h {
+  top: 12px;
+  right: 12px;
+}
+.zo-sheet,
+.zo-sheet.b-light {
+  zoom: 0.96;
+  width: min(720px, calc((100vw - 48px) / 0.96));
+  height: min(820px, calc((100vh - 96px) / 0.96));
+}

@@ -5026,6 +5026,26 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.d1.ds2 .ds-td-tw {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+}
+.d1.ds2 .ds-td-t[data-open] {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.d1.ds2 .ds-td-more {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ds-ink-3);
+  transition: color 120ms var(--b-ease);
+}
+.d1.ds2 .ds-td-more:hover {
+  color: var(--ds-ink);
+}
 .d1.ds2 .ds-td-t[data-blank] {
   color: var(--ds-ink-4);
   letter-spacing: 0.08em;
@@ -5600,20 +5620,7 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
 }
 
 /* ---------- b32: the stage check-in (his notes on b31) ---------- */
-/* "remove the top progress bar and top timer because they already got that much explained": they step up and away */
-.d1.ds2 .ds-top-mid,
-.d1.ds2 .ds-top .d1-timer {
-  transition: translate 420ms cubic-bezier(0.32, 0.72, 0, 1), filter 420ms cubic-bezier(0.32, 0.72, 0, 1), opacity 320ms ease-out, visibility 0s linear 0s;
-}
-.d1.ds2 .ds-top[data-check] .ds-top-mid,
-.d1.ds2 .ds-top[data-check] .d1-timer {
-  translate: 0 -10px;
-  filter: blur(8px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: translate 420ms cubic-bezier(0.32, 0.72, 0, 1), filter 420ms cubic-bezier(0.32, 0.72, 0, 1), opacity 320ms ease-out, visibility 0s linear 420ms;
-}
+/* b36 (his note: "the stage screen just gets removed ... It's a bug"): the top bar stays through the check-in */
 /* "The brain meter ... can come to the center towards the chat" */
 .d1.ds2 .ds-who {
   position: relative;
@@ -5635,10 +5642,7 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
   transition: translate 420ms cubic-bezier(0.32, 0.72, 0, 1), filter 420ms cubic-bezier(0.32, 0.72, 0, 1), opacity 320ms ease-out, visibility 0s linear 0s;
 }
 .d1.ds2 .ds-who[data-check] > .d1-face,
-.d1.ds2 .ds-who[data-check] > .d1-who-t,
-.d1.ds2 .ds-top[data-check] .ds-pick,
-.d1.ds2 .ds-top[data-check] .d1-logo,
-.d1.ds2 .ds-top[data-check] .ds-scn {
+.d1.ds2 .ds-who[data-check] > .d1-who-t {
   translate: 0 -10px;
   filter: blur(8px);
   opacity: 0;
@@ -6303,5 +6307,437 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
   .ds-zq-seen,
   .ds-zq-say {
     animation: none;
+  }
+}
+
+/* ---------- b36: the check-in key under her last note, your work behind the divider ---------- */
+.d1.ds2 .d1-comp-wrap[hidden] {
+  display: none;
+}
+.d1.ds2 .d1-scroll > .ds-key-in {
+  flex: none;
+  width: 100%;
+  max-width: var(--ds-col);
+  margin: 0 auto;
+  padding: 16px 24px 0;
+  box-sizing: border-box;
+}
+.d1.ds2 button.ds-att {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  border: 0;
+  cursor: pointer;
+}
+.d1.ds2 button.ds-att:hover {
+  box-shadow: inset 0 0 0 1px var(--ds-strong);
+}
+.d1.ds2 button.ds-att:active {
+  transform: scale(0.98);
+}
+.d1.ds2 .ds-att-i[data-logo] {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--ds-hair);
+}
+.d1.ds2 .ds-att-i[data-logo] img {
+  width: 18px;
+  height: 18px;
+}
+
+/* the document: the page as Docs or a PDF draws it, on its own grey desk */
+.d1.ds2 .ds-pv-doc {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+  background: #f1f3f4;
+}
+.d1.ds2 .ds-doc {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 40px 44px 48px;
+  border-radius: 4px;
+  background: #fff;
+  color: #1f1f1f;
+  box-shadow: 0 0 0 1px rgba(19, 20, 23, 0.06), 0 1px 3px rgba(19, 20, 23, 0.08);
+}
+.d1.ds2 .ds-doc-to {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: #5f6368;
+}
+.d1.ds2 .ds-doc-t {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.d1.ds2 .ds-doc-b + .ds-doc-b {
+  margin-top: 14px;
+}
+.d1.ds2 .ds-doc-h {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.d1.ds2 .ds-doc-p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #3c4043;
+}
+.d1.ds2 .ds-doc-b[data-lead] .ds-doc-p {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f1f1f;
+}
+.d1.ds2 .ds-doc-tb {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.d1.ds2 .ds-doc-tb th,
+.d1.ds2 .ds-doc-tb td {
+  padding: 6px 8px;
+  text-align: left;
+  border: 1px solid #dadce0;
+}
+.d1.ds2 .ds-doc-tb th {
+  font-weight: 500;
+  background: #f8f9fa;
+}
+.d1.ds2 .ds-doc-tb tr:first-child td {
+  background: #e6f4ea;
+}
+.d1.ds2 .ds-doc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #1a73e8;
+  box-shadow: inset 0 0 0 1px #dadce0;
+}
+.d1.ds2 .ds-doc-link img {
+  width: 14px;
+  height: 14px;
+}
+
+/* the deck: the slide her question is about, the three slides under it */
+.d1.ds2 .ds-pv-deck {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  overflow: auto;
+  background: #f1f3f4;
+}
+.d1.ds2 .ds-sl-stage {
+  flex: none;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  container-type: inline-size;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(19, 20, 23, 0.06), 0 1px 3px rgba(19, 20, 23, 0.08);
+  overflow: hidden;
+}
+.d1.ds2 .ds-sl {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4cqw;
+  height: 100%;
+  padding: 7cqw 8cqw;
+  box-sizing: border-box;
+  color: #1f1f1f;
+}
+.d1.ds2 .ds-sl-t {
+  margin: 0;
+  font-size: 5.4cqw;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.d1.ds2 .ds-sl-big {
+  margin: 0;
+  font-size: 8cqw;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #128a45;
+}
+.d1.ds2 .ds-sl-sub {
+  margin: 0;
+  font-size: 2.6cqw;
+  color: #5f6368;
+}
+.d1.ds2 .ds-sl-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqw;
+}
+.d1.ds2 .ds-sl-bar {
+  display: grid;
+  grid-template-columns: 16cqw 1fr 10cqw;
+  align-items: center;
+  gap: 2cqw;
+  font-size: 2.4cqw;
+  color: #5f6368;
+}
+.d1.ds2 .ds-sl-bt {
+  height: 2.6cqw;
+}
+.d1.ds2 .ds-sl-bt i {
+  display: block;
+  height: 100%;
+  border-radius: 0 0.6cqw 0.6cqw 0;
+  background: #dadce0;
+}
+.d1.ds2 .ds-sl-bar[data-hi] {
+  color: #1f1f1f;
+  font-weight: 500;
+}
+.d1.ds2 .ds-sl-bar[data-hi] .ds-sl-bt i {
+  background: #128a45;
+}
+.d1.ds2 .ds-sl-bv {
+  text-align: right;
+}
+.d1.ds2 .ds-sl-ls {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4cqw;
+  counter-reset: sl;
+}
+.d1.ds2 .ds-sl-ls li {
+  display: flex;
+  gap: 2.4cqw;
+  font-size: 3cqw;
+  line-height: 1.3;
+  counter-increment: sl;
+}
+.d1.ds2 .ds-sl-ls li::before {
+  content: counter(sl);
+  flex: none;
+  width: 4.4cqw;
+  height: 4.4cqw;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 2.2cqw;
+  background: #f1f3f4;
+}
+.d1.ds2 .ds-sl-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.d1.ds2 .ds-sl-th {
+  display: flex;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.d1.ds2 .ds-sl-thn {
+  font-size: 12px;
+  color: #5f6368;
+}
+.d1.ds2 .ds-sl-thf {
+  flex: 1;
+  aspect-ratio: 16 / 9;
+  container-type: inline-size;
+  border-radius: 3px;
+  background: #fff;
+  overflow: hidden;
+  pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(19, 20, 23, 0.08);
+  transition: box-shadow 200ms ease;
+}
+.d1.ds2 .ds-sl-th[data-on] .ds-sl-thf {
+  box-shadow: 0 0 0 2px #f8bf08;
+}
+.d1.ds2 .ds-sl-th:hover .ds-sl-thf {
+  box-shadow: 0 0 0 1px rgba(19, 20, 23, 0.24);
+}
+.d1.ds2 .ds-sl-th[data-on]:hover .ds-sl-thf {
+  box-shadow: 0 0 0 2px #f8bf08;
+}
+
+/* b36 (his note: "there should be a proper inner padding between the containers. Nothing should touch each other's
+   containers"): everything in the right pane sits on one well with 16px all round, the sheet, page or slide is its own
+   card inside it; her notes keep 16px under the meter and soften as they scroll under it */
+.d1.ds2 .ds-pv-sheet,
+.d1.ds2 .ds-pv-doc,
+.d1.ds2 .ds-pv-deck {
+  padding: 16px;
+  background: var(--ds-cream);
+  border-bottom-right-radius: inherit;
+}
+.d1.ds2 .ds-pv-sheet {
+  display: flex;
+  overflow: hidden;
+}
+.d1.ds2 .ds-pv-sheet > .ds-gs-box {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--ds-hair), var(--ds-sh-xs);
+}
+.d1.ds2 .ds-doc,
+.d1.ds2 .ds-sl-stage {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--ds-hair), var(--ds-sh-xs);
+}
+.d1.ds2 .ds-sl-thf {
+  border-radius: 8px;
+}
+.d1.ds2 .ds-pv-deck {
+  gap: 12px;
+}
+.d1.ds2 .d1-chat:has(.ds-who[data-check]) > .d1-scroll {
+  padding-top: 16px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 20px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 20px);
+}
+
+/* b36: the stage check-in thread, plain bubbles and her name shimmering while she listens */
+.d1.ds2 .ds-ck {
+  display: contents;
+}
+.d1.ds2 .ds-ck-lsn-t {
+  font-size: 12px;
+  line-height: 16px;
+  background: linear-gradient(90deg, var(--ds-ink-4) 0%, var(--ds-ink-4) 35%, var(--ds-ink) 50%, var(--ds-ink-4) 65%, var(--ds-ink-4) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ds-ck-shim 1.2s linear infinite;
+}
+@keyframes ds-ck-shim {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .d1.ds2 .ds-ck-lsn-t {
+    animation: none;
+    -webkit-text-fill-color: var(--ds-ink-3);
+  }
+}
+
+/* ---------- b36: the PiP, his notes on b35 ---------- */
+/* "It should be centered at the circle": the pop out key is a true circle with the icon in its middle */
+.d1.ds2 .ds-pipkey {
+  justify-content: center;
+  width: 30px;
+  padding: 0;
+  gap: 0;
+}
+/* "Better inner padding, spacing and margins" */
+.ds-zq-bar {
+  padding: 0 8px;
+}
+.ds-zq-keys {
+  gap: 4px;
+  max-width: 176px;
+}
+.ds-zq-scroll {
+  gap: 12px;
+  padding: 16px 16px 12px;
+}
+.ds-zq-slots {
+  gap: 16px;
+  padding: 16px;
+}
+.ds-zq-comp {
+  margin: 0 12px 12px;
+  padding: 10px 8px 6px 12px;
+}
+.ds-zq-me {
+  padding: 6px 12px;
+}
+/* "why is your audio waveform blurry": the bars grow in height on whole pixels, nothing is scaled */
+.ds-zq-bars i {
+  height: 4px;
+  transform: none;
+  animation: ds-zq-barh 0.9s ease-in-out infinite;
+}
+@keyframes ds-zq-barh {
+  0%,
+  100% {
+    height: 4px;
+  }
+  35% {
+    height: 16px;
+  }
+  60% {
+    height: 8px;
+  }
+}
+/* "Mic is on" while you hold */
+.ds-zq-micon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  white-space: nowrap;
+}
+.ds-zq-pause {
+  width: 28px;
+  height: 28px;
+}
+/* "The view to screen does not come from the user ... only a text on hover": her side, the frame only, the words on hover */
+.ds-zq-seenrow {
+  align-self: flex-start;
+  outline: none;
+}
+.ds-zq-seen-t,
+.d1.ds2 .ds-seen-t {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  filter: blur(4px);
+  transition: max-width 320ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms ease, filter 240ms ease;
+}
+.ds-zq-seenrow:hover .ds-zq-seen-t,
+.ds-zq-seenrow:focus-visible .ds-zq-seen-t,
+.d1.ds2 .ds-seen:hover .ds-seen-t,
+.d1.ds2 .ds-seen:focus-visible .ds-seen-t {
+  max-width: 160px;
+  opacity: 1;
+  filter: none;
+}
+.d1.ds2 .ds-seen {
+  outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-zq-bars i {
+    animation: none;
+    height: 8px;
   }
 }

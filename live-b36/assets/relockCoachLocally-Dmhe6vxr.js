@@ -1,0 +1,1 @@
+import{a as o}from"./userStore-DdkMXuA3.js";import{resetCoachSelection as t}from"./coachSelectionStore-BPHGjGm_.js";import"./index-Bp4var_u.js";import"./queryClient-j5sq3UbW.js";import"./coachProfiles-CrOQqU4b.js";function s(){o.getState().setSettings({coach_introduced:!1,coach_unlocked:!1}),t()}export{s as relockCoachLocally};

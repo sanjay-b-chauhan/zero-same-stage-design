@@ -235,3 +235,12 @@ LIVE zero-same-stage-design.vercel.app ds b31, b30 at /b30/. His notes on b30, a
 - New input files `static/media/spotify_pricing_clean.csv` (58 rows) and `revenue_model.csv` (6 markets), built from clean(RAW, every fix).
 - Dev steps rec, memo, deck land on stages 3 to 5 with the ones before done.
 - "the stage POU to be the same as how we have a kickoff POU. Just remove the manager profile and the title ... make it bigger in width": `.ds-who[data-check]` hides her name card, `.ds-top[data-check]` hides the stage title, the meter is min(460px, column). Her take-less notes draw bars and a length from their words (`room/pou/PouView.tsx`).
+
+## b36 (4 Nov 2026), not yet reviewed
+
+- "our design system, our color, our fonts ... Every face has to be in a 16:9 ratio": the dev room is gone. `present/Call.tsx`, `call.css`, `callScript.ts` are the whole stage 5 call in ds tokens: lobby, greet, share sheet, present, Q&A, review, report, finish.
+- "like Google Meet ... a profile in the circular center ... audio integration", "the presenting mode has to be in a dark mode", "Only one thing should be on the surface": the call is forced dark. One raised thing per screen (her focus tile, the shared slide, the replay, the share sheet, the end card). Her face is a circle; `voiceLevel` drives the ring from speak's onLevel. You are a plain video on the ground. The feedback side sits on the ground: score, band, moments with time, note, tag and slide, scores in ten steps with a note each. Green for what worked, amber for what to work on.
+- Stage check-in: `same/CheckThread.tsx` + `checkGroups.ts`. Your answer is a text bubble, "Eryn is listening" shimmers, her back to back lines are one bubble whose words arrive on her voice. No waveform, transcript, 3 2 1 or dots.
+- "the stage screen just gets removed ... It's a bug": the check-in no longer pads the page clear or hides the top bar.
+- PiP (stage 1 only): centred pop out key, full size while open, "Press this button to talk to Eryn", Space or Control Option Command Space talks (macOS can eat the combo), "Mic is on" with a sample transcript, a pause on her answer, bars grow in height so they stay sharp, a click on the bar folds the chat, Viewed your screen is her side with the words on hover.
+- Stage 1: no empty issue slots, Read more on a long prompt. Map project card 424 to 360, brief zoom 1.1 to 0.96.

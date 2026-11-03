@@ -460,3 +460,92 @@ export const STAGES: Record<string, StageSpec> = { model, rec, memo, deck };
 
 /* stage 1 keeps its own script (script.ts); every other stage reads its spec */
 export const specOf = (stageId: string): StageSpec | undefined => STAGES[stageId];
+
+/* b36 (his note: "let's make the whole freaking thing, even the presentation, how we have the divide"): in every check-in
+   what you made opens on the right, behind the divider. Every number is the model's (revenue_model.csv) and the call. */
+export interface DocBlock {
+  h?: string;
+  p?: string;
+  rows?: string[][];
+  link?: string;
+}
+export interface Slide {
+  title: string;
+  big?: string;
+  sub?: string;
+  bars?: { label: string; v: number; hi?: boolean }[];
+  lines?: string[];
+}
+export type Work =
+  | { kind: 'sheet'; name: string; meta: string; logo: string; file: StageFile }
+  | { kind: 'doc'; name: string; meta: string; logo?: string; title: string; to?: string; blocks: DocBlock[] }
+  | { kind: 'deck'; name: string; meta: string; logo: string; slides: Slide[] };
+
+const DOCS = 'static/logos/logo-docs.svg';
+const SLIDES = 'static/logos/logo-slides.svg';
+const HELD: string[][] = [
+  ['Market', 'Active', 'Left', 'Per customer'],
+  ['Brazil', '8', '0', '$4.82'],
+  ['Germany', '8', '0', '$12.68'],
+  ['United States', '8', '6', '$11.87'],
+  ['United Kingdom', '6', '2', '$13.96'],
+];
+
+export const WORK: Record<string, Work> = {
+  clean: { kind: 'sheet', name: 'spotify_pricing_clean', meta: CLEAN_FILE.meta, logo: SHEETS, file: CLEAN_FILE },
+  model: { kind: 'sheet', name: 'revenue_model', meta: MODEL_FILE.meta, logo: SHEETS, file: MODEL_FILE },
+  rec: {
+    kind: 'doc',
+    name: 'pricing_recommendation.pdf',
+    meta: 'PDF, 1 page',
+    title: 'Raise Brazil Individual one step',
+    blocks: [
+      { p: 'Raise Brazil Individual from R$23.90 to R$25.90 next month. About 8 percent, one step.' },
+      { h: 'Why Brazil', p: 'Nobody left Brazil, and of the markets that held it earns the least per customer: $4.82, against $12.68 in Germany.' },
+      { rows: HELD },
+      { h: 'Why not further', p: 'When the price went too far, the US lost 6 of 14 customers and the UK 2 of 8. One step keeps us clear of that.' },
+      { h: 'How we know early', p: 'We watch Brazil cancellations every week in the first month and stop if churn moves.' },
+    ],
+  },
+  memo: {
+    kind: 'doc',
+    name: 'pricing_memo',
+    meta: 'Google Docs',
+    logo: DOCS,
+    title: 'Brazil Individual price',
+    to: 'To the pricing lead',
+    blocks: [
+      { p: 'Approve raising Brazil Individual to R$25.90 next month.' },
+      { h: 'The proof', p: 'Zero churn in Brazil, and $4.82 a customer, the lowest of the markets that held.' },
+      { h: 'The risk', p: 'Go too far and people leave, like the US did. We watch Brazil cancellations every week and roll it back if churn moves in the first month.' },
+      { h: 'The model', p: 'Every number above comes from the model. Anyone with the link can check the math.', link: 'revenue_model' },
+    ],
+  },
+  deck: {
+    kind: 'deck',
+    name: 'brazil_pricing_deck',
+    meta: 'Google Slides, 3 slides',
+    logo: SLIDES,
+    slides: [
+      { title: 'Approve raising Brazil Individual to R$25.90', big: 'R$23.90 to R$25.90', sub: 'One step, about 8 percent, next month.' },
+      {
+        title: 'Brazil has the most room',
+        bars: [
+          { label: 'UK', v: 13.96 },
+          { label: 'Germany', v: 12.68 },
+          { label: 'US', v: 11.87 },
+          { label: 'Mexico', v: 8.4 },
+          { label: 'Brazil', v: 4.82, hi: true },
+          { label: 'India', v: 1.62 },
+        ],
+        sub: 'Revenue per customer, US dollars. Nobody left Brazil.',
+      },
+      {
+        title: 'We catch churn in the first month',
+        lines: ['Watch Brazil cancellations every week', 'If churn moves in the first month, roll it back', 'The US lost 6 of 14 when it went too far'],
+      },
+    ],
+  },
+};
+
+export const workOf = (stageId: string): Work | undefined => WORK[stageId];
