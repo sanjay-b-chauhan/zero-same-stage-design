@@ -29,3 +29,15 @@ export const markShown = (project: ProjectMeta, doneStages: string[]) => {
 
 /* where the marker is along its way, 0 to 1, slow out of the old stage and slow into the next */
 export const travelEase = (t: number): number => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+/* b30 (his note: "the same container goes there, sits on the first thing, a tick mark, goes to the second thing, and then
+   we open up the second stage"): a stage left with Continue asks the page to open the next one once the way back lands */
+let autoStart = false;
+export const armAutoStart = () => {
+  autoStart = true;
+};
+export const takeAutoStart = () => {
+  const on = autoStart;
+  autoStart = false;
+  return on;
+};

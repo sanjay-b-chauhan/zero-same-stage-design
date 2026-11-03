@@ -176,7 +176,7 @@ function Recording({ first }: { first: boolean }) {
 const KEEP = 4;
 const OUT_MS = 420;
 
-function Thread() {
+export function Thread() {
   const thread = usePou((s) => s.thread);
   const speaking = usePou((s) => s.speaking);
   const ended = usePou((s) => s.ended);
@@ -250,7 +250,7 @@ function Thread() {
 }
 
 /* no speech in this browser: type it instead */
-function Typed() {
+export function Typed() {
   const [v, setV] = useState('');
   const speaking = usePou((s) => s.speaking);
   const send = () => {
@@ -280,7 +280,7 @@ function Typed() {
 const LIVE_BARS = 40;
 const REC_S = 120;
 
-function Hold() {
+export function Hold() {
   const holding = useHoldUi((s) => s.holding);
   const sending = useHoldUi((s) => s.sending);
   const at = useHoldUi((s) => s.at);
@@ -383,6 +383,35 @@ function leaveAll(pv: HTMLElement): number {
   return Number(OUT_T.duration) + Math.max(0, rows.length - 1) * STAGGER;
 }
 
+/* Space is the talk key here: down to talk, up to send, Escape lets it go */
+export function useSpaceTalk(hear: boolean) {
+  useEffect(() => {
+    if (!hear) return;
+    const down = (e: KeyboardEvent) => {
+      if (e.code !== 'Space' && e.key !== 'Escape') return;
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || isTextEntry(e.target)) return;
+      if (e.key === 'Escape') {
+        holdCancel();
+        return;
+      }
+      e.preventDefault();
+      if (!e.repeat) holdStart();
+    };
+    const up = (e: KeyboardEvent) => {
+      if (e.code !== 'Space' || isTextEntry(e.target)) return;
+      e.preventDefault();
+      holdEnd();
+    };
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+    return () => {
+      window.removeEventListener('keydown', down);
+      window.removeEventListener('keyup', up);
+      holdCancel();
+    };
+  }, [hear]);
+}
+
 export default function PouView() {
   const ended = usePou((s) => s.ended);
   const goto = useFlow((s) => s.actions.goto);
@@ -417,32 +446,7 @@ export default function PouView() {
   useDevAction('pou-answer', 'Answer for me', pouAnswerForMe, !ended);
   useDevAction('pou-go', 'Continue', leave, ended);
 
-  /* Space is the talk key here: down to talk, up to send, Escape lets it go */
-  useEffect(() => {
-    if (!hear) return;
-    const down = (e: KeyboardEvent) => {
-      if (e.code !== 'Space' && e.key !== 'Escape') return;
-      if (e.defaultPrevented || e.metaKey || e.ctrlKey || isTextEntry(e.target)) return;
-      if (e.key === 'Escape') {
-        holdCancel();
-        return;
-      }
-      e.preventDefault();
-      if (!e.repeat) holdStart();
-    };
-    const up = (e: KeyboardEvent) => {
-      if (e.code !== 'Space' || isTextEntry(e.target)) return;
-      e.preventDefault();
-      holdEnd();
-    };
-    window.addEventListener('keydown', down);
-    window.addEventListener('keyup', up);
-    return () => {
-      window.removeEventListener('keydown', down);
-      window.removeEventListener('keyup', up);
-      holdCancel();
-    };
-  }, [hear]);
+  useSpaceTalk(hear);
 
   return (
     <div ref={pvRef} className="pv">

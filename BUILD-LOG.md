@@ -185,3 +185,13 @@ LIVE zero-same-stage-design.vercel.app ds b29, b28 at /b28/. His notes on b28, a
 - "when I hover, it just jumps the bubble. It should just stay there": `room/room.css` freezes the face and caption translate in the kickoff while a check-in is up.
 - "I don't want a surface color when it's in a recording state ... recording bars only ... listening ... shimmer below the user voice note": PouView shows "<manager> is listening" as a shimmer line under your note, then bars only with no pill, then her note. pou.ts REPLY_MS 500, RECORD_MS 500.
 - "let's do a normal chat ... till the bottom ... a little spacing at the bottom": no room under the turn, the chat follows the bottom like any chat, 40 px above the box (TURN_AT gone).
+
+## b30 (3 Nov 2026)
+
+LIVE zero-same-stage-design.vercel.app ds b30, b29 at /b29/. His notes on b29, and what changed:
+- "sticky just below the manager, like how in WhatsApp we have a pin thing ... the dropdown ... at the top, not at the bottom": FbPin in `same/StageSame.tsx` is a 44 px bar under her name while her fixes are open, it drops the same tickable list down over the chat. The header key reads Resubmit and waits until both are ticked. FixDrop is gone.
+- "estimated 2 minutes ... Estimation: 30 seconds ... write how a human would write it": `same/script.ts` REVIEW. After you send, a shimmer row says "<name> is reviewing · Estimated 2 min" (then 30 sec), her lines are plain chat. The wait is compressed to 4.2 s and 2.6 s.
+- "the approved and this thing don't make sense ... convert into a CTA ... proof of understanding": no Approved pill. The box becomes "Explain it to Eryn". The check-in reuses the kickoff's store and Hold (`room/pou.ts` pouEnterLines, STAGE_CHECK) with Eryn's existing takes, no new audio. Meter and dashes sit in the header, her notes in the chat, the box is the hold key.
+- "Continue to stage two ... transition out ... remove the black version": `same/leave.ts` blurs the chat, shrinks a white layer onto the objective's stage 1 row, the objective ticks and travels (`room/plan/returnSeq.ts` armAutoStart), and Start's morph opens stage 2 by itself. StageTurn is no longer called.
+- "remove Submit a link ... it just opens up a browser ... loads up in a chat container": plus opens the file picker, the pick sits as a card in the box with an X, Send posts it.
+- To-dos pill off V2. V1 rail bullets sit under the stage number. V3 has a Requirements title. Done ticks are a plain green check. Your messages read left. Progress bar min(460px, 40vw) wide, 6 px high.

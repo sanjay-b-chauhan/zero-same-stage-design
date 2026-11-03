@@ -1,11 +1,11 @@
 /* The bar. Wispr Flow small: her face, then keys right beside it. No name, no level, no counts.
-   Circles of one size on one even gap: her face, the mic (hold it and she sees your screen), to-dos, chat, resources, and
+   Circles of one size on one even gap: her face (hover it and it is the mic, hold it and she sees your screen), Slots, Chat, and
    Back to Zero on the far edge. I'm stuck lives in the chat's composer, so the bar has no ? of its own (his note, 2 Nov).
    To-dos and resources open their own small windows, chat opens in here. The window keeps its approved width: the middle keeps
    its room, so a moment (your voice and your words, her answer, a slot landing, her review, the coach, the one next action)
    has the same place the keys had, then they come back. In the POU the bar is the POU only: no chat, no files, no screen talk. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { Check, ListChecks, Maximize2, MessageCircle, Mic, Paperclip } from 'lucide-react';
+import { Check, ListChecks, Maximize2, MessageCircle, Mic } from 'lucide-react';
 import { clock } from '../clock';
 import { useFlow } from '../engine/store';
 import { HeldClock } from '../stage/parts/Composer';
@@ -22,8 +22,10 @@ import { useZone, type BarAct } from './useZone';
 const ICON = { size: 18, strokeWidth: 1.75 };
 const TALK_KEYS = '⌃ ⌥ ⌘ Space';
 
-/* Her face. The plain circle behind it follows her voice, and yours while she is listening. Her name is its tip */
-function BarFace() {
+/* Her face. The plain circle behind it follows her voice, and yours while she is listening.
+   b24 (his note: "remove the mic icon, so we have only the face. When we hover over the face, it's a mic icon"): the face IS
+   the mic. Hover turns it into the mic, hold it and she hears you and sees your screen. In the POU it is only her face */
+function BarFace({ talk, onPointerDown, onKey }: { talk: boolean; onPointerDown?: (e: ReactPointerEvent<HTMLButtonElement>) => void; onKey?: (e: ReactMouseEvent<HTMLButtonElement>) => void }) {
   const manager = useFlow((s) => s.project?.manager);
   const circle = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -43,11 +45,37 @@ function BarFace() {
       apply(v);
     });
   }, []);
-  return (
-    <span className="zp-face zs2-face" data-tip={manager?.full} data-tip-sub="Manager" data-tip-stack="">
+  const inner = (
+    <>
       <span ref={circle} className="zs2-face-circle" />
       {manager?.face ? <img className="zs2-face-img" src={manager.face} alt={manager.full} draggable={false} /> : null}
-    </span>
+      {talk && (
+        <span className="zp-face-mic" aria-hidden>
+          <Mic {...ICON} />
+        </span>
+      )}
+    </>
+  );
+  if (!talk)
+    return (
+      <span className="zp-face zs2-face" data-tip={manager?.full} data-tip-sub="Manager" data-tip-stack="">
+        {inner}
+      </span>
+    );
+  return (
+    <button
+      type="button"
+      className="zp-face zs2-face"
+      data-talk=""
+      data-tip={`Hold to talk with ${firstName(manager?.name ?? '')}`}
+      data-tip-sub="She sees your screen"
+      data-tip-keys={TALK_KEYS}
+      aria-label="Hold to talk"
+      onPointerDown={onPointerDown}
+      onClick={onKey}
+    >
+      {inner}
+    </button>
   );
 }
 
@@ -200,7 +228,6 @@ export default function PipBar({ onSwitch }: { onSwitch: () => void }) {
   const pou = useFlow((s) => s.stage?.phase === 'pou');
 
   const todosWin = useTools((t) => t.todos);
-  const resWin = useTools((t) => t.resources);
   const onChat = open && body === 'chat';
   /* the body has its own place for your words: the chat's box (gone once the work is done) or the POU's hold slab */
   const boxHere = useFlow((s) => {
@@ -208,7 +235,6 @@ export default function PipBar({ onSwitch }: { onSwitch: () => void }) {
     const shown = shownBody(s.ui.pipBody, ph, s.stage?.submitOpen ?? false);
     return shown === 'pou' || hasComposer(shown, ph, workDone(s.stage));
   });
-  const onRes = resWin || (open && body === 'resources');
   const onWork = todosWin || (open && body === 'slots');
 
   /* tap the one you are on and the window folds back to the bar. Any press springs the window to that view's size,
@@ -363,31 +389,22 @@ export default function PipBar({ onSwitch }: { onSwitch: () => void }) {
       <Key name={`Chat with ${name}`} sub={unread && !onChat ? `New from ${name}` : undefined} on={onChat} dot={unread && !onChat} onClick={() => toggle('chat')}>
         <MessageCircle {...ICON} />
       </Key>
-      <Key name="Resources" on={onRes} onClick={(e) => tool('resources', e)}>
-        <Paperclip {...ICON} />
-      </Key>
     </>
   );
 
   return (
-    <div className="zp-bar" data-pou={pou || undefined}>
+    /* b24 (his note: "when you hold and talk, every icon and everything just goes away ... only the recording and the text"):
+       while you hold, the bar is your voice and your words, nothing else. Let go and the face, Slots, Chat and the way back return */
+    <div className="zp-bar" data-pou={pou || undefined} data-held={zone.kind === 'listen' || talking || undefined}>
       <div className="zp-keys">
-        <BarFace />
-        {!pou && (
-          <Key
-            name="Talk with your screen"
-            keys={TALK_KEYS}
-            mic
-            on={talking}
-            onPointerDown={talkDown}
-            onClick={(e) => {
-              /* Enter on the focused key: a press with no pointer */
-              if (e.detail === 0) talkPress(e.currentTarget.ownerDocument.defaultView ?? window);
-            }}
-          >
-            <Mic {...ICON} />
-          </Key>
-        )}
+        <BarFace
+          talk={!pou}
+          onPointerDown={talkDown}
+          onKey={(e) => {
+            /* Enter on the focused face: a press with no pointer */
+            if (e.detail === 0) talkPress(e.currentTarget.ownerDocument.defaultView ?? window);
+          }}
+        />
         <div className="zp-zone" data-kind={moment ? zone.kind : 'tools'} data-pou={pou || undefined}>
           <Swap k={moment ? (zone.kind === 'who' ? 'wait' : zone.key) : 'tools'}>{moment ? middle : tools}</Swap>
         </div>

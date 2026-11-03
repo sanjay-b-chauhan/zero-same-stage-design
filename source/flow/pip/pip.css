@@ -1425,3 +1425,87 @@ body:has(> .zp-tool) {
   font-size: 12px;
   line-height: 20px;
 }
+
+/* ===== b24 (his note, 3 Nov: "only the face ... hover over the face, it's a mic icon ... when you hold, everything just goes
+   away, only the recording and the text"). Three things at rest: her face, Slots, Chat, and the way back on the edge.
+   Hover the face and the mic rises out of it; hold it and the bar is your voice and your words alone ===== */
+.zs2 .zp-bar .zp-zone {
+  flex: 1;
+  width: auto;
+}
+.zp-bar .zp-face[data-talk] {
+  position: relative;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.16s var(--zp-ease);
+}
+.zp-bar .zp-face[data-talk]:active {
+  transform: scale(0.92);
+}
+.zp-bar .zp-face[data-talk]:focus-visible {
+  outline: 1.5px solid var(--z-tx-2);
+  outline-offset: 2px;
+}
+.zp-bar .zp-face .zs2-face-img {
+  transition: transform 0.32s var(--z4-spring, var(--zp-ease)), filter 0.32s var(--zp-ease);
+}
+.zp-face-mic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--z-raise-2);
+  color: var(--z-tx);
+  box-shadow: inset 0 0 0 1px var(--z-line);
+  transform: scale(0.6);
+  filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.32s var(--z4-spring, var(--zp-ease)), filter 0.24s var(--zp-ease), opacity 0.18s var(--zp-ease);
+}
+.zp-bar .zp-face[data-talk]:hover .zp-face-mic,
+.zp-bar .zp-face[data-talk]:focus-visible .zp-face-mic {
+  transform: scale(1);
+  filter: blur(0);
+  opacity: 1;
+}
+.zp-bar .zp-face[data-talk]:hover .zs2-face-img {
+  transform: scale(0.8);
+  filter: blur(3px);
+}
+/* held: the face, the keys and the way back fold into nothing, the middle takes the whole bar */
+.zp-bar > .zp-keys > .zp-face,
+.zp-bar > .zp-keys > .zp-key {
+  transition: width 0.34s var(--zp-ease), transform 0.34s var(--zp-ease), filter 0.28s var(--zp-ease), opacity 0.2s var(--zp-ease);
+}
+.zp-bar > .zp-keys {
+  transition: gap 0.34s var(--zp-ease);
+}
+.zp-bar[data-held] > .zp-keys {
+  gap: 0;
+}
+.zs2 .zp-bar[data-held] > .zp-keys > .zp-face,
+.zs2 .zp-bar[data-held] > .zp-keys > .zp-key {
+  width: 0;
+  transform: scale(0.5);
+  filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.zp-bar[data-held] .zp-zone .zp-listen {
+  padding: 0 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zp-face-mic,
+  .zp-bar > .zp-keys,
+  .zp-bar > .zp-keys > .zp-face,
+  .zp-bar > .zp-keys > .zp-key {
+    transition: none;
+  }
+}

@@ -3,7 +3,7 @@
    a line you covered pops sharp with a ting. */
 import { create } from 'zustand';
 import { stopVoice, voiceRate } from '../audio';
-import { END_ALL, END_SOME, NOT_HEARD, VOICE_OF } from '../../content/check';
+import { END_ALL, END_SOME, NOT_HEARD, VOICE_OF, type CheckLine } from '../../content/check';
 import { devMark } from '../dev/store';
 import { useFlow } from '../engine/store';
 import { takeFor } from '../engine/takes';
@@ -84,6 +84,26 @@ export function pouEnter(p: ProjectId, asking = 0, delay = 900) {
     }
     devMark(`pou:${asking + 1}`);
     void say([b.lines[current(b)].q], tok);
+  });
+}
+
+/* b30: the same check-in on a stage, with the stage's own questions. She can open with a line before the first one */
+export function pouEnterLines(p: ProjectId, lines: CheckLine[], intro: string[] = [], delay = 400) {
+  pouStop();
+  project = p;
+  voiceRate(useRate.getState().r);
+  const b: Brain = { lines, state: lines.map(() => 'open'), tries: 0, said: '' };
+  brain = b;
+  S().thread.forEach((m) => {
+    if (m.voice?.url) URL.revokeObjectURL(m.voice.url);
+  });
+  set({ ...blankCard(), lines: lines.map((l) => ({ text: l.text, state: 'open' })), thread: [] });
+  prefetch(b);
+  const tok = R;
+  timers.after(delay, () => {
+    if (tok !== R) return;
+    devMark('pou:1');
+    void say([...intro, b.lines[0].q], tok);
   });
 }
 

@@ -1,0 +1,1 @@
+import{e as t}from"./index-7G2n9e5F.js";const l=t((c,r)=>({cache:null,setCache:e=>c({cache:e}),setFeedbackData:e=>{const a=r().cache;a&&c({cache:{...a,feedbackData:e}})},clearCache:()=>c({cache:null}),reset:()=>c({cache:null})}));export{l as useMicroSimulationCacheStore};

@@ -2,8 +2,8 @@
 import { create } from 'zustand';
 import { clock } from '../clock';
 import { awardXp } from '../hud';
-import { showTurn } from '../stage/parts/turnStore';
-import { APPROVED, BRIEF, FEEDBACK, OPEN, OPEN_2, SHOT_REPLY, POU, REPLY, REPLY_ELSE, REVIEW_STEPS, STUCK, BURN, TIERS, tierAt, ISSUES, ISSUE_ENOUGH, ASK_OPEN, ASK_HIT, ASK_MISS, ASK_ENOUGH, ASK_PROMPT_SHORT, ASK_PROMPT_OK } from './script';
+import { pouAnswerForMe, pouEnterLines, usePou } from '../room/pou';
+import { BRIEF, CHECK_INTRO, FEEDBACK, OPEN, OPEN_2, SHOT_REPLY, REPLY, REPLY_ELSE, REVIEW, STAGE_CHECK, STUCK, BURN, TIERS, tierAt, ISSUES, ISSUE_ENOUGH, ASK_OPEN, ASK_HIT, ASK_MISS, ASK_ENOUGH, ASK_PROMPT_SHORT, ASK_PROMPT_OK } from './script';
 
 export type Item =
   | { id: number; k: 'brief' }
@@ -12,11 +12,11 @@ export type Item =
   | { id: number; k: 'me'; text: string }
   | { id: number; k: 'shot' }
   | { id: number; k: 'chips'; options: string[]; guide?: boolean }
-  | { id: number; k: 'review'; n: number }
+  | { id: number; k: 'sent'; est: string }
   | { id: number; k: 'feedback' }
   | { id: number; k: 'xp'; amount: number; label: string }
   | { id: number; k: 'prompt'; text: string }
-  | { id: number; k: 'att'; name: string; meta: string; link?: boolean };
+  | { id: number; k: 'att'; name: string; meta: string; link?: boolean; img?: string };
 
 type NewItem = Item extends infer T ? (T extends Item ? Omit<T, 'id'> : never) : never;
 
@@ -100,6 +100,9 @@ const flush = () => {
 };
 const DEV_ISSUES = ['duplicates', 'no currency', 'negative prices', 'test accounts', 'dates'];
 const DEV_LINK = 'https://docs.google.com/spreadsheets/d/spotify-clean';
+/* how long she takes to look, in the prototype. The estimate she gives is the real one */
+const REVIEW_MS = 4200;
+const REVIEW_AGAIN_MS = 2600;
 
 const fresh = (stageId: string): D1 => ({
   stageId,
@@ -176,7 +179,8 @@ export const d1 = {
     }
     const s = useD1.getState();
     if (s.phase === 'brief') return d1.start(), true;
-    if (s.phase === 'pou') return d1.send('Because every number after it depends on it.'), true;
+    if (s.phase === 'approved') return d1.check(), true;
+    if (s.phase === 'pou') return usePou.getState().ended ? false : (pouAnswerForMe(), true);
     if (s.phase === 'feedback') {
       FEEDBACK.items.forEach((f) => !s.fixed[f.id] && d1.fix(f.id));
       return d1.submit(), true;
@@ -257,12 +261,19 @@ export const d1 = {
     say([link ? 'Got the link. I will open it when you submit.' : 'Got the file. I will look at it when you submit.'], { wait: 500 });
   },
 
+  /* b30 (his note: "the image does not send directly. It loads up in a chat container, and then we can type, or we can
+     directly send"): what you picked goes with your words, in one send */
+  post(text: string, file?: { name: string; meta: string; img?: string }) {
+    if (file) push({ k: 'att', name: file.name, meta: file.meta, img: file.img });
+    if (text.trim()) return d1.send(text);
+    if (file) say(['Got the file. I will look at it when you submit.'], { wait: 500 });
+  },
+
   send(text: string) {
     const t = text.trim();
     if (!t) return;
     const s = useD1.getState();
     push({ k: 'me', text: t });
-    if (s.phase === 'pou') return d1.answer();
     if (s.stuck) {
       const step = STUCK[s.stuckAt];
       if (t === step.chip) return d1.stuckNext();
@@ -345,48 +356,41 @@ export const d1 = {
     const s = useD1.getState();
     if (!d1.canSubmit(s)) return;
     const again = s.phase === 'feedback';
+    const r = again ? REVIEW.again : REVIEW.first;
     unstick({ phase: 'review', thread: s.thread.filter((i) => i.k !== 'chips') });
-    push({ k: 'me', text: again ? 'Fixed both. Resubmitting.' : 'Here you go.' });
-    const review = { k: 'review', n: 0 } as const;
-    push(review);
-    const reviewId = seq;
-    REVIEW_STEPS.forEach((_, i) =>
-      later(420 + i * 380, () =>
-        useD1.setState((st) => ({ thread: st.thread.map((it) => (it.id === reviewId && it.k === 'review' ? { ...it, n: i + 1 } : it)) }))
-      )
-    );
-    const done = 420 + REVIEW_STEPS.length * 380 + 200;
+    if (again) push({ k: 'me', text: "Fixed both. Here's the new one." });
+    push({ k: 'att', name: 'Google Sheet', meta: (s.link || DEV_LINK).replace(/^https?:\/\//, '').slice(0, 42), link: true });
+    /* b30: under your link, how long she will take, while she takes it */
+    push({ k: 'sent', est: r.est });
+    const sentId = seq;
+    const drop = () => useD1.setState((st) => ({ thread: st.thread.filter((it) => it.id !== sentId) }));
+    say([r.got], { wait: 600 });
+    const back = again ? REVIEW_AGAIN_MS : REVIEW_MS;
     if (!again && s.stageId === 'clean') {
-      later(done, () => {
+      later(back, () => {
+        drop();
         /* what she saw already met ticks now; the two she flagged wait for your fixes */
         useD1.setState({ phase: 'feedback', met: { test: true, keep: true } });
-        say([FEEDBACK.head], { after: () => push({ k: 'feedback' }) });
+        say([r.back, FEEDBACK.head], { after: () => push({ k: 'feedback' }) });
       });
       return;
     }
-    later(done, () => {
+    later(back, () => {
+      drop();
       /* she checked them: every requirement ticks itself, you never tick a requirement */
       useD1.setState({ phase: 'approved', met: Object.fromEntries(BRIEF.requirements.map((r) => [r.id, true])) });
-      say([APPROVED], { after: () => d1.startPou() });
+      say([r.back]);
     });
   },
 
-  startPou() {
-    if (useD1.getState().stageId !== 'clean') return d1.finish();
-    useD1.setState({ phase: 'pou', pouAt: 0 });
-    say(['Before we move on, a few quick ones.', POU[0].q], { wait: 400 });
-  },
-
-  answer() {
+  /* b30 (his note: "then the bottom chat has to convert into a CTA ... a proof of understanding stage ... a voice chat
+     experience, like how we had a kickoff POU"): the kickoff's check-in, in this chat, with the stage's questions */
+  check() {
     const s = useD1.getState();
-    const cur = POU[s.pouAt];
-    const next = s.pouAt + 1;
-    if (next >= POU.length) {
-      useD1.setState({ phase: 'done' });
-      return say([cur.ack], { after: () => d1.finish() });
-    }
-    useD1.setState({ pouAt: next });
-    say([cur.ack, POU[next].q]);
+    if (s.phase !== 'approved') return;
+    if (s.stageId !== 'clean') return d1.finish();
+    useD1.setState({ phase: 'pou' });
+    pouEnterLines('spotify', STAGE_CHECK, [CHECK_INTRO], 300);
   },
 
   finish() {
@@ -398,13 +402,6 @@ export const d1 = {
       push({ k: 'xp', amount: tier.xp, label: `Done in ${Math.max(1, Math.round(min))} min` });
       awardXp({ amount: tier.xp, reason: `Stage done in ${Math.max(1, Math.round(min))} min`, id: `d1:${s.stageId}` });
     }
-    if (s.stageId !== 'clean') return;
-    later(2200, () =>
-      showTurn(["That's exactly what I was looking for.", 'Clean data, every real customer kept.', 'Next, we see what each market brings in.'], {
-        id: 'model',
-        n: 2,
-      })
-    );
   },
 
   openPanel(tab: PanelTab, view: string | null = null) {
@@ -424,3 +421,8 @@ export const d1 = {
   },
   stop: clear,
 };
+
+/* the check-in ends when she has heard enough: the stage is done */
+usePou.subscribe((p, was) => {
+  if (p.ended && !was.ended && useD1.getState().phase === 'pou') d1.finish();
+});

@@ -24,7 +24,7 @@ import { moveTo, place as placeLook } from '../../open/motion';
 import { playStartMorph } from '../../screens/StartMorph';
 import { SPRING, SPRING_MS, glideHeight, isTextEntry, pop, prefersReduced, rise } from '../../stage/parts/util';
 import type { ProjectMeta, StageMeta } from '../../types';
-import { markShown, returnOf, travelEase } from './returnSeq';
+import { markShown, returnOf, travelEase, takeAutoStart } from './returnSeq';
 import { blurWords, words } from './blurWords';
 import { useCaption } from '../caption';
 import { JobHookList } from '../../stage/parts/JobHook';
@@ -42,6 +42,7 @@ const TICK_AT = 750;
 const TRAVEL_AT = 1350;
 const TRAVEL_MS = 820;
 const KEY_AFTER = 460;
+const AUTO_START_MS = 520;
 /* b19 (his note: "The manager should come in the center, then it goes to the left, and then you just have one thing that
    she says ... In transition, people don't react"): centre, left, one line at a time while the stages land, Got it, her
    turn line, then her words become the title and stage 1 takes its key */
@@ -123,6 +124,7 @@ export default function Objective({ project, morph = false }: { project: Project
   };
   const endTone: Tone = live ? 'later' : reached(stages.length) && !(back && back.n === stages.length && phase < 3) ? 'now' : 'later';
 
+  const startRef = useRef<() => void>(() => undefined);
   const obRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
   const seatRef = useRef<HTMLDivElement>(null);
@@ -270,7 +272,13 @@ export default function Objective({ project, morph = false }: { project: Project
       return () => clock.clearTimeout(id);
     }
 
-    if (phase === 4) rise(goRef.current, { y: 10, blur: 6, scale: 0.94 });
+    if (phase === 4) {
+      rise(goRef.current, { y: 10, blur: 6, scale: 0.94 });
+      if (takeAutoStart()) {
+        const id = clock.setTimeout(() => startRef.current(), AUTO_START_MS);
+        return () => clock.clearTimeout(id);
+      }
+    }
   }, [phase, ret]);
 
   /* her seat: where the Room puts her face on this page, read live so a wrap or a resize keeps her in it. Left in place
@@ -389,6 +397,7 @@ export default function Objective({ project, morph = false }: { project: Project
     }
   }, [current, startStage, waiting, live, halt]);
 
+  startRef.current = () => void start();
   useDevAction('ob-start', started ? 'Continue' : 'Start', () => void start(), !!current && !waiting);
 
   /* b23: one Next for this page, on the arrow and on a click on her side. Her arrival, each of her lines and the turn

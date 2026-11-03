@@ -43,8 +43,13 @@ import {
   Minus,
   Maximize2,
   CircleAlert,
+  ArrowRight,
 } from 'lucide-react';
 import { looksPrivate } from './linkAccess';
+import { leaveStage } from './leave';
+import { Hold, PouMeter, Thread, Typed, useSpaceTalk } from '../room/pou/PouView';
+import { canHear, useHoldUi } from '../room/hold';
+import { pouAnswerForMe, usePou } from '../room/pou';
 import { useDevAction } from '../dev/store';
 import { create } from 'zustand';
 import { useFlow } from '../engine/store';
@@ -54,7 +59,7 @@ import { rise } from '../stage/parts/util';
 import '../stage/stage.css';
 import '../d1/d1.css';
 import './ds.css';
-import { ASK_GROUPS, BRIEF, BRIEF_2, BURN, FEEDBACK, ISSUES, ISSUE_ENOUGH, RAW_FILE, REVIEW_STEPS, SCENARIO, STUCK, TIERS, tierAt } from './script';
+import { ASK_GROUPS, BRIEF, BRIEF_2, BURN, FEEDBACK, ISSUES, ISSUE_ENOUGH, RAW_FILE, SCENARIO, STUCK, TIERS, tierAt } from './script';
 import { type D1 } from './store';
 import Desktop from '../pip/desktop/Desktop';
 import ClaudeApp from '../pip/desktop/ClaudeApp';
@@ -427,7 +432,7 @@ type TodoState = 'done' | 'now' | 'next';
 function TodoRow({ on, text, pop }: { on: boolean; text?: string; pop?: number }) {
   return (
     <li className="ds-td-row" data-on={on || undefined} data-pop={pop}>
-      <span className="ds-td-m">{on && <Check size={10} strokeWidth={2.8} />}</span>
+      <span className="ds-td-m">{on && <Check size={15} strokeWidth={2.4} />}</span>
       <span className="ds-td-t" data-blank={!on || undefined}>
         {on ? text : TODO_BLANK}
       </span>
@@ -490,9 +495,7 @@ function Work2() {
   const s = useD1();
   return (
     <aside className="ds-w2" data-enter aria-label="To-dos">
-      <div className="ds-w2-tabs">
-        <span className="ds-w2-one">To-dos</span>
-      </div>
+      {/* b30 (his note: "Please remove to-dos, brother") */}
       <div className="ds-w2-body">
         <Todos s={s} />
       </div>
@@ -508,6 +511,8 @@ function Work3() {
   return (
     <aside className="ds-w2 ds-w3" data-enter aria-label="Requirements">
       <div className="ds-w2-body">
+        {/* b30 (his note: "in the V3 version ... just add a simple title") */}
+        <h5 className="ds-td-h ds-w3-h">Requirements</h5>
         <Reqs s={s} b={b} land={false} />
       </div>
     </aside>
@@ -659,35 +664,28 @@ function SubmitKey() {
   /* ask mode: you hand in only after her asks, never before */
   const gated = useD1((s) => s.ask && s.stageId === 'clean' && s.phase === 'work' && s.askStep !== 'submit');
   const ready = (phase === 'work' && !gated) || phase === 'feedback';
-  if (phase === 'brief') return null;
+  /* b30 (his note: "the approved and this thing don't make sense"): once she has signed it off the key goes */
+  if (phase === 'brief' || phase === 'approved' || phase === 'pou' || phase === 'done') return null;
   const label =
     phase === 'review'
       ? 'Checking'
       : phase === 'feedback'
-        ? left > 0
-          ? `${left} ${left === 1 ? 'fix' : 'fixes'} to go`
-          : 'Resubmit'
-        : phase === 'work'
-          ? 'Submit'
-          : 'Approved';
-  const done = phase === 'approved' || phase === 'pou' || phase === 'done';
+        ? 'Resubmit'
+        : 'Submit';
   return (
     <button
       type="button"
       className="ds-key ds-key-ink"
-      disabled={!ready && !on}
-      data-done={done || undefined}
+      disabled={(!ready && !on) || (phase === 'feedback' && left > 0)}
       data-on={on || undefined}
       data-busy={phase === 'review' || undefined}
       onClick={() => {
-        if (phase === 'feedback' && left > 0) useFixDrop.setState({ open: !useFixDrop.getState().open });
-        else if (phase === 'feedback') {
+        if (phase === 'feedback') {
           useSubmitting.setState({ on: false });
           d1.submit();
         } else useSubmitting.setState({ on: !on });
       }}
     >
-      {done && <Check size={13} strokeWidth={2.4} />}
       {label}
     </button>
   );
@@ -910,22 +908,6 @@ function BriefDrop() {
     </Drop>
   );
 }
-function FixDrop() {
-  const open = useFixDrop((s) => s.open);
-  const phase = useD1((s) => s.phase);
-  useEffect(() => {
-    if (phase !== 'feedback') closeFixes();
-  }, [phase]);
-  return (
-    <Drop open={open && phase === 'feedback'} close={closeFixes} label="Her fixes">
-      <div className="ds-fixdrop">
-        <h3 className="ds-fixdrop-t">{FEEDBACK.head}</h3>
-        <FeedbackCard inPanel />
-      </div>
-    </Drop>
-  );
-}
-
 /* the right side is only for a preview: a tool or a training plays there */
 /* b13: a tool or a training opens one popup with its film over the screen; nothing opens beside the chat */
 const useFilm = create<{ view: string | null }>(() => ({ view: null }));
@@ -1278,16 +1260,14 @@ function Side() {
   );
 }
 
-function Review({ n }: { n: number }) {
+/* b30 (his note: "it's not faster. It has to be like estimated 2 minutes"): under your link, while she looks at it */
+function Sent({ est }: { est: string }) {
+  const name = useFlow((s) => s.project?.manager?.name.split(' ')[0] ?? 'She');
   return (
-    <div className="d1-review">
-      {REVIEW_STEPS.map((s, i) => (
-        <div key={s} className="d1-review-row" data-state={i < n ? 'done' : i === n ? 'now' : 'next'}>
-          <span className="d1-review-mark">{i < n ? <Check size={11} strokeWidth={2.4} /> : null}</span>
-          {s}
-        </div>
-      ))}
-    </div>
+    <span className="ds-sent" aria-live="polite">
+      <span className="ds-sent-t">{name} is reviewing</span>
+      <span className="ds-sent-e">Estimated {est}</span>
+    </span>
   );
 }
 
@@ -1400,8 +1380,8 @@ function Row({ it }: { it: Item }) {
       return (
         <div ref={row} className="d1-row d1-row-me">
           <div className="ds-att">
-            <span className="ds-att-i" aria-hidden="true">
-              {it.link ? <Link2 size={15} strokeWidth={1.75} /> : <FileText size={15} strokeWidth={1.75} />}
+            <span className="ds-att-i" aria-hidden="true" data-img={it.img ? '' : undefined}>
+              {it.img ? <img src={it.img} alt="" draggable={false} /> : it.link ? <Link2 size={15} strokeWidth={1.75} /> : <FileText size={15} strokeWidth={1.75} />}
             </span>
             <span className="d1-file-t">
               <span>{it.name}</span>
@@ -1426,15 +1406,15 @@ function Row({ it }: { it: Item }) {
           ))}
         </div>
       );
-    case 'review':
+    case 'sent':
       return (
-        <div ref={row} className="d1-row d1-row-her">
-          <Review n={it.n} />
+        <div ref={row} className="d1-row d1-row-me ds-sent-row">
+          <Sent est={it.est} />
         </div>
       );
     case 'feedback':
       return (
-        <div ref={row} className="d1-row d1-row-her">
+        <div ref={row} className="d1-row d1-row-her" data-fb>
           <FeedbackCard />
         </div>
       );
@@ -1636,67 +1616,31 @@ function StepCard() {
   );
 }
 
-const useAttach = create<{ open: boolean; link: boolean }>(() => ({ open: false, link: false }));
-
-function AttachKey() {
-  const open = useAttach((s) => s.open);
-  const ref = useRef<HTMLDivElement>(null);
+/* b30 (his note: "let's remove Submit a link and all ... we don't have a pop-up now. It's just like an upload: when you
+   click it, it just opens up a browser"): the + key opens the file picker, nothing else */
+type Draft = { name: string; meta: string; img?: string };
+function AttachKey({ pick }: { pick: (d: Draft) => void }) {
   const file = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const out = (e: PointerEvent) => {
-      if (!ref.current?.contains(e.target as Node)) useAttach.setState({ open: false });
-    };
-    const esc = (e: KeyboardEvent) => e.key === 'Escape' && useAttach.setState({ open: false });
-    window.addEventListener('pointerdown', out, true);
-    window.addEventListener('keydown', esc);
-    return () => {
-      window.removeEventListener('pointerdown', out, true);
-      window.removeEventListener('keydown', esc);
-    };
-  }, [open]);
-  const pick = (k: 'file' | 'link') => {
-    useAttach.setState({ open: false });
-    if (k === 'file') file.current?.click();
-    else useAttach.setState({ link: true });
-  };
   return (
-    <div className="ds-attach-wrap" ref={ref}>
-      <button
-        type="button"
-        className="d1-ghost"
-        aria-label="Add a file or a link"
-        aria-expanded={open}
-        data-on={open || undefined}
-        onClick={() => useAttach.setState({ open: !open })}
-      >
+    <div className="ds-attach-wrap">
+      <button type="button" className="d1-ghost" aria-label="Upload a file" title="Upload a file" onClick={() => file.current?.click()}>
         <Plus {...I} />
       </button>
-      {open && (
-        <div className="ds-attach" role="menu">
-          <button type="button" role="menuitem" onClick={() => pick('file')}>
-            <span className="ds-attach-i"><Paperclip size={15} strokeWidth={1.75} /></span>
-            <span className="ds-attach-t">
-              Upload a file
-              <small>Sheet, CSV, doc or image</small>
-            </span>
-          </button>
-          <button type="button" role="menuitem" onClick={() => pick('link')}>
-            <span className="ds-attach-i"><Link2 size={15} strokeWidth={1.75} /></span>
-            <span className="ds-attach-t">
-              Add a link
-              <small>Google Sheet, Doc or Drive</small>
-            </span>
-          </button>
-        </div>
-      )}
       <input
         ref={file}
         type="file"
         hidden
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) d1.attach(f.name, `${Math.max(1, Math.round(f.size / 1024))} KB`);
+          if (f) {
+            let img: string | undefined;
+            try {
+              img = f.type.startsWith('image/') ? URL.createObjectURL(f) : undefined;
+            } catch {
+              img = undefined;
+            }
+            pick({ name: f.name, meta: `${Math.max(1, Math.round(f.size / 1024))} KB`, img });
+          }
           e.target.value = '';
         }}
       />
@@ -1704,44 +1648,21 @@ function AttachKey() {
   );
 }
 
-/* Add a link: a slim row inside the box, paste and Enter, it lands as a link card */
-function LinkRow() {
-  const [url, setUrl] = useState('');
-  const box = useRef<HTMLInputElement>(null);
-  useEffect(() => box.current?.focus(), []);
-  const ok = /^https?:\/\/\S+\.\S+/i.test(url.trim());
-  const close = () => useAttach.setState({ link: false });
-  const add = () => {
-    if (!ok) return;
-    let host = url.trim();
-    try {
-      host = new URL(host).hostname.replace(/^www\./, '');
-    } catch {
-      /* keep the raw text */
-    }
-    d1.attach(/docs\.google\.com\/spreadsheets/i.test(url) ? 'Google Sheet' : host, url.trim().replace(/^https?:\/\//, '').slice(0, 42), true);
-    close();
-  };
+/* what you picked waits in the box, above your words, until you send */
+function DraftCard({ d, drop }: { d: Draft; drop: () => void }) {
+  const card = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => rise(card.current, { y: 8, blur: 6, scale: 0.96, ms: 420 }), []);
   return (
-    <div className="ds-linkrow">
-      <Link2 size={14} strokeWidth={1.75} />
-      <input
-        ref={box}
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          if (e.key === 'Enter') add();
-          if (e.key === 'Escape') close();
-        }}
-        placeholder="Paste a link"
-        aria-label="Paste a link"
-      />
-      <button type="button" className="ds-linkrow-go" disabled={!ok} onClick={add}>
-        Add
-      </button>
-      <button type="button" className="d1-ghost" aria-label="Cancel the link" onClick={close}>
-        <X {...I} />
+    <div ref={card} className="ds-draft">
+      <span className="ds-att-i" aria-hidden="true" data-img={d.img ? '' : undefined}>
+        {d.img ? <img src={d.img} alt="" draggable={false} /> : <FileText size={15} strokeWidth={1.75} />}
+      </span>
+      <span className="d1-file-t">
+        <span>{d.name}</span>
+        <span className="d1-dim">{d.meta}</span>
+      </span>
+      <button type="button" className="ds-draft-x" aria-label="Remove the file" onClick={drop}>
+        <X size={12} strokeWidth={2} />
       </button>
     </div>
   );
@@ -1760,39 +1681,76 @@ function ShotIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+/* b30: once she signs it off the box is one key, the check-in is her voice notes and your hold to talk, then the next stage */
+function Cta({ label, onClick }: { label: string; onClick: () => void }) {
+  const key = useRef<HTMLButtonElement>(null);
+  useLayoutEffect(() => rise(key.current, { y: 12, blur: 8, scale: 0.96, ms: 520 }), [label]);
+  return (
+    <button ref={key} type="button" className="ds-cta" autoFocus onClick={onClick}>
+      {label}
+      <ArrowRight size={16} strokeWidth={2} />
+    </button>
+  );
+}
+
+function TalkBox() {
+  const [hear] = useState(canHear);
+  useSpaceTalk(hear);
+  return <div className="ds-pou b-light">{hear ? <Hold /> : <Typed />}</div>;
+}
+
 function Composer() {
-  const linking = useAttach((s) => s.link);
   const submitting = useSubmitting((s) => s.on);
   const [text, setText] = useState('');
+  const [draft, setDraft] = useState<Draft | null>(null);
   const stuck = useD1((s) => s.stuck);
   const phase = useD1((s) => s.phase);
+  const stageId = useD1((s) => s.stageId);
   const ask = useD1((s) => s.ask && s.stageId === 'clean');
   const askStep = useD1((s) => s.askStep);
+  const project = useFlow((s) => s.project);
+  const ended = usePou((s) => s.ended);
   const box = useRef<HTMLTextAreaElement>(null);
   const canStuck = phase === 'work' || phase === 'feedback';
   if (phase === 'brief') return null;
   if (submitting) return <SubmitBox />;
+  const manager = project?.manager.name.split(' ')[0] ?? 'her';
+  if (phase === 'approved') return <Cta label={`Explain it to ${manager}`} onClick={() => d1.check()} />;
+  if (phase === 'pou' && !ended) return <TalkBox />;
+  if (phase === 'pou' || phase === 'done') {
+    const stages = project?.stages ?? [];
+    const at = stages.findIndex((x) => x.id === stageId);
+    const next = stages[at + 1];
+    if (!next) return null;
+    return <Cta label={`Continue to stage ${at + 2}`} onClick={() => void leaveStage(stageId)} />;
+  }
   const send = () => {
-    if (!text.trim()) return;
-    d1.send(text);
+    if (!text.trim() && !draft) return;
+    d1.post(text, draft ?? undefined);
     setText('');
+    setDraft(null);
     box.current?.focus();
   };
-  const hint =
-    phase === 'pou'
-      ? 'Answer Eryn'
-      : stuck
-        ? 'Tell her where you are'
-        : ask && phase === 'work' && askStep === 'issues'
-          ? 'Name an issue you see'
-          : ask && phase === 'work' && askStep === 'prompt'
-            ? 'Write the prompt you would send Claude'
-            : 'Message Eryn';
+  const hint = stuck
+    ? 'Tell her where you are'
+    : ask && phase === 'work' && askStep === 'issues'
+      ? 'Name an issue you see'
+      : ask && phase === 'work' && askStep === 'prompt'
+        ? 'Write the prompt you would send Claude'
+        : `Message ${manager}`;
   return (
     <>
       {stuck && <StepCard />}
       <div className="d1-comp" data-stuck={stuck || undefined}>
-        {linking && <LinkRow />}
+        {draft && (
+          <DraftCard
+            d={draft}
+            drop={() => {
+              if (draft.img) URL.revokeObjectURL(draft.img);
+              setDraft(null);
+            }}
+          />
+        )}
         <textarea
           ref={box}
           rows={1}
@@ -1809,7 +1767,13 @@ function Composer() {
           aria-label="Message your manager"
         />
         <div className="d1-comp-row">
-          <AttachKey />
+          <AttachKey
+            pick={(d) => {
+              if (draft?.img) URL.revokeObjectURL(draft.img);
+              setDraft(d);
+              box.current?.focus();
+            }}
+          />
           <button type="button" className="d1-ghost ds-shot-key" aria-label="Send her a screenshot" title="Send her a screenshot" onClick={() => d1.shot()}>
             <ShotIcon />
           </button>
@@ -1818,12 +1782,58 @@ function Composer() {
           <button type="button" className="d1-ghost" aria-label="Talk to her">
             <Mic {...I} />
           </button>
-          <button type="button" className="d1-send" aria-label="Send" disabled={!text.trim()} onClick={send}>
+          <button type="button" className="d1-send" aria-label="Send" disabled={!text.trim() && !draft} onClick={send}>
             <ArrowUp size={14} strokeWidth={2} />
           </button>
         </div>
       </div>
     </>
+  );
+}
+
+/* b30 (his note: "the feedback thing should be sticky just below the manager, like how in WhatsApp we have a pin thing
+   ... a whole horizontal thing where the feedback is ... when you open the dropdown ... it should be at the top, not at
+   the bottom"): her fixes stay pinned under her name while you work. The bar opens downward into the same list you tick
+   in the chat, over the thread, so nothing squeezes */
+function FbPin() {
+  const phase = useD1((s) => s.phase);
+  const left = useD1((s) => FEEDBACK.items.filter((f) => !s.fixed[f.id]).length);
+  const has = useD1((s) => s.thread.some((i) => i.k === 'feedback'));
+  const open = useFixDrop((s) => s.open);
+  const box = useRef<HTMLDivElement>(null);
+  const sheet = useRef<HTMLDivElement>(null);
+  const on = phase === 'feedback' && has;
+  useEffect(() => {
+    if (!on) closeFixes();
+  }, [on]);
+  useEffect(() => {
+    if (!open) return;
+    const k = (e: KeyboardEvent) => e.key === 'Escape' && closeFixes();
+    const out = (e: PointerEvent) => !box.current?.contains(e.target as Node) && closeFixes();
+    window.addEventListener('keydown', k);
+    window.addEventListener('pointerdown', out);
+    return () => {
+      window.removeEventListener('keydown', k);
+      window.removeEventListener('pointerdown', out);
+    };
+  }, [open]);
+  useLayoutEffect(() => {
+    if (open) rise(sheet.current, { y: -10, blur: 8, scale: 0.98, ms: 420 });
+  }, [open]);
+  if (!on) return null;
+  return (
+    <div ref={box} className="ds-pin" data-open={open || undefined}>
+      <button type="button" className="ds-pin-k" aria-expanded={open} onClick={() => useFixDrop.setState({ open: !open })}>
+        <span className="ds-pin-t">{FEEDBACK.head}</span>
+        <span className="ds-pin-n">{left > 0 ? `${left} ${left === 1 ? 'fix' : 'fixes'} to go` : 'Ready to resubmit'}</span>
+        <ChevronDown size={14} strokeWidth={2} className="ds-pin-c" />
+      </button>
+      {open && (
+        <div ref={sheet} className="ds-pin-s" role="region" aria-label="Her feedback">
+          <FeedbackCard inPanel />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -1837,6 +1847,14 @@ function Chat() {
 
   const spacer = useRef<HTMLDivElement>(null);
   const started = useD1((s) => s.phase !== 'brief');
+  const phase = useD1((s) => s.phase);
+  const checking = phase === 'pou' || phase === 'done';
+  /* her voice notes and your answers follow the bottom like the rest of the chat */
+  const pouN = usePou((s) => s.thread.length);
+  const pouSpeaking = usePou((s) => s.speaking);
+  const pouRec = usePou((s) => !!s.recording);
+  const pouEnded = usePou((s) => s.ended);
+  const sending = useHoldUi((s) => s.sending);
   useLayoutEffect(() => {
     const el = scroller.current;
     const pad = spacer.current;
@@ -1854,7 +1872,7 @@ function Chat() {
        bottom, but not extreme"): no room under the turn, the newest line follows the bottom like any chat */
     pad.style.height = '0px';
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  }, [thread.length, typing, started]);
+  }, [thread.length, typing, started, pouN, pouSpeaking, pouRec, pouEnded, sending]);
 
   const m = project?.manager;
   const drop = useDrop((s) => s.open);
@@ -1883,17 +1901,32 @@ function Chat() {
           <span className="d1-dim">{stuck ? 'Guiding you step by step' : m?.role}</span>
         </span>
         <span className="d1-grow" />
+        {/* b30 (his note: "instead of the brief and the approve thing, there will be a brain meter and the three dashes") */}
+        {checking ? (
+          <span className="ds-pou ds-pou-m b-light">
+            <PouMeter />
+          </span>
+        ) : (
+          <>
         <button type="button" className="ds-key ds-key-line" data-shown={showKey || undefined} tabIndex={showKey ? 0 : -1} aria-hidden={!showKey} data-on={drop || undefined} aria-expanded={drop} onClick={() => useDrop.setState({ open: !drop })}>
           <FileText size={14} strokeWidth={1.75} />
           Brief
         </button>
         <SubmitKey />
+          </>
+        )}
       </div>
+      <FbPin />
       <div ref={scroller} className="d1-scroll">
         <div className="d1-thread">
           {thread.map((it) => (
             <Row key={it.id} it={it} />
           ))}
+          {checking && (
+            <div className="d1-row ds-pou ds-pou-th b-light">
+              <Thread />
+            </div>
+          )}
           {typing && (
             <div className="d1-row d1-row-her">
               <div className="d1-typing" aria-label="Eryn is typing">
@@ -1910,7 +1943,6 @@ function Chat() {
         <Composer />
       </div>
       <BriefDrop />
-      <FixDrop />
       <Side />
     </section>
   );
@@ -2335,7 +2367,7 @@ export default function StageSame() {
   useDevAction('d1-fix', 'Tick every fix', () => FEEDBACK.items.forEach((f) => !useD1.getState().fixed[f.id] && d1.fix(f.id)));
   useDevAction('d1-time', 'Add 35 minutes to the timer', () => d1.skew(35));
   useDevAction('ds-tools', 'Tools and training: switch V1 and V2', () => useLook.setState((l) => ({ tools: l.tools === 'v1' ? 'v2' : 'v1' })));
-  useDevAction('d1-pou', 'Answer her check-in', () => d1.send('Because every number after it depends on it.'));
+  useDevAction('d1-pou', 'Answer her check-in', () => pouAnswerForMe());
   useDevAction('ds-ask', 'Ask mode on or off', () => d1.setAsk(!useD1.getState().ask));
   useDevAction('ds-start', 'Got it, let\'s start', () => d1.start());
   useDevAction('ds-issues', 'Name five issues', () => ['duplicates', 'no currency', 'negative prices', 'test accounts', 'dates'].forEach((t, i) => window.setTimeout(() => d1.send(t), i * 1400)));

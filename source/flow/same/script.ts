@@ -1,3 +1,4 @@
+import type { CheckLine } from '../../content/check';
 import type { Line } from './store';
 /* Same stage b2: Design 1's script with her greeting first, a longer voice note for the transcript, no link box. */
 /* Design 1 (Navid, 3 Nov call): the real stage with fewer design changes. Every word she says in stage 1, short like a text.
@@ -138,6 +139,46 @@ export const FEEDBACK: { head: string; items: FixItem[] } = {
 };
 
 export const APPROVED = "That's what I needed. Clean file.";
+
+/* b30 (his note: "write how a human would write it ... Okay, I got your submission. Just give me two minutes ... Give me
+   just a minute, I'm checking it ... estimated 2 minutes"): she says she has it and how long, then what she found */
+export const REVIEW = {
+  first: { est: '2 min', got: "Okay, got your submission. Give me two minutes, I'll get back to you.", back: 'Okay, I went through all of it.' },
+  again: { est: '30 sec', got: 'Okay, give me a second.', back: 'Oh, awesome. You did a really great job on this.' },
+};
+
+/* b30 (his note: "after this, we will go into a proof of understanding stage ... a voice chat experience, like how we had
+   a kickoff POU"): her three questions on the stage, the words of her recorded takes, so every note plays in her voice */
+export const CHECK_INTRO = 'Awesome. This looks great. I have a few questions now.';
+export const STAGE_CHECK: CheckLine[] = [
+  {
+    text: 'A clean customer file you can compare across markets',
+    q: 'What did you just submit to me? How would you explain it?',
+    hear: [/clean|fixed|cleaned/i, /file|data|dataset|csv|customers?|sheet/i],
+    more: ['Okay. But what is it? Say it like I never saw it.', "Tell me more. What's actually in it now?"],
+    say: "It's the customer file with the bad rows fixed, so markets can be compared.",
+    sample: "It's the customer file, cleaned, so we can compare every market.",
+  },
+  {
+    text: 'Bad rows would have made the revenue model wrong',
+    q: 'Why does this dataset matter?',
+    hear: [
+      /revenue|model|compare|comparison|pricing|decision|recommend|wrong|accurate|trust/i,
+      /wrong|bad|break|broken|mislead|accurate|compare|can'?t|cannot|off|skew|trust|depend|rely|because|so that|otherwise/i,
+    ],
+    more: ['Okay, got it. What would actually break if we skipped this?', 'Say more. Who gets hurt by a bad file?'],
+    say: 'Everything after this sits on it. Bad rows make the revenue model wrong, and we set prices off that model.',
+    sample: 'Because the revenue model sits on it. Bad rows would make it wrong.',
+  },
+  {
+    text: 'Found the issues, briefed Claude, then checked what came back',
+    q: 'How did you clean it? Walk me through what you did.',
+    hear: [/claude|prompt/i, /issue|found|check|review|feedback|fixed|went through|looked|spotted/i],
+    more: ['Okay. And then what?', 'Walk me through it in order. What came first?'],
+    say: 'You found the issues first, gave Claude a specific prompt, then checked what it returned and fixed what it missed.',
+    sample: 'I found the issues, gave Claude a prompt for each one, then checked what it fixed.',
+  },
+];
 
 /* the stage check-in: why, how, then two specific ones */
 export const POU: { q: string; ack: string }[] = [

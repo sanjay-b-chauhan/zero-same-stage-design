@@ -5042,3 +5042,276 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
 .d1.ds2 .ds-w3 {
   padding-top: 6px;
 }
+
+/* ---------- b30 ---------- */
+/* his note: "when a user sends a message, it has to be left-aligned, not right-aligned": your words stay on the right,
+   and read from the left like any paragraph */
+.d1.ds2 .d1-bub.d1-me {
+  text-align: left;
+}
+/* his note: "can we make the width a little bigger, please, and the height a little smaller" */
+.d1.ds2 .ds-top-mid {
+  width: min(460px, 40vw);
+}
+.d1.ds2 .ds-prog {
+  height: 6px;
+}
+/* his note: "when the checkbox happens, let's just have a green tick, no circled field" */
+.d1.ds2 .ds-td-row[data-on] .ds-td-m {
+  background: none;
+  box-shadow: none;
+  color: var(--ds-green);
+}
+.d1.ds2 .ds-w3-h {
+  margin: 0 0 12px;
+  color: var(--ds-ink);
+}
+
+/* her review, under your link: the line shimmers while she looks, with her estimate beside it */
+.d1.ds2 .ds-sent-row {
+  margin-top: -6px;
+}
+.d1.ds2 .ds-sent {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.d1.ds2 .ds-sent-t {
+  background: linear-gradient(90deg, var(--ds-ink-3) 0%, var(--ds-ink-3) 35%, var(--ds-ink) 50%, var(--ds-ink-3) 65%, var(--ds-ink-3) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ds-sent-shim 1.4s linear infinite;
+}
+.d1.ds2 .ds-sent-e {
+  color: var(--ds-ink-3);
+}
+@keyframes ds-sent-shim {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .d1.ds2 .ds-sent-t {
+    animation: none;
+    color: var(--ds-ink-3);
+  }
+}
+
+/* a picture you sent shows itself, not a file icon */
+.d1.ds2 .ds-att-i[data-img] {
+  overflow: hidden;
+  background: var(--ds-wash);
+}
+.d1.ds2 .ds-att-i[data-img] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* what you picked, waiting in the box above your words */
+.d1.ds2 .ds-draft {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 280px;
+  margin: 0 0 8px -6px;
+  padding: 6px 28px 6px 6px;
+  border-radius: 14px;
+  background: var(--ds-white);
+  box-shadow: inset 0 0 0 1px var(--ds-subtle);
+}
+.d1.ds2 .ds-draft .d1-file-t {
+  min-width: 0;
+}
+.d1.ds2 .ds-draft .d1-file-t span:first-child {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ds-ink);
+}
+.d1.ds2 .ds-draft-x {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ds-wash);
+  color: var(--ds-ink-2);
+  transition: background-color 140ms, transform 120ms;
+}
+.d1.ds2 .ds-draft-x:hover {
+  background: var(--ds-subtle);
+}
+.d1.ds2 .ds-draft-x:active {
+  transform: scale(0.9);
+}
+
+/* the box becomes one key once she has signed it off, then again for the next stage */
+.d1.ds2 .ds-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  margin: 0 auto;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--ds-ink);
+  color: var(--ds-white);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  box-shadow: var(--ds-sh-md);
+  transition: transform 120ms var(--b-ease), filter 140ms;
+}
+.d1.ds2 .ds-cta:hover {
+  filter: brightness(1.25);
+}
+.d1.ds2 .ds-cta:active {
+  transform: scale(0.97);
+}
+
+/* the stage check-in: the kickoff's meter, voice notes and talk key, set into this chat */
+.d1.ds2 .ds-pou {
+  --fw: 600px;
+  --pv-cw: 100%;
+  --b-ground: var(--ds-white);
+  background: none;
+}
+.d1.ds2 .ds-pou-m {
+  display: block;
+  width: 240px;
+}
+.d1.ds2 .ds-pou-m .pv-meter {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 100%;
+  transform: none;
+}
+.d1.ds2 .ds-pou-th {
+  display: block;
+  width: 100%;
+}
+.d1.ds2 .ds-pou-th .pv-th {
+  position: static;
+  max-height: none;
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.d1.ds2 .ds-pou-th .pv-col {
+  width: 100%;
+  padding: 4px 0 0;
+}
+.d1.ds2 .d1-comp-wrap > .ds-pou {
+  display: flex;
+  justify-content: center;
+}
+.d1.ds2 .d1-comp-wrap > .ds-pou .pv-type {
+  width: min(460px, 100%);
+}
+
+/* her fixes, pinned under her name like a pinned message: one bar across the column, the list drops down over the chat */
+.d1.ds2 .ds-pin {
+  position: relative;
+  z-index: 4;
+  flex: none;
+  width: 100%;
+  max-width: var(--ds-col);
+  margin: 0 auto 4px;
+  padding: 0 24px;
+  box-sizing: border-box;
+  animation: ds-pin-in 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.d1.ds2 .ds-pin-k {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 16px;
+  border-radius: 14px;
+  background: var(--ds-white);
+  box-shadow: inset 0 0 0 1px var(--ds-subtle);
+  color: var(--ds-ink);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: left;
+  transition: box-shadow 120ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.d1.ds2 .ds-pin-k:hover {
+  box-shadow: inset 0 0 0 1px var(--ds-subtle), var(--ds-sh-sm);
+}
+.d1.ds2 .ds-pin-k:active {
+  transform: scale(0.995);
+}
+.d1.ds2 .ds-pin-t {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.d1.ds2 .ds-pin-n {
+  flex: none;
+  color: var(--ds-ink-3);
+  font-size: 12px;
+  font-weight: 400;
+}
+.d1.ds2 .ds-pin-c {
+  flex: none;
+  color: var(--ds-ink-3);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.d1.ds2 .ds-pin[data-open] .ds-pin-c {
+  transform: rotate(180deg);
+}
+.d1.ds2 .ds-pin-s {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 24px;
+  right: 24px;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--ds-white);
+  box-shadow: var(--ds-sh-lg), inset 0 0 0 1px var(--ds-hair);
+  transform-origin: top center;
+}
+.d1.ds2 .d1-chat[data-side] > .ds-pin {
+  margin-left: max(0px, calc((100% - 440px - var(--ds-col)) / 2));
+  margin-right: calc(440px + max(0px, calc((100% - 440px - var(--ds-col)) / 2)));
+}
+.d1.ds2 .d1-chat[data-pv] > .ds-pin {
+  margin-right: var(--pv-w);
+}
+@keyframes ds-pin-in {
+  from {
+    transform: translateY(-8px) scale(0.98);
+    filter: blur(6px);
+  }
+}
+
+/* b30 (his note, V1: "remove the spacing for the requirement and let it start with that ... bullet points are already
+   linked to how numbers are"): in the rail each bullet sits under the stage number, its words start where the title starts */
+.d1.ds2 .d1-rail .ds-req {
+  margin-left: -26px;
+}
+.d1.ds2 .d1-rail .ds-req li {
+  gap: 12px;
+}
