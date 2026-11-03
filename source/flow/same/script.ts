@@ -116,13 +116,15 @@ export const REPLY_ELSE = 'Got it. Keep going, hit Submit when it looks clean.';
 /* I'm stuck: she leads, one move at a time, until you say done */
 /* I'm stuck: she walks you through it one step at a time. Each step: the move (option 1), the question most people
    have there (option 2, she answers and waits), or anything you type */
-export const STUCK: { say: string; chip: string; alt: string; help: string }[] = [
-  { say: "Okay, let's do it together. Open the CSV in Google Sheets.", chip: 'Opened it', alt: "Where's the file?", help: "It's the CSV right above. Download it, then in Sheets go File, Import." },
-  { say: 'Sort the sheet by email, A to Z.', chip: 'Sorted', alt: 'How do I sort?', help: 'Click the email column letter, then Data, Sort sheet, A to Z.' },
-  { say: 'See two rows next to each other with the same email? Those are doubles. Delete the older one.', chip: 'Done', alt: 'Which one is older?', help: 'Check the signup date column. The earlier date goes.' },
-  { say: 'Now filter the currency column for blanks. Fill each one from the price symbol.', chip: 'Filled them', alt: "Where's the symbol?", help: 'Look at the price cell. A $ means USD, a £ means GBP.' },
-  { say: 'Send me a screenshot of the sheet.', chip: 'Sent a screenshot', alt: 'How do I send one?', help: 'Hit the camera next to the plus in the box below.' },
-  { say: 'Looks right. Hit Submit up top.', chip: 'Got it', alt: "What if it's still wrong?", help: "Then I'll tell you exactly what. That's what the review is for." },
+/* b31 (his note: "manager, ask us something, and we have an option to say 1, 2, or the third option, which is Other"):
+   each step is her question. 1 says you did it, 2 is the question most people have, Other is your own words */
+export const STUCK: { say: string; chip: string; alt: string; help: string; snip?: boolean }[] = [
+  { say: "Okay, let's do it together. Open the CSV in Google Sheets. Is it open?", chip: "Yes, it's open", alt: "Where's the file?", help: "It's the CSV right above. Download it, then in Sheets go File, Import." },
+  { say: 'Now sort the sheet by email, A to Z. Done?', chip: 'Yes, sorted', alt: 'How do I sort?', help: 'Click the email column letter, then Data, Sort sheet, A to Z.' },
+  { say: 'See two rows next to each other with the same email? Those are doubles. Delete the older one. Got them?', chip: 'Yes, deleted them', alt: 'Which one is older?', help: 'Check the signup date column. The earlier date goes.' },
+  { say: 'Filter the currency column for blanks and fill each one from the price symbol. Filled?', chip: 'Yes, filled them', alt: "Where's the symbol?", help: 'Look at the price cell. A $ means USD, a £ means GBP.' },
+  { say: 'Can you send me a screenshot of the sheet?', chip: 'Take a screenshot', alt: 'How do I send one?', help: 'Hit the screenshot key next to the plus, drag over the sheet, then send.', snip: true },
+  { say: 'Looks right. Ready to hit Submit up top?', chip: 'Yes, submitting', alt: "What if it's still wrong?", help: "Then I'll tell you exactly what. That's what the review is for." },
 ];
 
 /* while you are stuck the clock runs this many times faster, so the guided way costs XP */
@@ -238,7 +240,9 @@ export const ASK_MISS = [
 ];
 export const ASK_ENOUGH = ["That's enough to work with. Claude can catch the rest.", 'What prompt would you send Claude to fix these?'];
 export const ASK_PROMPT_SHORT = 'Say more. Tell Claude each issue and what clean looks like.';
-export const ASK_PROMPT_OK = ['That works.', 'Run it in Claude with the raw file, then send me the clean sheet.'];
+/* b31 (his note: "in the chat, it should be like the user explaining the prompt only ... it directly goes there and sits
+   inside the prompt in Claude. Then we have a copy button"): your words stay a plain line, the prompt sits in your to-dos */
+export const ASK_PROMPT_OK = ["That works. It's in your to-dos now, copy it from there.", 'Run it in Claude with the raw file, then send me the clean sheet.'];
 export const ASK_GROUPS = [
   { id: 'issues', title: 'Issues to identify' },
   { id: 'prompt', title: 'Prompt to Claude' },

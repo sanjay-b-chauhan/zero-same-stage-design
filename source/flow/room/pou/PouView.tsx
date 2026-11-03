@@ -9,7 +9,7 @@ import { useFlow } from '../../engine/store';
 import { isTextEntry, prefersReduced, SPRING } from '../../stage/parts/util';
 import { canHear, holdCancel, holdEnd, holdStart, useHoldUi } from '../hold';
 import { usePeaks } from '../peaks';
-import { meterOf, pouAnswer, pouAnswerForMe, pouFaceHand, usePou } from '../pou';
+import { meterOf, pouAnswer, pouAnswerForMe, pouFaceHand, REC_FROM, REC_TICK_MS, usePou } from '../pou';
 import { sfx } from '../prefs';
 import { cycleRate, NOTE_BARS, noteSrc, replayNote, useNote, useRate, type Msg } from '../talk';
 import { mss } from '../timeline';
@@ -154,18 +154,35 @@ function Face() {
   return <span className="pv-face">{face && <img src={face} alt="" draggable={false} />}</span>;
 }
 
-/* she records her next note: her face and her mic live for a beat, then the note lands in its place */
-function Recording({ first }: { first: boolean }) {
+/* she records her next note: her face and her mic live for a beat, then the note lands in its place.
+   b31 (his note: "recording, trimming, and then sending ... 'Recording: 3 seconds, 2 seconds, 1 second' ... an estimated
+   time also begins to show"): the time she has left counts down, then she trims it, then it sends. REC_TICK_MS x REC_FROM
+   plus the trim beat is pou.ts RECORD_MS */
+function Recording({ first, live }: { first: boolean; live: boolean }) {
+  const [n, setN] = useState(REC_FROM);
+  useEffect(() => {
+    if (!live) return;
+    setN(REC_FROM);
+    const id = window.setInterval(() => setN((v) => Math.max(0, v - 1)), REC_TICK_MS);
+    return () => window.clearInterval(id);
+  }, [live]);
+  const trim = n <= 0;
   return (
-    <div className="pv-row pv-recg" data-from="her" data-first={first ? '1' : undefined}>
+    <div className="pv-row pv-recg" data-from="her" data-first={first ? '1' : undefined} data-trim={trim ? '1' : undefined}>
       <Face />
-      <span className="pv-rb" aria-label="Recording">
+      <span className="pv-rb" aria-label={trim ? 'Trimming' : 'Recording'}>
         <span className="pv-rw" aria-hidden>
           {Array.from({ length: 9 }, (_, i) => (
             <i key={i} style={{ animationDelay: `${(i % 5) * -0.11}s` }} />
           ))}
         </span>
       </span>
+      {live && (
+        <span key={trim ? 't' : 'r'} className="pv-rec-l">
+          {trim ? 'Trimming' : 'Recording'}
+          {!trim && <span className="pv-rec-n">{n} sec</span>}
+        </span>
+      )}
     </div>
   );
 }
@@ -182,13 +199,13 @@ export function Thread() {
   const ended = usePou((s) => s.ended);
   /* before her first note she is already recording it: her face from the meeting lands here */
   const recording = usePou((s) => (!!s.recording && s.speaking) || (!s.ended && s.thread.length === 0));
+  const live = usePou((s) => !!s.recording && s.speaking);
   const holding = useHoldUi((s) => s.holding);
   const sending = useHoldUi((s) => s.sending);
   const th = useRef<HTMLDivElement>(null);
   const col = useRef<HTMLDivElement>(null);
   const last = thread[thread.length - 1];
   const waiting = !ended && !speaking && last?.from === 'me';
-  const name = useFlow((s) => s.project?.manager?.name ?? 'She');
   /* b17 (his note: "I can't scroll and see all the parts"): the whole conversation stays, the page scrolls */
   const shown = thread;
   const key = shown.map((m) => m.id).join(',');
@@ -238,12 +255,18 @@ export function Thread() {
         ))}
         {/* b29 (his note: "the voice note goes and then for .5 sec listening, shimmer, below the user voice note, and then
             the manager recording .5 sec, and then the voice note comes") */}
+        {/* b31 (his note: "don't write 'is listening' and all. Just put a bubble and then say, 'Listening to your voice
+            note...' Recording, and then it sends it ... a little 1-second or 2-second loader for us to see"): her face
+            and one bubble while she takes your note in, then her recording bars, then her note */}
         {waiting && (
-          <div className="pv-row pv-lsn" data-from="me" aria-live="polite">
-            <span className="pv-lsn-t">{name} is listening</span>
+          <div className="pv-row pv-lsn" data-from="her" aria-live="polite">
+            <Face />
+            <span className="pv-lsn-b">
+              <span className="pv-lsn-t">Listening to your voice note...</span>
+            </span>
           </div>
         )}
-        {recording && <Recording first={thread.length === 0} />}
+        {recording && <Recording first={thread.length === 0} live={live} />}
       </div>
     </div>
   );
@@ -288,6 +311,7 @@ export function Hold() {
      while your note goes over and she takes it in, the line under the key says so. Then her recording comes in above */
   const speaking = usePou((s) => s.speaking);
   const listening = usePou((s) => !s.ended && !s.speaking && s.thread[s.thread.length - 1]?.from === 'me') || sending;
+  const first = usePou((s) => !s.ended && !s.thread.length);
   const [live, setLive] = useState<number[]>(() => Array(LIVE_BARS).fill(0));
   const [now, setNow] = useState(0);
   useEffect(() => {
@@ -335,7 +359,7 @@ export function Hold() {
             type="button"
             className="pv-key"
             aria-label="Talk"
-            disabled={sending}
+            disabled={sending || speaking || listening || first}
             onClick={(e) => {
               e.currentTarget.blur();
               holdStart();
@@ -384,6 +408,11 @@ function leaveAll(pv: HTMLElement): number {
 }
 
 /* Space is the talk key here: down to talk, up to send, Escape lets it go */
+const herTurn = () => {
+  const p = usePou.getState();
+  return !p.ended && (p.speaking || !p.thread.length || p.thread[p.thread.length - 1]?.from === 'me');
+};
+
 export function useSpaceTalk(hear: boolean) {
   useEffect(() => {
     if (!hear) return;
@@ -395,7 +424,8 @@ export function useSpaceTalk(hear: boolean) {
         return;
       }
       e.preventDefault();
-      if (!e.repeat) holdStart();
+      /* b31 (his note: "when she has sent the voice note as the last thing ... the mic should be disabled"): her turn */
+      if (!e.repeat && !herTurn()) holdStart();
     };
     const up = (e: KeyboardEvent) => {
       if (e.code !== 'Space' || isTextEntry(e.target)) return;

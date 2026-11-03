@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { clock } from '../clock';
 import { awardXp } from '../hud';
 import { pouAnswerForMe, pouEnterLines, usePou } from '../room/pou';
+import { shotName } from './snip';
 import { BRIEF, CHECK_INTRO, FEEDBACK, OPEN, OPEN_2, SHOT_REPLY, REPLY, REPLY_ELSE, REVIEW, STAGE_CHECK, STUCK, BURN, TIERS, tierAt, ISSUES, ISSUE_ENOUGH, ASK_OPEN, ASK_HIT, ASK_MISS, ASK_ENOUGH, ASK_PROMPT_SHORT, ASK_PROMPT_OK } from './script';
 
 export type Item =
@@ -10,13 +11,13 @@ export type Item =
   | { id: number; k: 'her'; text: string; guide?: boolean; tool?: 'claude' }
   | { id: number; k: 'file' }
   | { id: number; k: 'me'; text: string }
-  | { id: number; k: 'shot' }
+  | { id: number; k: 'shot'; name: string }
   | { id: number; k: 'chips'; options: string[]; guide?: boolean }
   | { id: number; k: 'sent'; est: string }
   | { id: number; k: 'feedback' }
   | { id: number; k: 'xp'; amount: number; label: string }
   | { id: number; k: 'prompt'; text: string }
-  | { id: number; k: 'att'; name: string; meta: string; link?: boolean; img?: string };
+  | { id: number; k: 'att'; name: string; meta: string; link?: boolean; img?: string; sheet?: boolean };
 
 type NewItem = Item extends infer T ? (T extends Item ? Omit<T, 'id'> : never) : never;
 
@@ -103,6 +104,7 @@ const DEV_LINK = 'https://docs.google.com/spreadsheets/d/spotify-clean';
 /* how long she takes to look, in the prototype. The estimate she gives is the real one */
 const REVIEW_MS = 4200;
 const REVIEW_AGAIN_MS = 2600;
+const CHECK_FIRST_MS = 1500;
 
 const fresh = (stageId: string): D1 => ({
   stageId,
@@ -251,7 +253,7 @@ export const d1 = {
 
   /* the screenshot key: she sees one frame of your screen and says one line */
   shot() {
-    push({ k: 'shot' });
+    push({ k: 'shot', name: shotName() });
     say([SHOT_REPLY], { wait: 500 });
   },
 
@@ -265,6 +267,12 @@ export const d1 = {
      directly send"): what you picked goes with your words, in one send */
   post(text: string, file?: { name: string; meta: string; img?: string }) {
     if (file) push({ k: 'att', name: file.name, meta: file.meta, img: file.img });
+    const s = useD1.getState();
+    /* her screenshot step: the shot you send is the answer */
+    if (file?.img && s.stuck && STUCK[s.stuckAt].snip) {
+      if (text.trim()) push({ k: 'me', text: text.trim() });
+      return d1.stuckNext();
+    }
     if (text.trim()) return d1.send(text);
     if (file) say(['Got the file. I will look at it when you submit.'], { wait: 500 });
   },
@@ -282,9 +290,8 @@ export const d1 = {
     if (s.ask && s.stageId === 'clean' && s.phase === 'work') {
       if (s.askStep === 'prompt') {
         if (t.split(/\s+/).length < 8) return say([ASK_PROMPT_SHORT]);
-        /* your words become the prompt card, ready to copy; no second copy as a plain line */
-        useD1.setState((st) => ({ prompt: t, askStep: 'submit', thread: st.thread.slice(0, -1) }));
-        push({ k: 'prompt', text: t });
+        /* b31: your words stay as you said them; the prompt sits in your to-dos with its copy key */
+        useD1.setState({ prompt: t, askStep: 'submit' });
         awardXp({ amount: 50, reason: 'Prompt to Claude', id: 'd1:prompt' });
         useD1.setState({ pop: { id: 'prompt', n: ++popN } });
         return say(ASK_PROMPT_OK);
@@ -359,7 +366,7 @@ export const d1 = {
     const r = again ? REVIEW.again : REVIEW.first;
     unstick({ phase: 'review', thread: s.thread.filter((i) => i.k !== 'chips') });
     if (again) push({ k: 'me', text: "Fixed both. Here's the new one." });
-    push({ k: 'att', name: 'Google Sheet', meta: (s.link || DEV_LINK).replace(/^https?:\/\//, '').slice(0, 42), link: true });
+    push({ k: 'att', name: again ? 'spotify_pricing_clean_v2' : 'spotify_pricing_clean', meta: 'Google Sheets', link: true, sheet: true });
     /* b30: under your link, how long she will take, while she takes it */
     push({ k: 'sent', est: r.est });
     const sentId = seq;
@@ -390,7 +397,8 @@ export const d1 = {
     if (s.phase !== 'approved') return;
     if (s.stageId !== 'clean') return d1.finish();
     useD1.setState({ phase: 'pou' });
-    pouEnterLines('spotify', STAGE_CHECK, [CHECK_INTRO], 300);
+    /* b31: the page clears and the meter comes up before her first note */
+    pouEnterLines('spotify', STAGE_CHECK, [CHECK_INTRO], CHECK_FIRST_MS);
   },
 
   finish() {

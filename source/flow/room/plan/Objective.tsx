@@ -91,7 +91,8 @@ export default function Objective({ project, morph = false }: { project: Project
   const tools = BRIEFS[project.id].tools;
   const currentIndex = stages.findIndex((s) => !doneStages.includes(s.id));
   const current = currentIndex < 0 ? null : stages[currentIndex];
-  const started = doneStages.length > 0 || openStage !== null;
+  /* b31 (his note: "For completion of the first stage, the second thing should be 'Start'"): Continue only for a stage you opened and left */
+  const started = !!current && openStage === current.id;
 
   /* a stage finished since this page last showed it plays the way back once; with reduced motion it is simply there */
   const [ret] = useState(() => (prefersReduced(document.documentElement) ? null : returnOf(project, doneStages)));

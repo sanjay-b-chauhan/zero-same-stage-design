@@ -6,7 +6,6 @@
    next stage with Start's morph. WAAPI only, no black screen. */
 import { clock } from '../clock';
 import { useFlow } from '../engine/store';
-import { armAutoStart } from '../room/plan/returnSeq';
 
 const SHRINK_MS = 640;
 const SOFT_MS = 260;
@@ -51,7 +50,6 @@ export async function leaveStage(stageId: string): Promise<void> {
     const sheet = document.querySelector<HTMLElement>(SHEET);
     const quick = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const done = st.doneStages.includes(stageId) ? st.doneStages : [...st.doneStages, stageId];
-    armAutoStart();
     if (!sheet || quick) {
       useFlow.setState({ doneStages: done });
       st.actions.goto('objective');

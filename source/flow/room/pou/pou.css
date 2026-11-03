@@ -859,13 +859,22 @@
   background: var(--b-t1);
 }
 /* her listening, shimmering under your note for a beat */
-.pv-lsn {
-  margin-top: -12px;
-  justify-content: flex-end;
+/* b31: her listening is her own bubble beside her face, the words shimmer while she takes your note in */
+.pv-lsn-b {
+  height: 52px;
+  box-sizing: border-box;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--b-slab);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  transform-origin: 0 50%;
+  animation: pv-rise 0.4s var(--b-soft) backwards;
 }
 .pv-lsn-t {
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 14px;
+  line-height: 20px;
   background: linear-gradient(90deg, var(--b-t3) 0%, var(--b-t3) 35%, var(--b-t1) 50%, var(--b-t3) 65%, var(--b-t3) 100%);
   background-size: 300% 100%;
   -webkit-background-clip: text;
@@ -879,3 +888,25 @@
     -webkit-text-fill-color: var(--b-t2);
   }
 }
+
+/* b31: her recording says what it is doing, the seconds she has left, then the trim */
+.pv-rec-l {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-left: 2px;
+  color: var(--b-t3);
+  font-size: 12px;
+  line-height: 16px;
+  animation: pv-rise 0.3s var(--b-soft) backwards;
+}
+.pv-rec-n {
+  color: var(--b-t2);
+  font-variant-numeric: tabular-nums;
+}
+.pv-recg[data-trim] .pv-rw i {
+  animation: none;
+  transform: scaleY(0.25);
+  transition: transform 0.3s var(--b-soft);
+}
+.pv-recg { align-items: center; }

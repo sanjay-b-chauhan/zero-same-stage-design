@@ -4,7 +4,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-const POLL_MS = 200;
+const POLL_MS = 80;
+const VEIL = 'html,body{background:transparent!important}body>*:not(#lvx):not(:has(#lvx)){visibility:hidden!important}';
 const GIVE_UP = 40; /* polls before it opens: 8 s */
 
 type PortalWindow = Window & { eval: (code: string) => unknown };
@@ -29,6 +30,11 @@ export default function LevelBurst({ level, gain, onDone }: { level: number; gai
       const w = f.contentWindow as PortalWindow | null;
       if (!w || dead) return;
       try {
+        /* b31 (his note: "I could see a job portal UI like level 1, level 5, level 10 ... it should directly transition
+           to this screen only"): the portal under the celebration never shows */
+        const veil = w.document.createElement('style');
+        veil.textContent = VEIL;
+        w.document.head.appendChild(veil);
         w.eval("lxLoad(); A.f9try('lu')");
         w.focus();
       } catch {

@@ -47,6 +47,7 @@ import {
 } from 'lucide-react';
 import { looksPrivate } from './linkAccess';
 import { leaveStage } from './leave';
+import { snip } from './snip';
 import { Hold, PouMeter, Thread, Typed, useSpaceTalk } from '../room/pou/PouView';
 import { canHear, useHoldUi } from '../room/hold';
 import { pouAnswerForMe, usePou } from '../room/pou';
@@ -68,6 +69,43 @@ import { openDesktopApp, spot } from '../pip/desktop/deskStore';
 import { BRIEF_PARTS, d1, minutesIn, useD1, type Item } from './store';
 
 const I = { size: 14, strokeWidth: 1.75 };
+
+/* b31: one copy key for anything you will paste somewhere else. The check holds for a beat */
+const COPIED_MS = 1400;
+function CopyKey({ text, label }: { text: string; label: string }) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      type="button"
+      className="ds-copy"
+      aria-label={label}
+      title={done ? 'Copied' : 'Copy'}
+      data-done={done || undefined}
+      onClick={(e) => {
+        e.stopPropagation();
+        void navigator.clipboard?.writeText(text).catch(() => undefined);
+        setDone(true);
+        window.setTimeout(() => setDone(false), COPIED_MS);
+      }}
+    >
+      {done ? <Check size={13} strokeWidth={2.4} /> : <Copy size={13} strokeWidth={1.75} />}
+    </button>
+  );
+}
+
+/* what you picked or snipped waits in the box until you send. Shared so her screenshot step can fill it */
+type Draft = { name: string; meta: string; img?: string };
+const useDraft = create<{ d: Draft | null }>(() => ({ d: null }));
+const setDraft = (d: Draft | null) => {
+  const was = useDraft.getState().d;
+  if (was?.img?.startsWith('blob:') && was.img !== d?.img) URL.revokeObjectURL(was.img);
+  useDraft.setState({ d });
+};
+const takeShot = async () => {
+  const s = await snip();
+  if (s) setDraft(s);
+  window.setTimeout(() => document.querySelector<HTMLTextAreaElement>('.d1-comp textarea')?.focus(), 0);
+};
 const briefOf = (id: string) => (id === 'clean' ? BRIEF : BRIEF_2);
 
 /* ---------- top row ---------- */
@@ -414,7 +452,12 @@ function Asks({ s }: { s: D1 }) {
                 })}
               </ol>
             )}
-            {g.id === 'prompt' && s.prompt && <p className="ds-ask-v">{s.prompt}</p>}
+            {g.id === 'prompt' && s.prompt && (
+              <p className="ds-ask-v ds-has-copy">
+                <span>{s.prompt}</span>
+                <CopyKey text={s.prompt} label="Copy the prompt" />
+              </p>
+            )}
             {state === 'now' && g.id === 'prompt' && !s.prompt && <p className="ds-ask-h">Tell her the prompt you would send Claude</p>}
             {state === 'now' && g.id === 'submit' && <p className="ds-ask-h">Run it in Claude, then send her the clean sheet</p>}
           </section>
@@ -429,13 +472,14 @@ function Asks({ s }: { s: D1 }) {
    her to-dos as one list in three parts. A part opens when you reach it, each line fills when you get it right in the chat */
 const TODO_BLANK = '--';
 type TodoState = 'done' | 'now' | 'next';
-function TodoRow({ on, text, pop }: { on: boolean; text?: string; pop?: number }) {
+function TodoRow({ on, text, pop, copy }: { on: boolean; text?: string; pop?: number; copy?: boolean }) {
   return (
-    <li className="ds-td-row" data-on={on || undefined} data-pop={pop}>
+    <li className="ds-td-row" data-on={on || undefined} data-pop={pop} data-copy={(copy && on) || undefined}>
       <span className="ds-td-m">{on && <Check size={15} strokeWidth={2.4} />}</span>
       <span className="ds-td-t" data-blank={!on || undefined}>
         {on ? text : TODO_BLANK}
       </span>
+      {copy && on && text && <CopyKey text={text} label="Copy the prompt" />}
       {pop !== undefined && (
         <span key={pop} className="ds-plus d1-num">
           +20
@@ -483,7 +527,7 @@ function Todos({ s }: { s: D1 }) {
         })}
       </TodoPart>
       <TodoPart title={ASK_GROUPS[1].title} state={st(1)}>
-        <TodoRow on={!!s.prompt} text={s.prompt} />
+        <TodoRow on={!!s.prompt} text={s.prompt} copy />
       </TodoPart>
       <TodoPart title={ASK_GROUPS[2].title} state={st(2)}>
         <TodoRow on={at > 2} text="Clean sheet sent" />
@@ -1299,6 +1343,59 @@ export function FeedbackCard({ inPanel = false }: { inPanel?: boolean }) {
   );
 }
 
+/* b31 (his note: "super high quality previews for every freaking thing. If it's a screenshot, just make a preview and
+   just a screenshot name, and that's it. Truncate. Same goes for Google Sheets: a preview or a Google Sheet icon"):
+   a picture you send is the picture and its name; a sheet you send is its first rows and the Sheets mark */
+function ImgCard({ src, name }: { src: string; name: string }) {
+  return (
+    <figure className="ds-pc ds-pc-img">
+      <span className="ds-pc-peek">
+        <img src={src} alt="" draggable={false} />
+      </span>
+      <figcaption className="ds-pc-foot">
+        <span className="ds-pc-name" title={name}>
+          {name}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+function ShotCard({ name }: { name: string }) {
+  const text = useRawText();
+  return (
+    <figure className="ds-pc ds-pc-img">
+      <span className="ds-pc-peek" data-kind="sheet">
+        {text ? <MiniSheet text={text} /> : <span className="ds-fcard-wait" />}
+      </span>
+      <figcaption className="ds-pc-foot">
+        <span className="ds-pc-name" title={name}>
+          {name}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+function SheetLinkCard({ name, meta }: { name: string; meta: string }) {
+  const text = useRawText();
+  return (
+    <figure className="ds-pc ds-pc-sheet">
+      <span className="ds-pc-peek" data-kind="sheet">
+        {text ? <MiniSheet text={text} /> : <span className="ds-fcard-wait" />}
+      </span>
+      <figcaption className="ds-pc-foot">
+        <img className="ds-pc-ico" src="static/logos/logo-sheets.svg" alt="" draggable={false} />
+        <span className="ds-pc-t">
+          <span className="ds-pc-name" title={name}>
+            {name}
+          </span>
+          <span className="ds-pc-meta">{meta}</span>
+        </span>
+        <Link2 size={14} strokeWidth={1.75} className="ds-pc-link" />
+      </figcaption>
+    </figure>
+  );
+}
+
 /* the prompt you wrote stays in the chat, ready to copy into Claude */
 function PromptCard({ text }: { text: string }) {
   const [done, setDone] = useState(false);
@@ -1362,21 +1459,22 @@ function Row({ it }: { it: Item }) {
     case 'shot':
       return (
         <div ref={row} className="d1-row d1-row-me">
-          <div className="ds-shot">
-            <span className="ds-shot-img" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <i />
-            </span>
-            <span className="d1-file-t">
-              <span>Screenshot</span>
-              <span className="d1-dim">Google Sheets, just now</span>
-            </span>
-          </div>
+          <ShotCard name={it.name} />
         </div>
       );
     case 'att':
+      if (it.img)
+        return (
+          <div ref={row} className="d1-row d1-row-me">
+            <ImgCard src={it.img} name={it.name} />
+          </div>
+        );
+      if (it.sheet)
+        return (
+          <div ref={row} className="d1-row d1-row-me">
+            <SheetLinkCard name={it.name} meta={it.meta} />
+          </div>
+        );
       return (
         <div ref={row} className="d1-row d1-row-me">
           <div className="ds-att">
@@ -1574,51 +1672,50 @@ function StuckSwitch() {
   );
 }
 
-/* b14 (founder call): I'm stuck is instruction, not direction. Like Google Maps: do this, then this. The step she is on
-   sits on top of the box until it is done; Done moves on, "How?" gets her answer and the step stays */
-function StepCard() {
+/* b31 (his note: "manager, ask us something, and we have an option to say 1, 2, or the third option, which is Other ... I
+   think you did it previously ... that was really, really great"): stuck mode is her question with your answers under
+   it. 1 says you did it, 2 is the question most people have, Other puts you in the box to say it your way. Number keys
+   pick */
+function AskCard({ focusBox }: { focusBox: () => void }) {
   const at = useD1((s) => s.stuckAt);
   const typing = useD1((s) => s.typing);
   const asked = useD1((s) => s.stuckAsked);
   const step = STUCK[at];
   const card = useRef<HTMLDivElement>(null);
-  const done = () => {
-    if (typing) return;
-    if (at === 4) d1.shot();
-    d1.send(step.chip);
-  };
+  const opts = [
+    { label: step.chip, go: () => (step.snip ? void takeShot() : d1.send(step.chip)) },
+    ...(asked ? [] : [{ label: step.alt, go: () => d1.stuckAsk() }]),
+    { label: 'Other', go: focusBox, other: true },
+  ];
   useLayoutEffect(() => rise(card.current, { y: 8, blur: 6, ms: 420 }), [at]);
   useEffect(() => {
     const k = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && /^(INPUT|TEXTAREA|BUTTON)$/.test(t.tagName)) return;
-      if (e.key === 'Enter') done();
+      if (typing || isTyping(e.target)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= opts.length) {
+        e.preventDefault();
+        opts[n - 1].go();
+      }
     };
     window.addEventListener('keydown', k);
     return () => window.removeEventListener('keydown', k);
   });
   return (
-    <div ref={card} className="ds-step" data-busy={typing || undefined}>
-      <span className="ds-step-n d1-num">
-        {at + 1}/{STUCK.length}
-      </span>
-      <span className="ds-step-t">{step.say}</span>
-      {!asked && (
-        <button type="button" className="ds-step-k" disabled={typing} onClick={() => d1.stuckAsk()}>
-          How?
+    <div ref={card} className="ds-askc" data-busy={typing || undefined} role="group" aria-label="Your answer">
+      {opts.map((o, i) => (
+        <button key={o.label} type="button" className="ds-askc-o" data-other={o.other || undefined} disabled={typing} onClick={o.go}>
+          <span className="ds-askc-n d1-num">{i + 1}</span>
+          <span className="ds-askc-t">{o.label}</span>
+          {o.other && <span className="ds-askc-h">Type it below</span>}
         </button>
-      )}
-      <button type="button" className="ds-step-k ds-step-done" disabled={typing} onClick={done}>
-        <Check size={12} strokeWidth={2.4} />
-        {step.chip}
-      </button>
+      ))}
     </div>
   );
 }
+const isTyping = (t: EventTarget | null) => t instanceof HTMLElement && /^(INPUT|TEXTAREA)$/.test(t.tagName);
 
 /* b30 (his note: "let's remove Submit a link and all ... we don't have a pop-up now. It's just like an upload: when you
    click it, it just opens up a browser"): the + key opens the file picker, nothing else */
-type Draft = { name: string; meta: string; img?: string };
 function AttachKey({ pick }: { pick: (d: Draft) => void }) {
   const file = useRef<HTMLInputElement>(null);
   return (
@@ -1652,6 +1749,15 @@ function AttachKey({ pick }: { pick: (d: Draft) => void }) {
 function DraftCard({ d, drop }: { d: Draft; drop: () => void }) {
   const card = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => rise(card.current, { y: 8, blur: 6, scale: 0.96, ms: 420 }), []);
+  if (d.img)
+    return (
+      <div ref={card} className="ds-draft ds-draft-img">
+        <img src={d.img} alt={d.name} draggable={false} />
+        <button type="button" className="ds-draft-x" aria-label="Remove the picture" onClick={drop}>
+          <X size={12} strokeWidth={2} />
+        </button>
+      </div>
+    );
   return (
     <div ref={card} className="ds-draft">
       <span className="ds-att-i" aria-hidden="true" data-img={d.img ? '' : undefined}>
@@ -1702,7 +1808,7 @@ function TalkBox() {
 function Composer() {
   const submitting = useSubmitting((s) => s.on);
   const [text, setText] = useState('');
-  const [draft, setDraft] = useState<Draft | null>(null);
+  const draft = useDraft((s) => s.d);
   const stuck = useD1((s) => s.stuck);
   const phase = useD1((s) => s.phase);
   const stageId = useD1((s) => s.stageId);
@@ -1728,11 +1834,12 @@ function Composer() {
     if (!text.trim() && !draft) return;
     d1.post(text, draft ?? undefined);
     setText('');
-    setDraft(null);
+    /* sent: the picture now lives in the chat, so it is not let go */
+    useDraft.setState({ d: null });
     box.current?.focus();
   };
   const hint = stuck
-    ? 'Tell her where you are'
+    ? 'Or say it your way'
     : ask && phase === 'work' && askStep === 'issues'
       ? 'Name an issue you see'
       : ask && phase === 'work' && askStep === 'prompt'
@@ -1740,16 +1847,10 @@ function Composer() {
         : `Message ${manager}`;
   return (
     <>
-      {stuck && <StepCard />}
+      {stuck && <AskCard focusBox={() => box.current?.focus()} />}
       <div className="d1-comp" data-stuck={stuck || undefined}>
         {draft && (
-          <DraftCard
-            d={draft}
-            drop={() => {
-              if (draft.img) URL.revokeObjectURL(draft.img);
-              setDraft(null);
-            }}
-          />
+          <DraftCard d={draft} drop={() => setDraft(null)} />
         )}
         <textarea
           ref={box}
@@ -1769,12 +1870,11 @@ function Composer() {
         <div className="d1-comp-row">
           <AttachKey
             pick={(d) => {
-              if (draft?.img) URL.revokeObjectURL(draft.img);
               setDraft(d);
               box.current?.focus();
             }}
           />
-          <button type="button" className="d1-ghost ds-shot-key" aria-label="Send her a screenshot" title="Send her a screenshot" onClick={() => d1.shot()}>
+          <button type="button" className="d1-ghost ds-shot-key" aria-label="Take a screenshot" title="Take a screenshot" onClick={() => void takeShot()}>
             <ShotIcon />
           </button>
           {canStuck && <StuckSwitch />}
@@ -1824,7 +1924,8 @@ function FbPin() {
   return (
     <div ref={box} className="ds-pin" data-open={open || undefined}>
       <button type="button" className="ds-pin-k" aria-expanded={open} onClick={() => useFixDrop.setState({ open: !open })}>
-        <span className="ds-pin-t">{FEEDBACK.head}</span>
+        {/* b31 (his note: "just make it like 'Feedback v1'. That's it") */}
+        <span className="ds-pin-t">Feedback v1</span>
         <span className="ds-pin-n">{left > 0 ? `${left} ${left === 1 ? 'fix' : 'fixes'} to go` : 'Ready to resubmit'}</span>
         <ChevronDown size={14} strokeWidth={2} className="ds-pin-c" />
       </button>
@@ -1837,6 +1938,7 @@ function FbPin() {
   );
 }
 
+const CHECK_ROOM = 24;
 function Chat() {
   const project = useFlow((s) => s.project);
   const thread = useD1((s) => s.thread);
@@ -1871,8 +1973,14 @@ function Chat() {
     /* b29 (his note: "let's do a normal chat, like how normal chat comes, till the bottom ... a little spacing at the
        bottom, but not extreme"): no room under the turn, the newest line follows the bottom like any chat */
     pad.style.height = '0px';
+    /* b31 (his note: "when it goes to explain ... the whole chat and all just scroll super up. Then ... the bar meter comes
+       up slowly ... and then she sends the first voice note"): the check-in gets a clear page, its notes run from the top */
+    if (checking) {
+      const th = el.querySelector<HTMLElement>('.ds-pou-th');
+      pad.style.height = `${Math.max(0, el.clientHeight - (th?.offsetHeight ?? 0) - CHECK_ROOM)}px`;
+    }
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  }, [thread.length, typing, started, pouN, pouSpeaking, pouRec, pouEnded, sending]);
+  }, [thread.length, typing, started, pouN, pouSpeaking, pouRec, pouEnded, sending, checking]);
 
   const m = project?.manager;
   const drop = useDrop((s) => s.open);

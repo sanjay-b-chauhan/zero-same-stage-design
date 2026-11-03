@@ -195,3 +195,18 @@ LIVE zero-same-stage-design.vercel.app ds b30, b29 at /b29/. His notes on b29, a
 - "Continue to stage two ... transition out ... remove the black version": `same/leave.ts` blurs the chat, shrinks a white layer onto the objective's stage 1 row, the objective ticks and travels (`room/plan/returnSeq.ts` armAutoStart), and Start's morph opens stage 2 by itself. StageTurn is no longer called.
 - "remove Submit a link ... it just opens up a browser ... loads up in a chat container": plus opens the file picker, the pick sits as a card in the box with an X, Send posts it.
 - To-dos pill off V2. V1 rail bullets sit under the stage number. V3 has a Requirements title. Done ticks are a plain green check. Your messages read left. Progress bar min(460px, 40vw) wide, 6 px high.
+
+## b31 (3 Nov 2026)
+
+LIVE zero-same-stage-design.vercel.app ds b31, b30 at /b30/. His notes on b30, and what changed:
+- "Don't write 'Aria is listening' ... Listening to your voice note ... a little 1-second or 2-second loader": `room/pou/PouView.tsx` listening row is her bubble with the shimmer line, `room/pou.ts` REPLY_MS 1500. pouAnswer now clears `speaking` so the bubble shows after Answer for me.
+- "recording, trimming, and then sending ... 3 seconds, 2 seconds, 1 second": Recording counts REC_FROM 3 down every REC_TICK_MS 400, then Trimming for 500 ms (both in `room/pou.ts`).
+- "the whole chat ... scroll super up ... the bar meter comes up slowly": StageSame Chat pads the thread so the check-in starts on a clear page, `.ds-pou-m` wipes in over 900 ms.
+- "when she has sent the voice note as the last thing ... the mic should be disabled": the talk key and Space are off while she speaks, before her first note, and while she listens.
+- "the user explaining the prompt only ... sits inside the prompt ... copy button": your prompt stays your chat line, it lands in To-dos under Prompt to Claude with a CopyKey.
+- "1, 2, and the third option is Other": AskCard replaces StepCard. STUCK says are questions with a yes chip and an alt, Other focuses the box, number keys pick.
+- "the whole screen should become black, and I should actually drag it ... It does not send directly": `same/snip.ts` veil, drag box, html-to-image crop, the picture waits in the box as a draft.
+- "super high-quality previews": ImgCard, ShotCard and SheetLinkCard (peek plus name, truncated).
+- "just make it like 'Feedback v1'": the pin title. The focus ring on the pin is a hairline.
+- "It should not have the job portal UI": `hud/LevelBurst.tsx` hides everything in the level-up frame except the celebration.
+- "don't start the second stage directly ... The user has to click 'Start'": `same/leave.ts` no longer arms the auto start, and the objective reads Start (Continue only for a stage you opened and left).
