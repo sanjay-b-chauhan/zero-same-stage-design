@@ -6741,3 +6741,23 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
     height: 8px;
   }
 }
+
+/* b37 (his note: "Only the top progress bar vanishes, and that's it"): through the check-in the progress steps away,
+   the rail, the side and the timer stay; her notes keep to the chat column's width */
+.d1.ds2 .ds-top .ds-top-mid {
+  transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1), filter 0.42s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0s;
+}
+.d1.ds2 .ds-top[data-check] .ds-top-mid {
+  transform: translateY(-10px);
+  filter: blur(8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1), filter 0.42s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.42s;
+}
+/* b37 (his note: "Chat has a maximum width ... the voice note should also be inside that maximum width only"): her notes
+   and yours keep to the kickoff's column, the meter's width, centred under it */
+.d1.ds2 .ds-pou-th .pv-col {
+  width: min(460px, calc(100% - 32px));
+  max-width: 100%;
+  margin: 0 auto;
+}

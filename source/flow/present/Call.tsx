@@ -26,6 +26,7 @@ import { rise } from '../stage/parts/util';
 import { awardXp, intoLevel, levelOf, useXp, XP_START } from '../hud';
 import { fakeCam } from './fakeCam';
 import { CALL, CHECKS, DECK, ERYN, FEEDBACK, FINISH, GREET, ME, PRESENT_LINES, QA, type Moment } from './callScript';
+import { useLive } from './Live';
 import './call.css';
 
 export type CallStep = 'lobby' | 'call' | 'present' | 'qa' | 'report' | 'finish';
@@ -296,7 +297,7 @@ function Review() {
    the right-hand side, it should be super highly detailed ... Everything should be on the ground only. Only one thing should
    be on the surface"): the replay is the one raised thing, her verdict and every moment sit on the ground beside it */
 function Report() {
-  const [tab, setTab] = useState<'moments' | 'scores'>('moments');
+  const [tab, setTab] = useState<'moments' | 'scores'>(() => useLive.getState().tab);
   const [sel, setSel] = useState<Moment | null>(FEEDBACK.moments[3]);
   const [t, setT] = useState(FEEDBACK.moments[3].at);
   const [playing, setPlaying] = useState(false);

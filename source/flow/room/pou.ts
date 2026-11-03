@@ -35,7 +35,11 @@ export const REC_FROM = 3;
 export const REC_TICK_MS = 400;
 const TRIM_MS = 500;
 const RECORD_MS = REC_FROM * REC_TICK_MS + TRIM_MS;
-const say = (texts: string[], tok: number) => sayInto(usePou, texts, VOICE_OF[project], () => tok === R, wait, RECORD_MS);
+/* b37 (his note: "The one voice note from the manager comes. That's it"): in a stage check-in each of her turns is one
+   voice note, the lines of that turn said as one */
+let oneNote = false;
+const say = (texts: string[], tok: number) =>
+  sayInto(usePou, oneNote && texts.length > 1 ? [texts.join(' ')] : texts, VOICE_OF[project], () => tok === R, wait, RECORD_MS);
 
 function end() {
   const b = brain;
@@ -62,6 +66,7 @@ function prefetch(b: Brain) {
 /* Begin, or land on a moment: the questions before `asking` already answered with the sample answers */
 export function pouEnter(p: ProjectId, asking = 0, delay = 900) {
   pouStop();
+  oneNote = false;
   project = p;
   voiceRate(useRate.getState().r);
   const b = brainAt(p, asking);
@@ -95,6 +100,7 @@ export function pouEnter(p: ProjectId, asking = 0, delay = 900) {
 /* b30: the same check-in on a stage, with the stage's own questions. She can open with a line before the first one */
 export function pouEnterLines(p: ProjectId, lines: CheckLine[], intro: string[] = [], delay = 400) {
   pouStop();
+  oneNote = true;
   project = p;
   voiceRate(useRate.getState().r);
   const b: Brain = { lines, state: lines.map(() => 'open'), tries: 0, said: '' };

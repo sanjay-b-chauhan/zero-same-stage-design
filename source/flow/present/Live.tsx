@@ -8,16 +8,24 @@ const Call = lazy(() => import('./Call').then((m) => ({ default: m.Call })));
 const STEPS: CallStep[] = ['lobby', 'call', 'present', 'qa', 'report', 'finish'];
 const asked = new URLSearchParams(location.search).get('present') as CallStep | null;
 
-export const useLive = create<{ on: CallStep | null }>(() => ({ on: asked && STEPS.includes(asked) ? asked : null }));
+export const useLive = create<{ on: CallStep | null; tab: 'moments' | 'scores'; n: number }>(() => ({
+  on: asked && STEPS.includes(asked) ? asked : null,
+  tab: 'moments',
+  n: 0,
+}));
 
-export const joinCall = () => useLive.setState({ on: 'lobby' });
+export const joinCall = () => useLive.setState({ on: 'lobby', tab: 'moments' });
+
+/* b37: the dev list opens the call at any of its moments, the feedback on either tab */
+export const openCall = (on: CallStep, tab: 'moments' | 'scores' = 'moments') => useLive.setState((s) => ({ on, tab, n: s.n + 1 }));
 
 export function LiveRun({ onDone }: { onDone: () => void }): ReactElement | null {
   const on = useLive((s) => s.on);
+  const n = useLive((s) => s.n);
   if (!on) return null;
   return (
     <Suspense fallback={null}>
-      <Call from={on} onExit={() => useLive.setState({ on: null })} onDone={() => (useLive.setState({ on: null }), onDone())} />
+      <Call key={n} from={on} onExit={() => useLive.setState({ on: null })} onDone={() => (useLive.setState({ on: null }), onDone())} />
     </Suspense>
   );
 }

@@ -244,6 +244,7 @@ export default function DevMode() {
       act.run();
       return;
     }
+    if (useFlow.getState().screen === 'objective') return;
     stepBy(1);
   }, [stepBy]);
 

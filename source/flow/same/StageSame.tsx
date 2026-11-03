@@ -49,11 +49,10 @@ import {
 import { looksPrivate } from './linkAccess';
 import { leaveStage } from './leave';
 import { frame, shotName, snip } from './snip';
-import { Hold, PouMeter, Typed, useSpaceTalk } from '../room/pou/PouView';
-import { CheckThread } from './CheckThread';
+import { Hold, PouMeter, Thread, Typed, useSpaceTalk } from '../room/pou/PouView';
 import { canHear, useHoldUi } from '../room/hold';
 import { pouAnswerForMe, usePou } from '../room/pou';
-import { useDevAction } from '../dev/store';
+import { useDevAction, useDevGo } from '../dev/store';
 import { create } from 'zustand';
 import { useFlow } from '../engine/store';
 import { speak, hushSpeech } from '../engine/speak';
@@ -63,14 +62,16 @@ import '../stage/stage.css';
 import '../d1/d1.css';
 import './ds.css';
 import { ASK_GROUPS, BRIEF, BRIEF_2, BURN, ISSUES, ISSUE_ENOUGH, RAW_FILE, SCENARIO, STUCK, TIERS, tierAt } from './script';
-import { type D1 } from './store';
+import { type D1, type Phase } from './store';
 import Desktop from '../pip/desktop/Desktop';
 import ClaudeApp from '../pip/desktop/ClaudeApp';
 import { parse } from '../data/csv';
 import { openDesktopApp, spot } from '../pip/desktop/deskStore';
 import { BRIEF_PARTS, d1, fixesOf, minutesIn, slotAt, useD1, type Item } from './store';
 import { specOf, workOf, type Slide, type Work } from './stages';
-import { joinCall } from '../present/Live';
+import { joinCall, openCall, useLive } from '../present/Live';
+import type { CallStep } from '../present/Call';
+import { bindTalkKeys } from '../pip/talk';
 
 const I = { size: 14, strokeWidth: 1.75 };
 
@@ -2137,7 +2138,7 @@ function FbPin() {
   );
 }
 
-const CHECK_ROOM = 24;
+const CHECK_ROOM = 64;
 function Chat() {
   const project = useFlow((s) => s.project);
   const thread = useD1((s) => s.thread);
@@ -2178,6 +2179,12 @@ function Chat() {
        her last note, the room goes under the key */
     /* b36 (his note: "the stage screen just gets removed ... It should not get deleted, right? It's a bug"): the check-in
        no longer clears the page, it carries on under the chat like any other turn */
+    /* b37: through the check-in the room under her notes is what it takes for them to start at the top, so the chat so
+       far moves up out of view and is one scroll away */
+    if (checking) {
+      const th = el.querySelector<HTMLElement>('.ds-pou-th');
+      pad.style.height = `${Math.max(0, el.clientHeight - (th?.offsetHeight ?? 0) - CHECK_ROOM)}px`;
+    }
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [thread.length, typing, started, pouN, pouSpeaking, pouRec, pouEnded, sending, checking]);
 
@@ -2196,7 +2203,8 @@ function Chat() {
   const showKey = gone || drop;
   const pv = useSide((s) => !!s.view && (s.view !== 'work' || !!workOf(stageId)));
   const pvW = useSide((s) => s.w);
-  /* b36: through the check-in what you made stays open on the right, behind the divider */
+  /* b36, kept in b37 (his note: "On the side, that content should be there like that. It should not vanish"): through the
+     check-in what you made stays open on the right, behind the divider */
   useEffect(() => {
     if (checking && workOf(stageId)) useSide.setState({ view: 'work' });
     else if (!checking && useSide.getState().view === 'work') useSide.setState({ view: null });
@@ -2232,10 +2240,17 @@ function Chat() {
       <FbPin />
       <div ref={scroller} className="d1-scroll">
         <div className="d1-thread">
+          {/* b37 (his notes: "The one voice note from the manager comes ... Then you record, and then you send it, and
+              that's the same experience as we have in a kickoff POU" and "When you scroll up, you also see the chat"): the
+              kickoff's own check-in runs under the chat, which moves up out of view and is still there above it */}
           {thread.map((it) => (
             <Row key={it.id} it={it} />
           ))}
-          {checking && <CheckThread />}
+          {checking && (
+            <div className="d1-row ds-pou ds-pou-th b-light">
+              <Thread />
+            </div>
+          )}
           {typing && (
             <div className="d1-row d1-row-her">
               <div className="d1-typing" aria-label="Eryn is typing">
@@ -2246,15 +2261,12 @@ function Chat() {
             </div>
           )}
         </div>
-        {checking && (
-          <div className="d1-comp-wrap ds-key-in">
-            <Composer />
-          </div>
-        )}
         <div ref={spacer} className="ds-turn-room" aria-hidden />
       </div>
-      <div className="d1-comp-wrap" hidden={checking || undefined}>
-        {!checking && <Composer />}
+      {/* b37 (his note: "The mic should be at the bottom, like how we have in the kickoff POU"): the talk key and Continue
+          sit at the foot of the chat through the check-in, the kickoff's dock */}
+      <div className="d1-comp-wrap" data-check={checking || undefined}>
+        <Composer />
       </div>
       <BriefDrop />
       <Side />
@@ -2779,11 +2791,17 @@ function ZeroPip() {
     const up = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.key === 'Meta' || e.key === 'Control' || e.key === 'Alt') void zq.release();
     };
+    /* b37: the old PiP talk keys hold the window from page load and stop the combo before it gets here. While this
+       PiP is up it owns the combo, and the old keys come back when it goes */
+    const bound = window as unknown as { __zpTalk?: () => void };
+    bound.__zpTalk?.();
+    bound.__zpTalk = undefined;
     window.addEventListener('keydown', down, true);
     window.addEventListener('keyup', up, true);
     return () => {
       window.removeEventListener('keydown', down, true);
       window.removeEventListener('keyup', up, true);
+      bound.__zpTalk ??= bindTalkKeys(window);
     };
   }, []);
   /* b32 (his note: "Click on the chat, and all should auto-collapse"): a click anywhere outside the PiP folds Slots or
@@ -2920,7 +2938,25 @@ export default function StageSame() {
     root.current?.querySelectorAll('[data-enter]').forEach((el, i) => rise(el, { y: 14, blur: 0, scale: 0.99, delay: i * 80, ms: 480 }));
   }, []);
 
-  useDevAction('next', 'Next', () => void d1.next());
+  useDevAction('next', 'Next', () => {
+    if (d1.next()) return;
+    const s = useD1.getState();
+    if (s.phase !== 'done' && !(s.phase === 'pou' && usePou.getState().ended)) return;
+    if (s.stageId === 'deck') return joinCall();
+    void leaveStage(s.stageId);
+  });
+  /* b37: the dev list lands on any moment of stages 2 to 5, and on any moment of the stage 5 call */
+  useDevGo(
+    (id) => id.startsWith('ds:') || id.startsWith('call:'),
+    (id) => {
+      const [k, a, b] = id.split(':');
+      useLive.setState({ on: null });
+      window.setTimeout(() => {
+        if (k === 'call') return openCall(a === 'scores' ? 'report' : (a as CallStep), a === 'scores' ? 'scores' : 'moments');
+        void d1.playTo(a, b as Phase);
+      }, 120);
+    }
+  );
   useDevAction('d1-fix', 'Tick every fix', () => fixesOf(useD1.getState().stageId).forEach((f) => !useD1.getState().fixed[f.id] && d1.fix(f.id)));
   useDevAction('d1-time', 'Add 35 minutes to the timer', () => d1.skew(35));
   useDevAction('ds-tools', 'Tools and training: switch V1 and V2', () => useLook.setState((l) => ({ tools: l.tools === 'v1' ? 'v2' : 'v1' })));

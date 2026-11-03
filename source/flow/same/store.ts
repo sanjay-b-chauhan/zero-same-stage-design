@@ -225,6 +225,20 @@ export const d1 = {
     else say([specOf(stageId)?.greet ?? OPEN_2[0]], { wait: 400, after: () => later(250, brief) });
   },
 
+  /* b37 (his note: "in the setting ... directly, they can go to the feedback"): the dev list lands on a later moment of
+     a stage by playing every moment before it at once, so you land on what a learner would really see there */
+  async playTo(stageId: string, to: Phase) {
+    const order: Phase[] = ['brief', 'work', 'review', 'feedback', 'approved', 'pou', 'done'];
+    d1.begin(stageId);
+    for (let i = 0; i < 1500; i++) {
+      const s = useD1.getState();
+      if (s.stageId !== stageId) return;
+      if (order.indexOf(s.phase) >= order.indexOf(to)) return to === 'review' ? undefined : flush();
+      if (s.phase !== 'pou' || !usePou.getState().recording) d1.next();
+      await new Promise((r) => window.setTimeout(r, 60));
+    }
+  },
+
   /* Got it, let's start: the brief lifts, her first ask comes in under it */
   start() {
     const s = useD1.getState();
