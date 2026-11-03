@@ -200,6 +200,7 @@ export function Thread() {
   /* before her first note she is already recording it: her face from the meeting lands here */
   const recording = usePou((s) => (!!s.recording && s.speaking) || (!s.ended && s.thread.length === 0));
   const live = usePou((s) => !!s.recording && s.speaking);
+  const name = useFlow((s) => s.project?.manager?.name ?? 'She');
   const holding = useHoldUi((s) => s.holding);
   const sending = useHoldUi((s) => s.sending);
   const th = useRef<HTMLDivElement>(null);
@@ -255,15 +256,11 @@ export function Thread() {
         ))}
         {/* b29 (his note: "the voice note goes and then for .5 sec listening, shimmer, below the user voice note, and then
             the manager recording .5 sec, and then the voice note comes") */}
-        {/* b31 (his note: "don't write 'is listening' and all. Just put a bubble and then say, 'Listening to your voice
-            note...' Recording, and then it sends it ... a little 1-second or 2-second loader for us to see"): her face
-            and one bubble while she takes your note in, then her recording bars, then her note */}
+        {/* b32 (his note: "revert to the voice note loader that we have created there earlier. 'Eryn is listening' is
+            under the user voice note"): the b30 line under your note, then her recording, then her note */}
         {waiting && (
-          <div className="pv-row pv-lsn" data-from="her" aria-live="polite">
-            <Face />
-            <span className="pv-lsn-b">
-              <span className="pv-lsn-t">Listening to your voice note...</span>
-            </span>
+          <div className="pv-row pv-lsn" data-from="me" aria-live="polite">
+            <span className="pv-lsn-t">{name} is listening</span>
           </div>
         )}
         {recording && <Recording first={thread.length === 0} live={live} />}

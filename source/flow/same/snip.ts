@@ -62,8 +62,8 @@ function pick(): Promise<Box | null> {
   });
 }
 
-async function draw(b: Box): Promise<string | null> {
-  const ratio = Math.min(2, window.devicePixelRatio || 1);
+async function draw(b: Box, scale?: number, type = 'image/png'): Promise<string | null> {
+  const ratio = scale ?? Math.min(2, window.devicePixelRatio || 1);
   try {
     const page = await toCanvas(document.body, {
       width: window.innerWidth,
@@ -79,7 +79,7 @@ async function draw(b: Box): Promise<string | null> {
     const g = out.getContext('2d');
     if (!g) return null;
     g.drawImage(page, b.x * ratio, b.y * ratio, b.w * ratio, b.h * ratio, 0, 0, out.width, out.height);
-    return out.toDataURL('image/png');
+    return out.toDataURL(type, 0.82);
   } catch {
     return null;
   }
@@ -93,6 +93,11 @@ function flash(b: Box) {
   Object.assign(f.style, { left: `${b.x}px`, top: `${b.y}px`, width: `${b.w}px`, height: `${b.h}px` });
   document.body.appendChild(f);
   window.setTimeout(() => f.remove(), 420);
+}
+
+/* b32: the one frame she takes as you let go of the PiP's talk: the whole screen, small, without the PiP */
+export async function frame(): Promise<string | null> {
+  return draw({ x: 0, y: 0, w: window.innerWidth, h: window.innerHeight }, 0.4, 'image/jpeg');
 }
 
 export async function snip(): Promise<Snip | null> {

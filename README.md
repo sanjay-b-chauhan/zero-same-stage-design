@@ -2,7 +2,7 @@
 
 The scripted prototype of one Zero project, start to finish, in the real product's look. You land on the world map, pick a company, meet your manager in the kickoff, read the plan, then work stage one with her in chat until she signs it off.
 
-**Live:** https://zero-same-stage-design.vercel.app (current build, b31)
+**Live:** https://zero-same-stage-design.vercel.app (current build, b32)
 **Every build:** https://zero-same-stage-design.vercel.app/versions/ and [VERSIONS.md](VERSIONS.md)
 
 Everything is faked on purpose. No mic, no screen share, no backend, no AI calls. Her lines are recorded takes, her replies are scripted, and checks like "private link" are part of the script.
@@ -11,7 +11,7 @@ Everything is faked on purpose. No mic, no screen share, no backend, no AI calls
 
 | Folder | What it is |
 |---|---|
-| `live-b31/` | The built site, exactly what the live link serves. Open it with any static server. |
+| `live-b32/` | The built site, exactly what the live link serves. Open it with any static server. |
 | `source/flow/` | All the prototype code. One folder per part of the experience (see the map below). |
 | `source/static/` | Faces, logos, voice takes, films, the raw CSV, title art. Copied into every build as is. |
 | `source/_libs/` | Three small effect libraries, vendored (thinking orbs, voice glow, border beam). |
@@ -23,7 +23,7 @@ Everything is faked on purpose. No mic, no screen share, no backend, no AI calls
 ## Run the built site
 
 ```bash
-cd live-b31
+cd live-b32
 python3 -m http.server 8080
 ```
 
@@ -37,10 +37,10 @@ The prototype lives inside the Zero desktop app repo (zero-core-ui) at `standalo
 2. From `standalone/`:
 
 ```bash
-VITE_D1=1 VITE_DS=2 Z_MIN=1 Z_OUT=dist-ds-b32 ../node_modules/.bin/vite build --config vite.config.ts
+VITE_D1=1 VITE_DS=2 Z_MIN=1 Z_OUT=dist-ds-b33 ../node_modules/.bin/vite build --config vite.config.ts
 ```
 
-3. Serve `dist-ds-b32/`. The screenshot key uses html-to-image 1.11.11 (MIT), vendored at `flow/vendor/html-to-image/` with one marked patch in `clone-node.js` so scrolled boxes keep their scroll position. The dev server is `../node_modules/.bin/vite --config vite.config.ts` on port 5199.
+3. Serve `dist-ds-b33/`. The screenshot key uses html-to-image 1.11.11 (MIT), vendored at `flow/vendor/html-to-image/` with one marked patch in `clone-node.js` so scrolled boxes keep their scroll position. The dev server is `../node_modules/.bin/vite --config vite.config.ts` on port 5199.
 
 ## Map of `source/flow`
 

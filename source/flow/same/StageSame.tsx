@@ -44,10 +44,11 @@ import {
   Maximize2,
   CircleAlert,
   ArrowRight,
+  Lock,
 } from 'lucide-react';
 import { looksPrivate } from './linkAccess';
 import { leaveStage } from './leave';
-import { snip } from './snip';
+import { frame, shotName, snip } from './snip';
 import { Hold, PouMeter, Thread, Typed, useSpaceTalk } from '../room/pou/PouView';
 import { canHear, useHoldUi } from '../room/hold';
 import { pouAnswerForMe, usePou } from '../room/pou';
@@ -302,8 +303,10 @@ function TopBar() {
   const n = (project?.stages.findIndex((x) => x.id === stageId) ?? 0) + 1;
   const named = RAIL[stageId] ?? { title: briefOf(stageId).stage };
   const ver = useVer((s) => s.ver);
+  /* b32 (his note: "when we just say 'explain to Eryn,' it's better to remove the top progress bar and top timer"): they step away */
+  const checking = useD1((s) => s.phase === 'pou' || s.phase === 'done');
   return (
-    <header className="d1-top ds-top" data-enter>
+    <header className="d1-top ds-top" data-enter data-check={checking || undefined}>
       <div className="d1-top-l">
         <button type="button" className="d1-ghost" aria-label="Back to the project" onClick={() => useFlow.getState().actions.goto('objective')}>
           <ChevronLeft size={16} strokeWidth={1.75} />
@@ -1068,12 +1071,9 @@ function Words({ text }: { text: string }) {
 
 /* b27: out of Zero, to your desktop, with her beside you in the PiP. Sheets for the work, Claude when she hands it over */
 function popOut(app: 'sheets' | 'claude') {
-  const { w } = usePip.getState();
-  const x = window.innerWidth - w - 24;
-  const y = 64;
-  usePip.setState({ x, y, open: true });
-  useAskPip.setState({ body: null });
-  spot.pip = { x, y, w, h: 340 };
+  useZq.setState({ body: null, mode: 'rest', tip: null });
+  const { r, b } = useZq.getState();
+  spot.pip = { x: window.innerWidth - r - ZQ.rest, y: window.innerHeight - b - 44, w: ZQ.rest, h: 44 };
   useFlow.getState().actions.setSurface('pip');
   window.setTimeout(() => openDesktopApp(app), 520);
 }
@@ -1460,6 +1460,15 @@ function Row({ it }: { it: Item }) {
       return (
         <div ref={row} className="d1-row d1-row-me">
           <ShotCard name={it.name} />
+        </div>
+      );
+    case 'seen':
+      return (
+        <div ref={row} className="d1-row d1-row-me">
+          <p className="ds-seen">
+            {it.img && <img src={it.img} alt="" />}
+            Viewed your screen
+          </p>
         </div>
       );
     case 'att':
@@ -2010,6 +2019,7 @@ function Chat() {
         </span>
         <span className="d1-grow" />
         {/* b30 (his note: "instead of the brief and the approve thing, there will be a brain meter and the three dashes") */}
+        {/* b32 (his note: "The brain meter ... can come to the center towards the chat"): it sits in the middle of the chat column */}
         {checking ? (
           <span className="ds-pou ds-pou-m b-light">
             <PouMeter />
@@ -2056,14 +2066,7 @@ function Chat() {
   );
 }
 
-/* ---------- PiP (from V3) ---------- */
-/* b14 (founder call): the PiP is intentional, it opens only from this key, never when you switch windows. Out of Zero
-   you are on your desktop with your tools; the PiP holds the chat and the requirements, nothing else. No mic key and no
-   attachments: hover her face and talk, she sees your screen. Folds to one bar. Drags anywhere, resizes between limits. */
-const PIP_MIN = 240;
-const PIP_MAX = 380;
-const usePip = create<{ open: boolean; tab: 'chat' | 'req'; w: number; x: number; y: number }>(() => ({ open: true, tab: 'chat', w: 264, x: -1, y: -1 }));
-
+/* ---------- PiP ---------- */
 function PipKey() {
   const phase = useD1((s) => s.phase);
   if (phase === 'brief') return null;
@@ -2080,229 +2083,341 @@ function PipKey() {
   );
 }
 
-function PipChat() {
-  const thread = useD1((s) => s.thread);
-  const typing = useD1((s) => s.typing);
-  const scroller = useRef<HTMLDivElement>(null);
-  const [text, setText] = useState('');
-  useLayoutEffect(() => {
-    const el = scroller.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [thread.length, typing]);
-  const send = () => {
-    if (!text.trim()) return;
-    d1.send(text);
-    setText('');
-  };
+/* ---------- b32: the PiP, zero-stage-five b24's law in this stage (his note: "the freaking best pip mode experience ...
+   pip mode for stage one only"; then "the PiP should be smaller ... The profile, the slot, the chat, and the full screen
+   mode ... It should not have any spacing between them"). One small charcoal bar: her face, Slots, Chat, Back to Zero,
+   side by side. Hover her face and it is the mic. Hold it (or Control Option Command Space) and every key folds away:
+   the bar is your words, your voice and the time. Let go and she takes one frame of your screen, the bar says Viewed
+   your screen with it, then her answer plays in the bar and it comes back to rest. Slots and Chat open above the bar,
+   the window grows up from where it sits. Drags by the bar, sizes from either side while open ---------- */
+type ZqMode = 'rest' | 'held' | 'seen' | 'say';
+const ZQ = { min: 280, max: 440, rest: 148, talk: 300 };
+const ZQ_TICK_MS = 210;
+const ZQ_SEEN_MS = 1300;
+const ZQ_WORD_MS = 150;
+const ZQ_HOLD_MS = 1800;
+const ZQ_KEYS = ['⌃', '⌥', '⌘', 'Space'];
+const ZQ_I = { size: 17, strokeWidth: 1.75 };
+const BLUR_W = [62, 46, 74, 54, 68, 42, 70, 50, 58, 64];
+
+const useZq = create<{
+  body: 'chat' | 'slots' | null;
+  r: number;
+  b: number;
+  w: number;
+  mode: ZqMode;
+  said: string;
+  heard: number;
+  t0: number;
+  frame: string | null;
+  her: string;
+  shown: number;
+  tip: string | null;
+  near: boolean;
+}>(() => ({ body: null, r: 15, b: 78, w: 320, mode: 'rest', said: '', heard: 0, t0: 0, frame: null, her: '', shown: 0, tip: null, near: false }));
+
+const zq = {
+  run: 0,
+  timer: 0 as number,
+  stop() {
+    window.clearInterval(zq.timer);
+    window.clearTimeout(zq.timer);
+  },
+  hold() {
+    const s = useZq.getState();
+    if (s.mode === 'held' || useD1.getState().typing) return;
+    zq.stop();
+    const me = ++zq.run;
+    const said = d1.sample();
+    useZq.setState({ mode: 'held', said, heard: 0, t0: Date.now(), frame: null, her: '', shown: 0, tip: null });
+    const n = said.split(/\s+/).length;
+    zq.timer = window.setInterval(() => {
+      if (zq.run !== me) return;
+      useZq.setState((z) => ({ heard: Math.min(n, z.heard + 1) }));
+    }, ZQ_TICK_MS);
+  },
+  async release() {
+    const s = useZq.getState();
+    if (s.mode !== 'held') return;
+    zq.stop();
+    const me = ++zq.run;
+    useZq.setState({ mode: 'seen', heard: s.said.split(/\s+/).length });
+    const before = useD1.getState().thread.length;
+    const img = await frame();
+    if (zq.run !== me) return;
+    useZq.setState({ frame: img });
+    d1.talk(s.said, img ?? undefined);
+    zq.timer = window.setTimeout(() => zq.answer(me, before), ZQ_SEEN_MS);
+  },
+  /* her answer, word by word, in the bar; with the chat open it is already in the chat, so the bar rests */
+  answer(me: number, before: number) {
+    if (zq.run !== me) return;
+    if (useZq.getState().body === 'chat') return zq.rest();
+    const her = useD1.getState().thread.slice(before).find((i) => i.k === 'her');
+    if (!her || her.k !== 'her') {
+      zq.timer = window.setTimeout(() => zq.answer(me, before), 160);
+      return;
+    }
+    const n = her.text.split(/\s+/).length;
+    useZq.setState({ mode: 'say', her: her.text, shown: 0 });
+    zq.timer = window.setInterval(() => {
+      if (zq.run !== me) return;
+      const k = useZq.getState().shown + 1;
+      useZq.setState({ shown: k });
+      if (k >= n) {
+        zq.stop();
+        zq.timer = window.setTimeout(() => zq.run === me && zq.rest(), ZQ_HOLD_MS);
+      }
+    }, ZQ_WORD_MS);
+  },
+  rest() {
+    zq.stop();
+    zq.run++;
+    useZq.setState({ mode: 'rest', said: '', heard: 0, her: '', shown: 0 });
+  },
+};
+
+/* the time you have held, 0:01 */
+function ZqClock() {
+  const t0 = useZq((z) => z.t0);
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 250);
+    return () => window.clearInterval(id);
+  }, []);
+  const s = Math.max(0, Math.floor((now - t0) / 1000));
+  return <span className="ds-zq-time d1-num">{`${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`}</span>;
+}
+
+/* your voice while you hold: a row of thin bars that move with you */
+function ZqBars() {
   return (
-    <>
-      <div ref={scroller} className="ds-pip-scroll">
-        {thread.map((it) =>
-          it.k === 'her' ? (
-            <p key={it.id} className="ds-pip-her" data-guide={it.guide || undefined}>
-              {it.text}
-            </p>
-          ) : it.k === 'me' ? (
-            <p key={it.id} className="ds-pip-me">
-              {it.text}
-            </p>
-          ) : it.k === 'file' ? (
-            <p key={it.id} className="ds-pip-file">
-              <img src="static/logos/f-csv.svg" alt="" />
-              {RAW_FILE.name}
-            </p>
-          ) : it.k === 'att' ? (
-            <p key={it.id} className="ds-pip-seen">
-              {it.link ? <Link2 size={11} strokeWidth={1.75} /> : <FileText size={11} strokeWidth={1.75} />}
-              {it.name}
-            </p>
-          ) : it.k === 'shot' ? (
-            <p key={it.id} className="ds-pip-seen">
-              <ShotIcon size={11} />
-              Viewed your screen
-            </p>
-          ) : it.k === 'prompt' ? (
-            <p key={it.id} className="ds-pip-me">
-              {it.text}
-            </p>
-          ) : null
-        )}
-        {typing && (
-          <div className="d1-typing ds-pip-typing" aria-label="Eryn is typing">
-            <i />
-            <i />
-            <i />
-          </div>
-        )}
-      </div>
-      <input
-        className="ds-pip-in"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          if (e.key === 'Enter') send();
-        }}
-        placeholder="Message Eryn"
-        aria-label="Message Eryn"
-      />
-    </>
+    <span className="ds-zq-bars" aria-hidden="true">
+      {Array.from({ length: 22 }, (_, i) => (
+        <i key={i} style={{ animationDelay: `${((i * 37) % 11) * -0.09}s` }} />
+      ))}
+    </span>
   );
 }
 
-function MiniPip() {
-  const m = useFlow((s) => s.project?.manager);
-  const { open, tab, w, x, y } = usePip();
-  const ask = useD1((s) => s.ask && s.stageId === 'clean');
-  const last = useD1((s) => [...s.thread].reverse().find((i) => i.k === 'her'));
-  const typing = useD1((s) => s.typing);
-  const box = useRef<HTMLDivElement>(null);
-  const drag = useRef<{ dx: number; dy: number } | null>(null);
-  const size = useRef<{ x: number; w: number } | null>(null);
-  const home = () => {
-    const r = box.current?.getBoundingClientRect();
-    if (r) spot.back = { x: r.left, y: r.top, w: r.width, h: r.height };
-    useFlow.getState().actions.setSurface('big');
-  };
-  useLayoutEffect(() => rise(box.current, { y: 10, blur: 8, scale: 0.96, ms: 520, delay: 360 }), []);
-  const left = x < 0 ? window.innerWidth - w - 24 : x;
-  const top = y < 0 ? 64 : y;
+/* words as they are heard or said: the newest hold the right edge, each arrives blurred and settles */
+function ZqWords({ text, n }: { text: string; n: number }) {
+  const words = text.split(/\s+/).slice(0, n);
   return (
-    <div ref={box} className="ds-pip" data-open={open || undefined} style={{ width: w, left, top }}>
-      <div
-        className="ds-pip-bar"
-        onPointerDown={(e) => {
-          if ((e.target as HTMLElement).closest('button')) return;
-          drag.current = { dx: e.clientX - left, dy: e.clientY - top };
-          e.currentTarget.setPointerCapture(e.pointerId);
-        }}
-        onPointerMove={(e) => {
-          if (!drag.current || !e.buttons) return;
-          usePip.setState({
-            x: Math.max(8, Math.min(window.innerWidth - w - 8, e.clientX - drag.current.dx)),
-            y: Math.max(32, Math.min(window.innerHeight - 60, e.clientY - drag.current.dy)),
-          });
-        }}
-        onPointerUp={() => (drag.current = null)}
-      >
-        <button type="button" className="ds-pip-face" aria-label="Ask her, she sees your screen" title="Ask her" onClick={() => d1.shot()}>
-          {m && <img src={m.face} alt="" />}
-          <span className="ds-pip-mic" aria-hidden="true">
-            <Mic size={13} strokeWidth={2} />
+    <span className="ds-zq-words">
+      <span className="ds-zq-words-in">
+        {words.map((w, i) => (
+          <span key={i} className="ds-zq-w">
+            {w}{' '}
           </span>
-        </button>
-        <span className="ds-pip-who">
-          <span>{m?.name ?? 'Eryn'}</span>
-          <span className="d1-dim">{typing ? 'Typing' : open ? 'Ask her anything' : last?.k === 'her' ? last.text : 'Ask her anything'}</span>
-        </span>
-        <button type="button" className="d1-ghost" aria-label={open ? 'Fold to a bar' : 'Open'} onClick={() => usePip.setState({ open: !open })}>
-          {open ? <Minus {...I} /> : <ChevronDown {...I} />}
-        </button>
-        <button type="button" className="d1-ghost" aria-label="Back to Zero" title="Back to Zero" onClick={home}>
-          <Maximize2 size={13} strokeWidth={1.75} />
-        </button>
-      </div>
-      {open && (
-        <>
-          <div className="ds-pip-tabs" role="tablist">
-            <button type="button" role="tab" aria-selected={tab === 'chat'} onClick={() => usePip.setState({ tab: 'chat' })}>
-              Chat
-            </button>
-            <button type="button" role="tab" aria-selected={tab === 'req'} onClick={() => usePip.setState({ tab: 'req' })}>
-              {ask ? 'Asks' : 'Requirements'}
-            </button>
-          </div>
-          <div className="ds-pip-body">{tab === 'chat' ? <PipChat /> : <div className="ds-pip-req"><StageWork /></div>}</div>
-          <span
-            className="ds-pip-size"
-            role="separator"
-            aria-label="Resize"
-            onPointerDown={(e) => {
-              size.current = { x: e.clientX, w };
-              e.currentTarget.setPointerCapture(e.pointerId);
-            }}
-            onPointerMove={(e) => {
-              if (!size.current || !e.buttons) return;
-              const nw = Math.round(Math.min(PIP_MAX, Math.max(PIP_MIN, size.current.w - (e.clientX - size.current.x))));
-              usePip.setState({ w: nw, x: left + (w - nw) });
-            }}
-            onPointerUp={() => (size.current = null)}
-          />
-        </>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function ZqZone() {
+  const { mode, said, heard, frame: img, her, shown, body } = useZq();
+  if (mode === 'rest') return null;
+  return (
+    <div className="ds-zq-zone" data-mode={mode}>
+      {mode === 'held' && (
+        <div key="held" className="ds-zq-listen">
+          {body !== 'chat' && <ZqWords text={said} n={heard} />}
+          <span className="ds-zq-voice">
+            <ZqBars />
+            <ZqClock />
+          </span>
+        </div>
+      )}
+      {mode === 'seen' && (
+        <div key="seen" className="ds-zq-seen">
+          {img ? <img src={img} alt="" draggable={false} /> : <i className="ds-zq-seen-blank" />}
+          <span>Viewed your screen</span>
+        </div>
+      )}
+      {mode === 'say' && (
+        <div key="say" className="ds-zq-say">
+          <ZqWords text={her} n={shown} />
+        </div>
       )}
     </div>
   );
 }
 
-/* ---------- b27: in Ask mode the PiP is zero-stage-five b23's bar (his note: "the pip that the V3 version has made was super
-   good, you have to take that as well"). Her face, then keys of one size on one gap: talk with your screen, her asks,
-   the chat, and Back to Zero on the far edge. No resources key (his note: "we don't need resources"). A key opens its
-   view under the bar and the window grows up from where it sits; the same key folds it back to the bar ---------- */
-const useAskPip = create<{ body: 'chat' | 'asks' | null; r: number; b: number }>(() => ({ body: null, r: 15, b: 78 }));
-const ZP_I = { size: 18, strokeWidth: 1.75 };
-
-function ZpKey({ name, on, mic, onClick, children }: { name: string; on?: boolean; mic?: boolean; onClick: () => void; children: React.ReactNode }) {
+function ZqKey({ name, on, onClick, children }: { name: string; on?: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" className="ds-zp-key" data-on={on || undefined} data-mic={mic || undefined} aria-label={name} aria-pressed={on} title={name} onClick={onClick}>
+    <button
+      type="button"
+      className="ds-zq-key"
+      data-on={on || undefined}
+      aria-label={name}
+      aria-pressed={on}
+      onPointerEnter={() => useZq.setState({ tip: name })}
+      onPointerLeave={() => useZq.setState({ tip: null })}
+      onFocus={() => useZq.setState({ tip: name })}
+      onBlur={() => useZq.setState({ tip: null })}
+      onClick={onClick}
+    >
       {children}
     </button>
   );
 }
 
-function AskPipBox() {
+/* her face: hover and it is the mic, hold it to talk. The tip says what it does and the keys that do the same */
+function ZqFace() {
+  const m = useFlow((s) => s.project?.manager);
+  return (
+    <button
+      type="button"
+      className="ds-zq-face"
+      aria-label={`Hold to talk with ${m?.name ?? 'her'}`}
+      onPointerEnter={() => useZq.setState({ tip: 'face' })}
+      onPointerLeave={() => useZq.setState({ tip: null })}
+      onFocus={() => useZq.setState({ tip: 'face' })}
+      onBlur={() => useZq.setState({ tip: null })}
+      onPointerDown={(e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        zq.hold();
+        const up = () => {
+          window.removeEventListener('pointerup', up);
+          window.removeEventListener('pointercancel', up);
+          void zq.release();
+        };
+        window.addEventListener('pointerup', up);
+        window.addEventListener('pointercancel', up);
+      }}
+      onKeyDown={(e) => {
+        if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
+          e.preventDefault();
+          zq.hold();
+        }
+      }}
+      onKeyUp={(e) => {
+        if (e.key === ' ' || e.key === 'Enter') void zq.release();
+      }}
+    >
+      {m && <img src={m.face} alt="" draggable={false} />}
+      <span className="ds-zq-mic" aria-hidden="true">
+        <Mic size={15} strokeWidth={2} />
+      </span>
+    </button>
+  );
+}
+
+function ZqTip() {
+  const tip = useZq((z) => z.tip);
+  const mode = useZq((z) => z.mode);
+  const name = useFlow((s) => s.project?.manager?.name ?? 'Eryn');
+  if (!tip || mode !== 'rest') return null;
+  return (
+    <div key={tip} className="ds-zq-tip" role="tooltip">
+      {tip === 'face' ? (
+        <>
+          <span>Hold to talk with {name}</span>
+          <span className="ds-zq-tip-2">She sees your screen</span>
+          <span className="ds-zq-tip-keys">
+            {ZQ_KEYS.map((k) => (
+              <kbd key={k}>{k}</kbd>
+            ))}
+          </span>
+        </>
+      ) : (
+        <span>{tip}</span>
+      )}
+    </div>
+  );
+}
+
+/* Slots: the whole list, issues, the prompt and the submission. What is ahead is a hidden blurred line, never grey text */
+function ZqSlots({ home }: { home: () => void }) {
+  const s = useD1();
+  const b = briefOf(s.stageId);
+  const askMode = s.ask && s.stageId === 'clean';
+  const sent = s.phase !== 'brief' && s.phase !== 'work';
+  const blur = (i: number) => <span className="ds-zq-blur" style={{ width: `${BLUR_W[i % BLUR_W.length]}%` }} aria-label="Not yet" />;
+  const row = (key: string, on: boolean, text: string, i: number, extra?: React.ReactNode) => (
+    <li key={key} className="ds-zq-slot" data-on={on || undefined} data-pop={s.pop?.id === key ? s.pop.n : undefined}>
+      <span className="ds-zq-tick">{on && <Check size={11} strokeWidth={2.6} />}</span>
+      {on ? <span className="ds-zq-slot-t">{text}</span> : blur(i)}
+      {extra}
+    </li>
+  );
+  const parts: { title: string; count?: string; state: TodoState; rows: React.ReactNode[] }[] = [];
+  if (askMode) {
+    const order = ['issues', 'prompt', 'submit'];
+    const at = s.phase === 'brief' ? 0 : s.phase === 'work' ? order.indexOf(s.askStep) : 3;
+    const st = (k: number): TodoState => (k < at ? 'done' : k === at ? 'now' : 'next');
+    parts.push({ title: ASK_GROUPS[0].title, count: `${s.found.length} of ${ISSUES.length}`, state: st(0), rows: ISSUES.map((it, i) => row(it.id, s.found.includes(it.id), it.label, i)) });
+    parts.push({
+      title: ASK_GROUPS[1].title,
+      state: st(1),
+      rows: [row('prompt', !!s.prompt, s.prompt, 3, s.prompt ? <CopyKey text={s.prompt} label="Copy the prompt" /> : null)],
+    });
+  } else {
+    parts.push({
+      title: 'Requirements',
+      count: `${b.requirements.filter((r) => s.met[r.id]).length} of ${b.requirements.length}`,
+      state: sent ? 'done' : 'now',
+      rows: b.requirements.map((r, i) => row(r.id, !!s.met[r.id], r.text, i)),
+    });
+  }
+  const ready = askMode ? s.phase === 'work' && s.askStep === 'submit' : s.phase === 'work';
+  return (
+    <div className="ds-zq-slots">
+      {parts.map((p, i) => (
+        <section key={p.title} className="ds-zq-part" data-state={p.state}>
+          <h5>
+            <span className="ds-zq-n d1-num">{p.state === 'done' ? <Check size={10} strokeWidth={2.6} /> : i + 1}</span>
+            {p.title}
+            {p.count && <span className="ds-zq-count d1-num">{p.count}</span>}
+          </h5>
+          <ul>{p.rows}</ul>
+        </section>
+      ))}
+      <section className="ds-zq-part" data-state={sent ? 'done' : ready ? 'now' : 'next'}>
+        <h5>
+          <span className="ds-zq-n d1-num">{sent ? <Check size={10} strokeWidth={2.6} /> : parts.length + 1}</span>
+          Submission
+        </h5>
+        <button type="button" className="ds-zq-submit" disabled={!ready} onClick={home}>
+          {sent ? <Check size={13} strokeWidth={2.2} /> : !ready ? <Lock size={13} strokeWidth={1.75} /> : <ArrowUpRight size={13} strokeWidth={1.75} />}
+          {sent ? 'Clean sheet sent' : ready ? 'Submit in Zero' : 'Submit the clean sheet'}
+        </button>
+      </section>
+    </div>
+  );
+}
+
+function ZqChat({ home }: { home: () => void }) {
+  const thread = useD1((s) => s.thread);
+  const typing = useD1((s) => s.typing);
+  const stuck = useD1((s) => s.stuck);
+  const { mode, said, heard } = useZq();
+  const scroller = useRef<HTMLDivElement>(null);
+  const box = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState('');
+  useLayoutEffect(() => {
+    const el = scroller.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  }, [thread.length, typing]);
   const send = () => {
     if (!text.trim()) return;
     d1.send(text);
     setText('');
   };
-  return (
-    <div className="ds-zp-comp">
-      <textarea
-        rows={1}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          e.stopPropagation();
-          if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
-            e.preventDefault();
-            send();
-          }
-        }}
-        placeholder="Ask Eryn"
-        aria-label="Message Eryn"
-      />
-      <div className="ds-zp-comp-row">
-        <button type="button" className="d1-ghost" aria-label="Send her a screenshot" title="Send her a screenshot" onClick={() => d1.shot()}>
-          <ShotIcon />
-        </button>
-        <StuckSwitch />
-        <span className="d1-grow" />
-        <button type="button" className="d1-ghost" aria-label="Talk to her">
-          <Mic {...I} />
-        </button>
-        <button type="button" className="d1-send" aria-label="Send" disabled={!text.trim()} onClick={send}>
-          <ArrowUp size={14} strokeWidth={2} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function AskPipChat({ home }: { home: () => void }) {
-  const thread = useD1((s) => s.thread);
-  const typing = useD1((s) => s.typing);
-  const scroller = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    const el = scroller.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [thread.length, typing]);
+  const shoot = async () => {
+    const img = await frame();
+    d1.post('', { name: shotName(), meta: 'Your screen', img: img ?? undefined });
+  };
+  const heldWords = mode === 'held' ? said.split(/\s+/).slice(0, heard).join(' ') : '';
   return (
     <>
-      <div ref={scroller} className="ds-zp-scroll">
+      <div ref={scroller} className="ds-zq-scroll">
         {thread.map((it) =>
           it.k === 'her' ? (
-            <p key={it.id} className="ds-zp-her">
+            <p key={it.id} className="ds-zq-her">
               {it.text}
               {it.tool && (
                 <>
@@ -2312,145 +2427,232 @@ function AskPipChat({ home }: { home: () => void }) {
               )}
             </p>
           ) : it.k === 'me' || it.k === 'prompt' ? (
-            <p key={it.id} className="ds-zp-me">
+            <p key={it.id} className="ds-zq-me">
               {it.text}
             </p>
           ) : it.k === 'file' ? (
-            <div key={it.id} className="ds-zp-file">
+            <div key={it.id} className="ds-zq-file">
               <img src="static/logos/logo-sheets.svg" alt="" />
-              <button
-                type="button"
-                className="ds-zp-file-t"
-                onClick={() => {
-                  home();
-                  openSide('sheet');
-                }}
-              >
+              <button type="button" className="ds-zq-file-t" onClick={() => (home(), openSide('sheet'))}>
                 <span>{RAW_FILE.name}</span>
-                <span className="d1-dim">{RAW_FILE.meta}</span>
+                <span className="ds-zq-dim">{RAW_FILE.meta}</span>
               </button>
-              <button
-                type="button"
-                className="d1-ghost"
-                aria-label="Preview"
-                title="Preview"
-                onClick={() => {
-                  home();
-                  openSide('sheet');
-                }}
-              >
-                <Eye size={16} strokeWidth={1.75} />
+              <button type="button" className="ds-zq-ghost" aria-label="Preview" title="Preview" onClick={() => (home(), openSide('sheet'))}>
+                <Eye size={14} strokeWidth={1.75} />
               </button>
-              <a className="d1-ghost" href={RAW_FILE.url} download aria-label="Download" title="Download">
-                <Download size={16} strokeWidth={1.75} />
+              <a className="ds-zq-ghost" href={RAW_FILE.url} download aria-label="Download" title="Download">
+                <Download size={14} strokeWidth={1.75} />
               </a>
             </div>
-          ) : it.k === 'shot' ? (
-            <p key={it.id} className="ds-zp-seen">
-              <ShotIcon size={12} />
-              Viewed your screen
+          ) : it.k === 'seen' || (it.k === 'att' && it.img) ? (
+            <p key={it.id} className="ds-zq-look">
+              {it.img && <img src={it.img} alt="" />}
+              {it.k === 'seen' ? 'Viewed your screen' : it.name}
             </p>
-          ) : it.k === 'att' ? (
-            <p key={it.id} className="ds-zp-seen">
-              {it.link ? <Link2 size={12} strokeWidth={1.75} /> : <FileText size={12} strokeWidth={1.75} />}
+          ) : it.k === 'shot' || it.k === 'att' ? (
+            <p key={it.id} className="ds-zq-look">
+              {it.k === 'att' && it.link ? <Link2 size={12} strokeWidth={1.75} /> : <FileText size={12} strokeWidth={1.75} />}
               {it.name}
             </p>
+          ) : it.k === 'sent' ? (
+            <p key={it.id} className="ds-zq-look">
+              Reviewing
+            </p>
+          ) : it.k === 'feedback' ? (
+            <button key={it.id} type="button" className="ds-zq-look ds-zq-look-k" onClick={home}>
+              <ArrowUpRight size={12} strokeWidth={1.75} />
+              Open her feedback in Zero
+            </button>
           ) : null
         )}
         {typing && (
-          <div className="d1-typing ds-zp-typing" aria-label="Eryn is typing">
+          <div className="d1-typing ds-zq-typing" aria-label="Eryn is typing">
             <i />
             <i />
             <i />
           </div>
         )}
       </div>
-      <AskPipBox />
+      {stuck && <AskCard focusBox={() => box.current?.focus()} />}
+      <div className="ds-zq-comp" data-held={mode === 'held' || undefined}>
+        <textarea
+          ref={box}
+          rows={1}
+          value={mode === 'held' ? heldWords : text}
+          readOnly={mode === 'held'}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              send();
+            }
+          }}
+          placeholder={stuck ? 'Or say it your way' : 'Message Eryn'}
+          aria-label="Message Eryn"
+        />
+        <div className="ds-zq-comp-row">
+          <button type="button" className="ds-zq-ghost" aria-label="Send her your screen" title="Send her your screen" onClick={() => void shoot()}>
+            <ShotIcon size={15} />
+          </button>
+          <StuckSwitch />
+          <span className="d1-grow" />
+          <button type="button" className="d1-send" aria-label="Send" disabled={!text.trim()} onClick={send}>
+            <ArrowUp size={14} strokeWidth={2} />
+          </button>
+        </div>
+      </div>
     </>
   );
 }
 
-function AskPip() {
-  const m = useFlow((s) => s.project?.manager);
-  const { body, r, b } = useAskPip();
-  const box = useRef<HTMLDivElement>(null);
+function ZeroPip() {
+  const { body, r, b, w, mode } = useZq();
+  const wrap = useRef<HTMLDivElement>(null);
+  const win = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; r: number; b: number } | null>(null);
+  const size = useRef<{ x: number; w: number; r: number; side: 1 | -1 } | null>(null);
   const home = () => {
-    const r = box.current?.getBoundingClientRect();
-    if (r) spot.back = { x: r.left, y: r.top, w: r.width, h: r.height };
+    zq.rest();
+    const rect = win.current?.getBoundingClientRect();
+    if (rect) spot.back = { x: rect.left, y: rect.top, w: rect.width, h: rect.height };
     useFlow.getState().actions.setSurface('big');
   };
-  const toggle = (v: 'chat' | 'asks') => useAskPip.setState({ body: body === v ? null : v });
-  useLayoutEffect(() => rise(box.current, { y: 10, blur: 8, scale: 0.96, ms: 520, delay: 360 }), []);
+  const toggle = (v: 'chat' | 'slots') => {
+    const next = body === v ? null : v;
+    useZq.setState({ body: next });
+    if (next === 'chat') useD1.setState({});
+  };
+  useLayoutEffect(() => rise(wrap.current, { y: 10, blur: 8, scale: 0.96, ms: 520, delay: 360 }), []);
+  useEffect(() => () => zq.rest(), []);
+  /* Control Option Command Space talks from anywhere on the desktop */
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && e.ctrlKey && e.altKey && e.metaKey && !e.repeat) {
+        e.preventDefault();
+        zq.hold();
+      }
+    };
+    const up = (e: KeyboardEvent) => {
+      if (e.code === 'Space' || e.key === 'Meta' || e.key === 'Control' || e.key === 'Alt') void zq.release();
+    };
+    window.addEventListener('keydown', down, true);
+    window.addEventListener('keyup', up, true);
+    return () => {
+      window.removeEventListener('keydown', down, true);
+      window.removeEventListener('keyup', up, true);
+    };
+  }, []);
+  /* b32 (his note: "Click on the chat, and all should auto-collapse"): a click anywhere outside the PiP folds Slots or
+     Chat back to the bar */
+  useEffect(() => {
+    const down = (e: PointerEvent) => {
+      if (!useZq.getState().body || wrap.current?.contains(e.target as Node)) return;
+      useZq.setState({ body: null });
+    };
+    window.addEventListener('pointerdown', down, true);
+    return () => window.removeEventListener('pointerdown', down, true);
+  }, []);
+  const talking = mode !== 'rest';
+  /* b32 (his note: "not on hover, it should be smaller ... by 75%. [On hover] it should be 100%"): at rest the whole PiP
+     sits at 75% from its corner; your pointer on it, or her talking, brings it to full size */
+  const near = useZq((z) => z.near);
+  const full = near || talking;
+  const width = body ? w : talking ? ZQ.talk : ZQ.rest;
   return (
-    <div ref={box} className="ds-zp" data-open={body ? '' : undefined} style={{ right: r, bottom: b }}>
+    <div
+      ref={wrap}
+      className="ds-zq-wrap"
+      data-snip=""
+      data-full={full || undefined}
+      style={{ right: r, bottom: b }}
+      onPointerEnter={() => useZq.setState({ near: true })}
+      onPointerLeave={(e) => useZq.setState(e.buttons ? { tip: null } : { near: false, tip: null })}
+      onFocus={() => useZq.setState({ near: true })}
+      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node) && useZq.setState({ near: false })}
+    >
+      <ZqTip />
       <div
-        className="ds-zp-bar"
-        onPointerDown={(e) => {
-          if ((e.target as HTMLElement).closest('button')) return;
-          drag.current = { x: e.clientX, y: e.clientY, r, b };
-          e.currentTarget.setPointerCapture(e.pointerId);
-        }}
-        onPointerMove={(e) => {
-          if (!drag.current || !e.buttons) return;
-          const w = box.current?.offsetWidth ?? 0;
-          const d = drag.current;
-          useAskPip.setState({
-            r: Math.max(8, Math.min(window.innerWidth - w - 8, d.r - (e.clientX - d.x))),
-            b: Math.max(8, Math.min(window.innerHeight - 60, d.b - (e.clientY - d.y))),
-          });
-        }}
-        onPointerUp={() => (drag.current = null)}
+        ref={win}
+        className="ds-zq"
+        data-open={body || undefined}
+        data-mode={mode}
+        style={{ width, height: body ? 'auto' : 44 }}
       >
-        <span className="ds-zp-face" title={m?.full}>
-          {m && <img src={m.face} alt={m.full} draggable={false} />}
-        </span>
-        <ZpKey name="Talk with your screen" mic onClick={() => d1.shot()}>
-          <Mic {...ZP_I} />
-        </ZpKey>
-        <ZpKey name="Manager's ask" on={body === 'asks'} onClick={() => toggle('asks')}>
-          <ListChecks {...ZP_I} />
-        </ZpKey>
-        <ZpKey name="Chat with Eryn" on={body === 'chat'} onClick={() => toggle('chat')}>
-          <MessageCircle {...ZP_I} />
-        </ZpKey>
-        <span className="d1-grow" />
-        <ZpKey name="Back to Zero" onClick={home}>
-          <Maximize2 {...ZP_I} />
-        </ZpKey>
-      </div>
-      {body && (
-        <div key={body} className="ds-zp-body" data-body={body}>
-          {body === 'chat' ? (
-            <AskPipChat home={home} />
-          ) : (
-            <div className="ds-zp-asks">
-              <StageWork />
-            </div>
-          )}
+        {body && (
+          <div key={body} className="ds-zq-body" data-body={body}>
+            {body === 'chat' ? <ZqChat home={home} /> : <ZqSlots home={home} />}
+          </div>
+        )}
+        <div
+          className="ds-zq-bar"
+          data-held={mode === 'held' || undefined}
+          onPointerDown={(e) => {
+            if ((e.target as HTMLElement).closest('button')) return;
+            drag.current = { x: e.clientX, y: e.clientY, r, b };
+            e.currentTarget.setPointerCapture(e.pointerId);
+          }}
+          onPointerMove={(e) => {
+            if (!drag.current || !e.buttons) return;
+            const d = drag.current;
+            const ww = win.current?.offsetWidth ?? 0;
+            useZq.setState({
+              r: Math.max(8, Math.min(window.innerWidth - ww - 8, d.r - (e.clientX - d.x))),
+              b: Math.max(8, Math.min(window.innerHeight - 60, d.b - (e.clientY - d.y))),
+            });
+          }}
+          onPointerUp={() => {
+            drag.current = null;
+            if (!wrap.current?.matches(':hover')) useZq.setState({ near: false });
+          }}
+        >
+          <div className="ds-zq-keys" data-gone={(talking && !body) || mode === 'held' || undefined}>
+            <ZqFace />
+            <ZqKey name="Slots" on={body === 'slots'} onClick={() => toggle('slots')}>
+              <ListChecks {...ZQ_I} />
+            </ZqKey>
+            <ZqKey name={`Chat with Eryn`} on={body === 'chat'} onClick={() => toggle('chat')}>
+              <MessageCircle {...ZQ_I} />
+            </ZqKey>
+            <ZqKey name="Back to Zero" onClick={home}>
+              <Maximize2 size={15} strokeWidth={1.75} />
+            </ZqKey>
+          </div>
+          <ZqZone />
         </div>
-      )}
+        {body &&
+          ([-1, 1] as const).map((side) => (
+            <span
+              key={side}
+              className="ds-zq-size"
+              data-side={side < 0 ? 'l' : 'r'}
+              role="separator"
+              aria-label="Resize"
+              onPointerDown={(e) => {
+                size.current = { x: e.clientX, w, r, side };
+                e.currentTarget.setPointerCapture(e.pointerId);
+              }}
+              onPointerMove={(e) => {
+                const z = size.current;
+                if (!z || !e.buttons) return;
+                const nw = Math.round(Math.min(ZQ.max, Math.max(ZQ.min, z.w + z.side * (e.clientX - z.x))));
+                useZq.setState(z.side > 0 ? { w: nw, r: Math.max(8, z.r - (nw - z.w)) } : { w: nw });
+              }}
+              onPointerUp={() => (size.current = null)}
+            />
+          ))}
+      </div>
     </div>
   );
 }
 
 function Pip() {
   const surface = useFlow((s) => s.ui.surface);
-  const mode = useMode((s) => s.mode);
-  const ask = useD1((s) => s.ask && s.stageId === 'clean');
   if (surface !== 'pip') return null;
-  if (ask)
-    return (
-      <Desktop>
-        <div className="zs2 d1 ds2 zd ds-zp-host" data-mode="dark">
-          <AskPip />
-        </div>
-      </Desktop>
-    );
   return (
     <Desktop>
-      <div className={`zs2 d1 ds2 ds-pip-host ${mode === 'dark' ? 'zd' : 'z-light'}`} data-mode={mode}>
-        <MiniPip />
+      <div className="zs2 d1 ds2 zd ds-zq-host" data-mode="dark">
+        <ZeroPip />
       </div>
     </Desktop>
   );

@@ -5597,3 +5597,685 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
     animation: none;
   }
 }
+
+/* ---------- b32: the stage check-in (his notes on b31) ---------- */
+/* "remove the top progress bar and top timer because they already got that much explained": they step up and away */
+.d1.ds2 .ds-top-mid,
+.d1.ds2 .ds-top .d1-timer {
+  transition: translate 420ms cubic-bezier(0.32, 0.72, 0, 1), filter 420ms cubic-bezier(0.32, 0.72, 0, 1), opacity 320ms ease-out, visibility 0s linear 0s;
+}
+.d1.ds2 .ds-top[data-check] .ds-top-mid,
+.d1.ds2 .ds-top[data-check] .d1-timer {
+  translate: 0 -10px;
+  filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: translate 420ms cubic-bezier(0.32, 0.72, 0, 1), filter 420ms cubic-bezier(0.32, 0.72, 0, 1), opacity 320ms ease-out, visibility 0s linear 420ms;
+}
+/* "The brain meter ... can come to the center towards the chat" */
+.d1.ds2 .ds-who {
+  position: relative;
+}
+.d1.ds2 .ds-who .ds-pou-m {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+/* "Remove the transcript ... I don't need a transcript" */
+.d1.ds2 .ds-pou-th .pv-trb,
+.d1.ds2 .ds-pou-th .pv-trt {
+  display: none;
+}
+/* "Let's not have that kind of a loading visualization as well, like a waveform": her recording is her face and the words */
+.d1.ds2 .ds-pou-th .pv-recg .pv-rb {
+  display: none;
+}
+.d1.ds2 .ds-pou-th .pv-rec-l {
+  margin-left: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .d1.ds2 .ds-top-mid,
+  .d1.ds2 .ds-top .d1-timer {
+    transition: none;
+  }
+}
+
+/* ---------- b32: the PiP. zero-stage-five b24's law, smaller and tight: face, Slots, Chat, Back to Zero side by side with a
+   2px gap. Sits at 75% from its corner until your pointer is on it. Text inside is 12 on 18, every gap 8 ---------- */
+.ds-zq-host {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  background: none !important;
+  box-shadow: none !important;
+}
+.ds-zq-wrap {
+  position: fixed;
+  z-index: 40;
+  pointer-events: auto;
+  transform: scale(0.75);
+  transform-origin: 100% 100%;
+  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ds-zq-wrap[data-full] {
+  transform: none;
+}
+.ds-zq {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  background: #0f0f10;
+  color: #fff;
+  font-size: 12px;
+  line-height: 18px;
+  box-shadow: 0 0 0 1px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.09), 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  interpolate-size: allow-keywords;
+  transition: width 420ms cubic-bezier(0.32, 0.72, 0, 1), height 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ds-zq-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 6px;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.ds-zq-bar:active {
+  cursor: grabbing;
+}
+.ds-zq[data-open] .ds-zq-bar {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+.ds-zq-keys {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 160px;
+  transform-origin: 0 50%;
+  transition: max-width 360ms cubic-bezier(0.32, 0.72, 0, 1), transform 360ms cubic-bezier(0.32, 0.72, 0, 1),
+    filter 300ms ease, opacity 240ms ease;
+}
+.ds-zq-keys[data-gone] {
+  max-width: 0;
+  transform: scale(0.5);
+  filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+}
+.ds-zq-face,
+.ds-zq-key {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+  transition: background-color 0.16s, color 0.14s, transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.ds-zq-key:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.ds-zq-key[data-on] {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+.ds-zq-face:active,
+.ds-zq-key:active {
+  transform: scale(0.92);
+}
+.ds-zq-face:focus-visible,
+.ds-zq-key:focus-visible {
+  outline: 1.5px solid rgba(255, 255, 255, 0.62);
+  outline-offset: 1px;
+}
+.ds-zq-face img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24);
+  transition: transform 260ms cubic-bezier(0.32, 0.72, 0, 1), filter 220ms ease, opacity 200ms ease;
+}
+.ds-zq-mic {
+  position: absolute;
+  inset: 1px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  transform: translateY(6px) scale(0.6);
+  filter: blur(4px);
+  opacity: 0;
+  transition: transform 260ms cubic-bezier(0.32, 0.72, 0, 1), filter 220ms ease, opacity 200ms ease;
+}
+.ds-zq-face:hover img,
+.ds-zq-face:focus-visible img {
+  transform: scale(0.6);
+  filter: blur(4px);
+  opacity: 0;
+}
+.ds-zq-face:hover .ds-zq-mic,
+.ds-zq-face:focus-visible .ds-zq-mic {
+  transform: none;
+  filter: none;
+  opacity: 1;
+}
+
+/* what the bar says while you hold, after you let go, and while she answers */
+.ds-zq-zone {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+.ds-zq-listen,
+.ds-zq-seen,
+.ds-zq-say {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 8px;
+  animation: ds-zq-in 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes ds-zq-in {
+  from {
+    transform: translateY(6px);
+    filter: blur(6px);
+  }
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+.ds-zq-words {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px);
+  mask-image: linear-gradient(90deg, transparent, #000 24px);
+}
+.ds-zq-words-in {
+  flex: none;
+  white-space: nowrap;
+  color: #fff;
+}
+.ds-zq-w {
+  display: inline-block;
+  white-space: pre;
+  animation: ds-zq-w 260ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes ds-zq-w {
+  from {
+    transform: translateY(4px);
+    filter: blur(4px);
+  }
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+.ds-zq-voice {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.ds-zq-bars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 18px;
+}
+.ds-zq-bars i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: #fff;
+  transform: scaleY(0.2);
+  animation: ds-zq-bar 0.9s ease-in-out infinite;
+}
+@keyframes ds-zq-bar {
+  0%,
+  100% {
+    transform: scaleY(0.18);
+  }
+  35% {
+    transform: scaleY(0.9);
+  }
+  60% {
+    transform: scaleY(0.4);
+  }
+}
+.ds-zq-time {
+  min-width: 28px;
+  color: rgba(255, 255, 255, 0.62);
+  text-align: right;
+}
+.ds-zq-seen {
+  color: rgba(255, 255, 255, 0.62);
+}
+.ds-zq-seen img,
+.ds-zq-seen-blank {
+  flex: none;
+  width: 40px;
+  height: 24px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* the tip sits above the PiP, never inside it */
+.ds-zq-tip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #0f0f10;
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+  animation: ds-zq-in 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ds-zq-tip-2 {
+  color: rgba(255, 255, 255, 0.55);
+}
+.ds-zq-tip-keys {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.ds-zq-tip kbd {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+/* Slots and Chat open above the bar */
+.ds-zq-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: min(400px, 62vh);
+  display: flex;
+  flex-direction: column;
+  animation: ds-zq-in 380ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ds-zq-scroll {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 10px 8px;
+  scrollbar-width: none;
+}
+.ds-zq-her,
+.ds-zq-me,
+.ds-zq-look {
+  margin: 0;
+  max-width: 90%;
+}
+.ds-zq-her {
+  color: rgba(255, 255, 255, 0.92);
+}
+.ds-zq-her .zs2-toollink {
+  color: #6cb1ff;
+  text-decoration: none;
+}
+.ds-zq-her .zs2-toollink-ico {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+.ds-zq-her .zs2-toollink-t {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(108, 177, 255, 0.5);
+}
+.ds-zq-her .zs2-toollink-go {
+  width: 11px;
+  height: 11px;
+  margin-left: 2px;
+  vertical-align: -1px;
+}
+.ds-zq-me {
+  align-self: flex-end;
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.ds-zq-look {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.5);
+  font: inherit;
+}
+.ds-zq-look img {
+  width: 32px;
+  height: 20px;
+  border-radius: 3px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.ds-zq-look-k {
+  align-self: flex-start;
+  color: #fff;
+  cursor: pointer;
+}
+.ds-zq-file {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 4px 4px 8px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.ds-zq-file img {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.ds-zq-file-t {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  line-height: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+.ds-zq-file-t span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ds-zq-dim {
+  color: rgba(255, 255, 255, 0.5);
+}
+.ds-zq-ghost {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+}
+.ds-zq-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.ds-zq-typing {
+  align-self: flex-start;
+}
+.ds-zq-typing i {
+  background: rgba(255, 255, 255, 0.5);
+}
+.ds-zq-body .ds-askc {
+  margin: 0 8px 8px;
+  max-width: none;
+  width: auto;
+}
+.ds-zq-comp {
+  flex: none;
+  margin: 0 8px 8px;
+  margin-top: auto;
+  padding: 8px 6px 4px 10px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+.ds-zq-comp textarea {
+  display: block;
+  width: 100%;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+}
+.ds-zq-comp textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+.ds-zq-comp[data-held] textarea {
+  color: rgba(255, 255, 255, 0.8);
+}
+.ds-zq-comp-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+}
+.ds-zq .d1-send {
+  width: 28px;
+  height: 28px;
+}
+.ds-zq .d1-send:not(:disabled) {
+  background: #fff;
+  color: #0f0f10;
+  box-shadow: none;
+}
+.ds-zq .d1-send:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.38);
+}
+
+/* Slots: numbered parts; what is ahead is a hidden blurred line */
+.ds-zq-slots {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+  scrollbar-width: none;
+}
+.ds-zq-part h5 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #fff;
+}
+.ds-zq-part[data-state='next'] h5 {
+  color: rgba(255, 255, 255, 0.5);
+}
+.ds-zq-n {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.ds-zq-part[data-state='done'] .ds-zq-n {
+  background: #fff;
+  color: #0f0f10;
+  box-shadow: none;
+}
+.ds-zq-count {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+}
+.ds-zq-part ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 0 26px;
+  padding: 0;
+  list-style: none;
+}
+.ds-zq-slot {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+.ds-zq-tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.ds-zq-slot[data-on] .ds-zq-tick {
+  background: #34c759;
+  box-shadow: none;
+}
+.ds-zq-slot-t {
+  flex: 1;
+  min-width: 0;
+  color: rgba(255, 255, 255, 0.92);
+}
+.ds-zq-slot[data-pop] .ds-zq-slot-t {
+  animation: ds-zq-w 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.ds-zq-blur {
+  display: inline-block;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  filter: blur(3px);
+}
+.ds-zq-part .zs2-copykey,
+.ds-zq-part button:not(.ds-zq-submit) {
+  color: rgba(255, 255, 255, 0.62);
+}
+.ds-zq .ds-zq-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 30px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: #0f0f10;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.ds-zq .ds-zq-submit:disabled {
+  background: none;
+  color: rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  cursor: default;
+}
+
+/* sizes from either side while open */
+.ds-zq-size {
+  position: absolute;
+  top: 0;
+  bottom: 44px;
+  width: 8px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.ds-zq-size[data-side='l'] {
+  left: -2px;
+}
+.ds-zq-size[data-side='r'] {
+  right: -2px;
+}
+
+/* the line in the big chat after a hold */
+.d1.ds2 .ds-seen {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--ds-ink-3, rgba(0, 0, 0, 0.5));
+  font-size: 12px;
+}
+.d1.ds2 .ds-seen img {
+  width: 48px;
+  height: 30px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-zq-wrap,
+  .ds-zq,
+  .ds-zq-keys {
+    transition: none;
+  }
+  .ds-zq-body,
+  .ds-zq-tip,
+  .ds-zq-w,
+  .ds-zq-listen,
+  .ds-zq-seen,
+  .ds-zq-say {
+    animation: none;
+  }
+}

@@ -12,6 +12,7 @@ export type Item =
   | { id: number; k: 'file' }
   | { id: number; k: 'me'; text: string }
   | { id: number; k: 'shot'; name: string }
+  | { id: number; k: 'seen'; img?: string }
   | { id: number; k: 'chips'; options: string[]; guide?: boolean }
   | { id: number; k: 'sent'; est: string }
   | { id: number; k: 'feedback' }
@@ -277,11 +278,39 @@ export const d1 = {
     if (file) say(['Got the file. I will look at it when you submit.'], { wait: 500 });
   },
 
+  /* b32: what you would say if you held to talk right now, the same line Next would play for you */
+  sample(): string {
+    const s = useD1.getState();
+    if (s.stuck) return STUCK[s.stuckAt].chip;
+    if (s.ask && s.stageId === 'clean' && s.phase === 'work') {
+      if (s.askStep === 'issues') {
+        const t = DEV_ISSUES.find((w) => ISSUES.some((i) => !s.found.includes(i.id) && i.re.test(w)));
+        if (t) return `I see ${t} in here.`;
+      }
+      if (s.askStep === 'prompt') return 'Remove duplicate customers, add the currency to every price, drop test accounts and negative prices, and write every date as YYYY-MM-DD.';
+    }
+    if (s.phase === 'feedback') return 'Where are the customers still listed twice?';
+    return "I'm in the sheet now. Where should I start?";
+  },
+
+  /* b32: you held to talk in the PiP. Your words, the one frame she took as you let go, then her answer */
+  talk(text: string, img?: string) {
+    const t = text.trim();
+    if (!t) return;
+    push({ k: 'me', text: t });
+    push({ k: 'seen', img });
+    d1.answer(t);
+  },
+
   send(text: string) {
     const t = text.trim();
     if (!t) return;
-    const s = useD1.getState();
     push({ k: 'me', text: t });
+    d1.answer(t);
+  },
+
+  answer(t: string) {
+    const s = useD1.getState();
     if (s.stuck) {
       const step = STUCK[s.stuckAt];
       if (t === step.chip) return d1.stuckNext();

@@ -210,3 +210,12 @@ LIVE zero-same-stage-design.vercel.app ds b31, b30 at /b30/. His notes on b30, a
 - "just make it like 'Feedback v1'": the pin title. The focus ring on the pin is a hairline.
 - "It should not have the job portal UI": `hud/LevelBurst.tsx` hides everything in the level-up frame except the celebration.
 - "don't start the second stage directly ... The user has to click 'Start'": `same/leave.ts` no longer arms the auto start, and the objective reads Start (Continue only for a stage you opened and left).
+
+## b32 (3 Nov 2026)
+
+- "remove the top progress bar and top timer ... The brain meter ... can come to the center": `same/StageSame.tsx` TopBar sets data-check during the check-in, `same/ds.css` hides them and centres the meter in `.ds-who`.
+- "revert to the voice note loader ... 'Erin is listening' is under the user voice note. Remove the transcript": `room/pou/PouView.tsx` and `pou.css` back to b30's listening row; the transcript toggles and recording bars are hidden on the stage.
+- "the freaking best pip mode experience": `same/StageSame.tsx` ZeroPip (zero-stage-five b24's law). Face, Slots, Chat, Back to Zero with a 2px gap. Hover the face for the mic and the tip; hold it or Control Option Command Space and the keys fold to words, bars and time; release takes one frame (`same/snip.ts` frame) and `d1.talk` posts it, then her answer plays in the bar. Drag by the bar, resize from either side while open.
+- "smaller ... not on hover, it should be smaller ... by 75%": the wrap sits at scale .75 from its corner, 1 on hover, focus or while she talks.
+- "The font inside the page should be 12 px ... line spacing more like 8 px": 12 on 18 inside, 8px gaps.
+- "Click on the chat, and all should auto-collapse" and "That should not be a negative space": a click outside folds the body; the window height is auto, Slots and Chat hug their content up to min(400px, 62vh).
