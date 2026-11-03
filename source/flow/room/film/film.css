@@ -1,0 +1,566 @@
+/* The kickoff film. Ink line drawings straight on the ground, after b36's film (open/film.js, css/kickoff.css .kk-film).
+   Colours only from the --b-* names, so the Room's b-light turns it into ink on paper. Sizes are on a 1920 by 840 stage. */
+.kf {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--kf-ground, var(--b-ground));
+  color: var(--b-t1);
+  font-family: var(--zj-font, 'Inter', system-ui, sans-serif);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  pointer-events: none;
+  contain: strict;
+}
+.kf-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 840px;
+  transform-origin: 0 0;
+}
+.kf-layer,
+.kf-scene {
+  position: absolute;
+  inset: 0;
+}
+.kf i,
+.kf b {
+  font-style: normal;
+}
+.kf-in {
+  transition: opacity 0.5s var(--b-ease);
+}
+.kf-at {
+  position: absolute;
+  translate: -50% -50%;
+  transition:
+    left 0.9s var(--b-soft),
+    top 0.9s var(--b-soft),
+    scale 0.9s var(--b-soft),
+    rotate 0.9s var(--b-soft),
+    opacity 0.5s var(--b-ease);
+}
+.kf-atl {
+  translate: 0 -50%;
+}
+.kf-dim {
+  opacity: 0.38;
+}
+.kf-still,
+.kf-still * {
+  transition: none !important;
+}
+.kf-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.kf svg {
+  display: block;
+}
+
+/* names and numbers */
+.kf-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.kf-lab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.kf-left {
+  align-items: flex-start;
+  text-align: left;
+}
+.kf-l {
+  font-size: 46px;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.kf-s {
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--b-t2);
+  white-space: nowrap;
+}
+.kf-n {
+  display: block;
+  font-size: 150px;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.kf-bad {
+  color: var(--b-bad);
+}
+.kf-ok {
+  color: var(--b-ok);
+}
+
+/* logos keep their own colours on a white tile */
+.kf-logo {
+  display: grid;
+  place-items: center;
+  background: var(--b-paper-key, #fff);
+  box-shadow: inset 0 0 0 1.5px var(--b-hl2);
+}
+.kf-logo img {
+  display: block;
+  object-fit: contain;
+}
+.kf-face {
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1.5px var(--b-hl2);
+}
+.kf-who {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.kf-file {
+  display: block;
+  width: 140px;
+  height: 140px;
+}
+
+/* the speaker: one wave a notch, each grows out of the cone */
+.kf-spk {
+  overflow: visible;
+}
+.kf-arc {
+  opacity: 0;
+  transform: scale(0.55);
+  transform-box: view-box;
+  transform-origin: 11px 12px;
+  transition:
+    opacity 0.3s var(--b-ease),
+    transform 0.6s var(--b-soft);
+}
+.kf-arc.on {
+  opacity: 1;
+  transform: none;
+}
+
+/* a page */
+.kf-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 52px 48px;
+  box-sizing: border-box;
+  background: var(--b-slab);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1.5px var(--b-hl2);
+}
+.kf-bar {
+  display: block;
+  flex: none;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--b-hl2);
+  transition: background 0.5s var(--b-ease);
+}
+.kf-bar.ink {
+  background: var(--b-t1);
+}
+.kf-pt {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+.kf-ptw {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+.kf-pl {
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+.kf-sm .kf-pl {
+  font-size: 34px;
+}
+.kf-sm {
+  gap: 24px;
+  padding: 44px 40px;
+}
+.kf-slot {
+  height: 150px;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 2px var(--b-hl2);
+  display: grid;
+  margin-top: 8px;
+}
+.kf-slotb {
+  display: grid;
+  align-items: center;
+  padding: 0 32px;
+}
+.kf-slotf {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.kf-li {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 40px;
+}
+.kf-ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  color: var(--b-t2);
+  white-space: nowrap;
+}
+.kf-ext img {
+  display: block;
+}
+.kf-who-p {
+  align-items: flex-start;
+  gap: 24px;
+  padding: 40px 36px;
+}
+.kf-me .kf-face {
+  align-self: flex-end;
+}
+.kf-who-p {
+  transition:
+    background 0.5s var(--b-ease),
+    box-shadow 0.5s var(--b-ease);
+}
+.kf-who-p .kf-bar {
+  transition: opacity 0.4s var(--b-ease);
+}
+.kf-ghost {
+  background: transparent;
+  box-shadow: none;
+}
+.kf-ghost .kf-bar {
+  opacity: 0;
+}
+.kf-ann {
+  gap: 30px;
+  padding: 48px 44px;
+}
+.kf-ann-logo {
+  margin-bottom: 6px;
+}
+.kf-mini {
+  gap: 20px;
+  padding: 30px 28px;
+}
+.kf-mini .kf-ann-logo {
+  margin: 0;
+}
+
+/* a table of markets */
+.kf-tbl {
+  display: flex;
+  flex-direction: column;
+  width: 560px;
+}
+.kf-tr {
+  display: grid;
+  grid-template-columns: 150px 210px 200px;
+  align-items: center;
+  height: 64px;
+  font-size: 38px;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.kf-th {
+  height: 56px;
+  font-size: 30px;
+  color: var(--b-t2);
+}
+
+/* a real Google Sheets view */
+.kf .b-light {
+  color: var(--b-t1);
+}
+.kf-sheet {
+  background: var(--b-slab);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1.5px var(--b-hl2);
+  overflow: hidden;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+.kf-sh-top {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 22px;
+  font-size: 26px;
+  box-shadow: inset 0 -1px 0 var(--b-hl);
+}
+.kf-sh-top img {
+  width: 34px;
+  height: 34px;
+}
+.kf-row {
+  display: flex;
+}
+.kf-c {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  box-sizing: border-box;
+  height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  box-shadow:
+    inset -1px 0 0 var(--b-hl),
+    inset 0 -1px 0 var(--b-hl);
+  transition:
+    box-shadow 0.35s var(--b-ease),
+    color 0.35s var(--b-ease);
+}
+.kf-rn {
+  width: 56px;
+  justify-content: center;
+  color: var(--b-t3);
+  background: var(--b-slab2);
+  font-size: 20px;
+}
+.kf-hd {
+  height: 40px;
+}
+.kf-hd .kf-c {
+  justify-content: center;
+  color: var(--b-t3);
+  background: var(--b-slab2);
+  font-size: 20px;
+}
+.kf-names .kf-c:not(.kf-rn) {
+  font-weight: 600;
+}
+.kf-c.bad {
+  color: var(--b-bad);
+  box-shadow: inset 0 0 0 3px var(--b-bad);
+}
+.kf-c.ph::after {
+  content: '';
+  width: 46%;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--b-hl2);
+}
+
+/* the road of stages */
+.kf-road {
+  position: relative;
+  height: 0;
+}
+.kf-track,
+.kf-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--b-hl2);
+}
+.kf-fill {
+  background: var(--b-t1);
+  transform-origin: 0 50%;
+  transition: transform 1.6s var(--b-eo);
+}
+.kf-stop {
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+.kf-dotw {
+  position: absolute;
+  left: -17px;
+  top: -17px;
+  transition: opacity 0.5s var(--b-ease);
+}
+.kf-dot {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--kf-ground, var(--b-ground));
+  box-shadow: inset 0 0 0 4px var(--b-t1);
+  transition:
+    background 0.4s var(--b-ease),
+    transform 0.6s var(--b-soft);
+}
+.kf-stop.cur .kf-dot {
+  background: var(--b-t1);
+  transform: scale(1.3);
+}
+.kf-stop.off .kf-dotw,
+.kf-stop.off .kf-stopl {
+  opacity: 0.38;
+}
+.kf-stopl,
+.kf-min,
+.kf-stope {
+  position: absolute;
+  left: 0;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+.kf-stopl {
+  top: 44px;
+}
+.kf-sn {
+  font-size: 34px;
+  letter-spacing: -0.025em;
+}
+.kf-road.big .kf-sn {
+  font-size: 46px;
+  letter-spacing: -0.035em;
+}
+.kf-min {
+  top: 96px;
+  font-size: 30px;
+  color: var(--b-t2);
+}
+.kf-stope {
+  top: 104px;
+}
+
+/* windows: the app, the repo */
+.kf-win {
+  position: relative;
+  background: var(--b-slab);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1.5px var(--b-hl2);
+  overflow: hidden;
+}
+.kf-win-top {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 26px;
+  box-shadow: inset 0 -1px 0 var(--b-hl);
+}
+.kf-win-top > i {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--b-hl2);
+}
+.kf-win-t {
+  margin-left: 14px;
+  font-size: 30px;
+  letter-spacing: -0.025em;
+}
+.kf-repo .kf-win-t {
+  margin-left: 0;
+}
+.kf-gh {
+  width: 40px;
+  height: 40px;
+}
+.kf-files {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  min-height: 252px;
+}
+.kf-file-r {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 76px;
+  padding: 0 30px;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+}
+.kf-file-r img {
+  width: 40px;
+  height: 40px;
+}
+.kf-lockw {
+  position: relative;
+  display: block;
+}
+.kf-lock {
+  position: absolute;
+  right: -26px;
+  bottom: -14px;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: var(--kf-ground, var(--b-ground));
+}
+.kf-span {
+  display: block;
+  height: 30px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 4px var(--b-t1);
+}
+
+/* claims and their verdicts */
+.kf-claim,
+.kf-vrow {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.kf-swap {
+  display: grid;
+}
+.kf-swap > * {
+  grid-area: 1 / 1;
+}
+.kf-vbody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 340px;
+}
+.kf-vl {
+  font-size: 34px;
+  letter-spacing: -0.025em;
+}
+.kf-src {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 30px;
+  color: var(--b-t2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kf,
+  .kf * {
+    transition: none !important;
+  }
+}

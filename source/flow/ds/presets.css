@@ -1,0 +1,205 @@
+/* The three styles, one switch: <html data-zstyle>. Same token names, so every screen follows.
+   Values and sources: flow/research/voicenotes.md part 3.
+   voice: Voicenotes web, super clean white. job: the job portal kit at the same luminance with the blue cast taken out
+   (his words: "white, not some bluish grays"). trust: Vercel Geist greys and key, Linear surfaces, on our charcoal stage.
+   "No shadow" is 0 0 #0000, never none: the kit chains shadow tokens in lists. */
+
+/* ---------- voice ---------- */
+:root[data-zstyle='voice'] {
+  --zj-canvas: #ffffff;
+  --zj-sheet: #ffffff;
+  --zj-well: #f1f1f1;
+  --zj-well2: #eeeeee;
+  --zj-line: #eeeeee;
+  --zj-line2: #e3e3e3;
+  --zj-ink: #0d0d0d;
+  --zj-ink2: #555555;
+  --zj-ink3: #717171;
+  --zj-ink4: #9b9b9b;
+  --zj-key-bg: #0d0d0d;
+  --zj-key-edge: #0d0d0d;
+  --zj-sec-bg: #f1f1f1;
+  --zj-sec-bg-hover: #e9e9e9;
+  --zj-r-pill: 99px;
+  --zj-r-sheet: 24px;
+  --zj-r-card: 16px;
+  --zj-r-dialog: 24px;
+  --zj-r-row: 12px;
+  --zj-r-tile: 12px;
+  --zj-r-ctl: 12px;
+  --zj-r-sm: 8px;
+  --zj-r-check: 6px;
+  --zj-r-img: 5px;
+  --zj-sh-sheet: 0 0 #0000;
+  --zj-sh-hair: inset 0 0 0 1px var(--zj-line);
+  --zj-sh-ring: 0 0 0 1px var(--zj-line2);
+  --zj-sh-ctl: inset 0 0 0 1px var(--zj-line2);
+  --zj-sh-key: 0 0 #0000;
+  --zj-sh-key-down: 0 0 #0000;
+  --zj-sh-sec: 0 0 #0000;
+  --zj-sh-on: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --zj-sh-panel: inset 0 0 0 1px var(--zj-line), 0 2px 5px rgba(0, 0, 0, 0.05), 0 8px 40px rgba(0, 0, 0, 0.04);
+  --zj-sh-pop: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.07);
+  --zj-sh-toast: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.07);
+  --zj-sh-dialog: 0 24px 60px -12px rgba(0, 0, 0, 0.25);
+  --zj-sh-float: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.08);
+  --z4-tint: #f1f1f1;
+  --z4-tint2: #eeeeee;
+  --z4-frame: #ffffff;
+  --z4-sky: var(--z4-frame);
+  --z4-air: 1.25;
+  --z-bg: #1b1b1b;
+  --z-panel: #222222;
+  --z-raise: #272727;
+  --z-raise-2: #323232;
+  --z-line: rgba(255, 255, 255, 0.08);
+  --z-line-2: rgba(255, 255, 255, 0.14);
+  --z-tx: #eeeeee;
+  --z-tx-2: #b3b3b3;
+  --z-tx-3: #8d8d8d;
+  --z-key: #ffffff;
+  --z-key-tx: #0d0d0d;
+  --z-paper: #ffffff;
+  --z-ink: #0d0d0d;
+}
+:root[data-zstyle='voice'] .zd {
+  --zj-canvas: #1b1b1b;
+  --zj-sheet: #1b1b1b;
+  --zj-well: #272727;
+  --zj-well2: #323232;
+  --zj-line: rgba(255, 255, 255, 0.08);
+  --zj-line2: rgba(255, 255, 255, 0.14);
+  --zj-ink: #eeeeee;
+  --zj-ink2: #b3b3b3;
+  --zj-ink3: #8d8d8d;
+  --zj-ink4: #717171;
+  --z4-tint: #272727;
+  --z4-tint2: #323232;
+}
+:root[data-zstyle='voice'] .z-light {
+  --z-bg: #ffffff;
+  --z-panel: #ffffff;
+  --z-raise: #f1f1f1;
+  --z-raise-2: #eeeeee;
+  --z-line: #eeeeee;
+  --z-line-2: #e3e3e3;
+  --z-tx: #0d0d0d;
+  --z-tx-2: #555555;
+  --z-tx-3: #717171;
+  --z-key: #0d0d0d;
+  --z-key-tx: #ffffff;
+}
+:root[data-zstyle='voice'] .zj-key,
+:root[data-zstyle='voice'] .zj-sec {
+  border-radius: var(--zj-r-pill);
+  padding: 0 20px;
+  font-weight: 500;
+}
+:root[data-zstyle='voice'] .zj-key:hover {
+  filter: none;
+  background: #191919;
+}
+:root[data-zstyle='voice'] .zd .zj-key {
+  background: #ffffff;
+  color: #0d0d0d;
+  box-shadow: 0 0 #0000;
+}
+:root[data-zstyle='voice'] .zd .zj-sec {
+  background: var(--zj-well);
+  box-shadow: 0 0 #0000;
+}
+
+/* ---------- job: the portal kit, neutral at the same luminance, so contrast does not move ---------- */
+:root[data-zstyle='job'] {
+  --zj-canvas: #f3f3f3;
+  --zj-well: #f6f6f6;
+  --zj-well2: #ededed;
+  --zj-line: #e7e7e7;
+  --zj-line2: #d5d5d5;
+  --zj-ink: #141414;
+  --zj-ink2: #525252;
+  --zj-ink3: #6f6f6f;
+  --zj-ink4: #a9a9a9;
+  --zj-sec-bg: linear-gradient(#ffffff, #f4f4f4);
+  --zj-sec-bg-hover: linear-gradient(#ffffff, #efefef);
+  --z4-air: 1;
+}
+
+/* ---------- trust: Geist greys and key, Linear surfaces; the stage stays charcoal ---------- */
+:root[data-zstyle='trust'] {
+  --zj-canvas: #fafafa;
+  --zj-sheet: #ffffff;
+  --zj-well: #f2f2f2;
+  --zj-well2: #ebebeb;
+  --zj-line: #ebebeb;
+  --zj-line2: #dcdcdc;
+  --zj-ink: #171717;
+  --zj-ink2: #4d4d4d;
+  --zj-ink3: #666666;
+  --zj-ink4: #8f8f8f;
+  --zj-key-bg: #171717;
+  --zj-key-edge: #171717;
+  --zj-sec-bg: #ffffff;
+  --zj-sec-bg-hover: #fafafa;
+  --zj-r-pill: 99px;
+  --zj-r-sheet: 16px;
+  --zj-r-card: 12px;
+  --zj-r-dialog: 12px;
+  --zj-r-row: 8px;
+  --zj-r-tile: 10px;
+  --zj-r-ctl: 8px;
+  --zj-r-sm: 6px;
+  --zj-r-check: 4px;
+  --zj-r-img: 4px;
+  --zj-sh-sheet: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.04), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
+  --zj-sh-hair: inset 0 0 0 1px var(--zj-line);
+  --zj-sh-ring: 0 0 0 1px var(--zj-line2);
+  --zj-sh-ctl: inset 0 0 0 1px var(--zj-line2);
+  --zj-sh-key: 0 0 #0000;
+  --zj-sh-key-down: 0 0 #0000;
+  --zj-sh-sec: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.04);
+  --zj-sh-on: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --zj-sh-panel: inset 0 0 0 1px var(--zj-line), 0 2px 2px rgba(0, 0, 0, 0.04), 0 8px 8px -8px rgba(0, 0, 0, 0.04);
+  --zj-sh-pop: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.02), 0 4px 8px -4px rgba(0, 0, 0, 0.04),
+    0 16px 24px -8px rgba(0, 0, 0, 0.06);
+  --zj-sh-toast: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.02), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --zj-sh-dialog: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 32px 72px -12px rgba(0, 0, 0, 0.06), 0 8px 32px -12px rgba(0, 0, 0, 0.08),
+    0 8px 24px -12px rgba(0, 0, 0, 0.12);
+  --zj-sh-float: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 3px 12px rgba(0, 0, 0, 0.09);
+  --z4-tint: #f2f2f2;
+  --z4-tint2: #ebebeb;
+  --z4-frame: #fafafa;
+  --z4-sky: var(--z4-frame);
+  --z4-air: 1.15;
+}
+:root[data-zstyle='trust'] .z-light {
+  --z-bg: #fafafa;
+  --z-panel: #ffffff;
+  --z-raise: #f2f2f2;
+  --z-raise-2: #ebebeb;
+  --z-line: #ebebeb;
+  --z-line-2: #dcdcdc;
+  --z-tx: #171717;
+  --z-tx-2: #4d4d4d;
+  --z-tx-3: #666666;
+  --z-key: #171717;
+  --z-key-tx: #ffffff;
+}
+:root[data-zstyle='trust'] .zj-key {
+  font-weight: 500;
+  padding: 0 12px;
+}
+:root[data-zstyle='trust'] .zj-key:hover {
+  filter: none;
+  background: #383838;
+}
+:root[data-zstyle='trust'] .zd .zj-key {
+  background: #ededed;
+  color: #141414;
+  box-shadow: 0 0 #0000;
+}
+:root[data-zstyle='trust'] .zd .zj-sec {
+  background: var(--zj-sheet);
+  color: var(--zj-ink);
+  box-shadow: 0 0 0 1px var(--zj-line2);
+}

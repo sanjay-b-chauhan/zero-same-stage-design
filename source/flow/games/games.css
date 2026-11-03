@@ -1,0 +1,410 @@
+/* The micro-scenario card in b36's language: one dark slab, two hairlines, white text at 1, .62 and .38, Inter 14/20,
+   12 and 13 for small, weights 400 and 500, green for verified only. The slice inside is a tool, so it is drawn as
+   Google Sheets, with the same values as b36's own Sheets replica (film/css/apps.css). No glow, no plain fades.
+   This file reaches the PiP window because the PiP copies every stylesheet of the page. */
+
+.gm {
+  container: gm / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 580px;
+  padding: 16px;
+  border-radius: var(--b-r, 14px);
+  background: var(--b-slab, #1a1a1c);
+  box-shadow: var(--b-slab-sh, 0 0 0 1px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.09));
+  color: var(--b-t2, rgba(255, 255, 255, 0.62));
+  font: 400 14px/20px var(--zj-font, Inter, -apple-system, system-ui, sans-serif);
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+  font-synthesis: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+.gm *,
+.gm *::before,
+.gm *::after {
+  box-sizing: border-box;
+}
+.gm p {
+  margin: 0;
+}
+.gm :where(button) {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* the moment: when, then what is at stake */
+.gm-scene {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.gm-scene p:first-child {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--b-t3);
+}
+.gm-scene p:last-child {
+  color: var(--b-t1);
+}
+
+/* the slice, as the Google Sheet it lives in */
+.gm-gs {
+  overflow: hidden;
+  border-radius: var(--b-ri, 10px);
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--b-edge, #000);
+  color: #1f1f1f;
+  font: 400 13px/1.3 Inter, Arial, sans-serif;
+  letter-spacing: 0;
+}
+.gm-gs-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  background: #f9fbfd;
+  font-size: 13px;
+}
+.gm-gs-top img {
+  flex: none;
+  display: block;
+}
+.gm-gs-top span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gm-gs-fx {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px;
+  background: #fff;
+  border-top: 1px solid #e1e3e1;
+  border-bottom: 1px solid #e1e3e1;
+}
+.gm-gs-name {
+  flex: none;
+  width: 56px;
+  padding-right: 8px;
+  border-right: 1px solid #e1e3e1;
+  font-size: 12.5px;
+}
+.gm-gs-f {
+  flex: none;
+  color: #80868b;
+  font-style: italic;
+  font-family: Georgia, serif;
+}
+.gm-gs-fv {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 12.5px Menlo, monospace;
+  color: #1f1f1f;
+}
+.gm-gs-grid {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.gm-tr {
+  display: grid;
+  grid-template-columns: var(--gm-cols);
+  min-width: 0;
+}
+/* column letters and row numbers */
+.gm-gs-letters > span,
+.gm-n {
+  display: grid;
+  place-items: center;
+  height: 22px;
+  min-width: 0;
+  background: #f9fbfd;
+  color: #444746;
+  font-size: 11.5px;
+  box-shadow: inset -1px -1px 0 #e1e3e1;
+  transition: background-color 0.16s var(--b-ease, ease);
+}
+.gm-n {
+  height: 26px;
+}
+.gm-gs-letters > span[data-on],
+.gm-n[data-on] {
+  background: #d3e3fd;
+  font-weight: 600;
+}
+/* row 1, the file's own header */
+.gm-hd,
+.gm-td {
+  display: block;
+  min-width: 0;
+  height: 26px;
+  box-shadow: inset -1px -1px 0 #e8eaed;
+}
+.gm-hd {
+  padding: 0 6px;
+  font-size: 12.5px;
+  line-height: 26px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gm-hd[data-sel] {
+  box-shadow: inset 0 0 0 2px #0b57d0;
+}
+.gm-c {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 26px;
+  padding: 0 6px;
+  color: #1f1f1f;
+  font-size: 12.5px;
+  line-height: 26px;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  cursor: cell;
+  outline: 0;
+  transition: background-color 0.2s var(--b-ease, ease), color 0.3s var(--b-ease, ease);
+}
+.gm-c:disabled {
+  cursor: default;
+}
+.gm-c[data-num] {
+  text-align: right;
+}
+.gm-v {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* what changed, or what the moment is about: Sheets' range fill */
+.gm-c[data-mark] {
+  background: #e8f0fe;
+}
+/* the selected cell, as Sheets draws it */
+.gm-c[data-sel],
+.gm-c:focus-visible {
+  box-shadow: inset 0 0 0 2px #0b57d0;
+}
+/* her cursor in the sheet after two moves that went badly: she points, you still tap */
+.gm-c[data-her] {
+  z-index: 1;
+  box-shadow: inset 0 0 0 2px #a142f4;
+}
+.gm-flag {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  height: 14px;
+  padding: 0 4px;
+  border-radius: 2px 2px 0 0;
+  background: #a142f4;
+  color: #fff;
+  font-size: 10.5px;
+  line-height: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* rows a move took out of the count */
+.gm-row[data-dim] .gm-c {
+  background: #f1f3f4;
+  color: #9aa0a6;
+}
+
+/* the live number under the sheet, a b36 wrap row: label at .38, value in white */
+.gm-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--b-t3);
+}
+.gm-tv {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--b-t1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* what the last move set off: what happened, then who said what */
+.gm-story {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gm-story[data-empty] {
+  display: none;
+}
+.gm-beat {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+}
+.gm-beat[data-who='sheet'] {
+  display: block;
+}
+.gm-beat[data-more] {
+  margin-top: -6px;
+}
+.gm-beat p {
+  color: var(--b-t2);
+  overflow-wrap: anywhere;
+}
+.gm-beat[data-who='sheet'] p {
+  color: var(--b-t1);
+}
+.gm-who {
+  color: var(--b-t1);
+  font-weight: 500;
+}
+.gm-av {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--b-slab2);
+}
+.gm-av img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gm-av-i {
+  color: var(--b-t2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+
+/* her ask and the moves: verbs on plain slabs */
+.gm-act {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gm-ask {
+  color: var(--b-t1);
+  font-weight: 500;
+}
+.gm-moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--b-gap, 6px);
+}
+.gm .gm-move {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 99px;
+  background: var(--b-slab2);
+  box-shadow: var(--b-slab-sh);
+  color: var(--b-t1);
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background-color 0.14s var(--b-ease, ease), transform 0.14s var(--b-ease, ease), color 0.2s var(--b-ease, ease);
+}
+.gm .gm-move:hover {
+  background: var(--b-slab3);
+}
+.gm .gm-move:active {
+  transform: scale(0.97);
+}
+.gm .gm-move:focus-visible {
+  outline: 2px solid var(--b-t2);
+  outline-offset: 2px;
+}
+.gm .gm-move:disabled {
+  color: var(--b-t3);
+  background: transparent;
+  cursor: default;
+}
+.gm .gm-move[data-her] {
+  box-shadow: 0 0 0 1px var(--b-edge), inset 0 0 0 1px var(--b-t2);
+}
+
+/* found: the system ticks it, green is verified */
+.gm-done {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--b-t1);
+  font-weight: 500;
+}
+.gm-tick {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  background: var(--b-ok, #34c759);
+  color: #fff;
+}
+
+/* entrance, once, when the card first lands: it rises and sharpens */
+@keyframes gm-land {
+  from {
+    transform: translateY(10px);
+    filter: blur(6px);
+    opacity: 0;
+  }
+}
+.gm[data-fresh] {
+  animation: gm-land 700ms var(--b-soft, var(--zj-out)) both;
+}
+.gm[data-fresh] .gm-in {
+  animation: gm-land 700ms var(--b-soft, var(--zj-out)) both;
+  animation-delay: calc(80ms + var(--d, 0) * 90ms);
+}
+
+/* a narrow PiP window */
+@container gm (max-width: 420px) {
+  .gm-hd,
+  .gm-c {
+    padding: 0 4px;
+    font-size: 11.5px;
+  }
+  .gm-gs-name {
+    width: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gm,
+  .gm * {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,116 @@
+/* The real Level and Coach panels are styled the product way: inline styles plus a few Tailwind utilities, on top of
+   Tailwind's base. The prototype carries no Tailwind, so here are that base and exactly the utilities those
+   components use, scoped to the panel so nothing else on the page changes. */
+.zh-real {
+  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  font-feature-settings: normal;
+  letter-spacing: normal;
+  line-height: 1.5;
+}
+.zh-real :where(*, ::before, ::after) {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+.zh-real :where(h1, h2, h3, h4, h5, h6) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+.zh-real :where(b, strong) {
+  font-weight: bolder;
+  color: inherit;
+}
+.zh-real :where(ul, ol, menu) {
+  list-style: none;
+}
+.zh-real :where(img, svg, video) {
+  display: block;
+  vertical-align: middle;
+}
+.zh-real :where(img, video) {
+  max-width: 100%;
+  height: auto;
+}
+.zh-real :where(button) {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background-color: transparent;
+  border-radius: 0;
+  text-align: center;
+}
+.zh-real :where(button:not(:disabled)) {
+  cursor: pointer;
+}
+
+/* layout */
+.zh-real .relative { position: relative; }
+.zh-real .absolute { position: absolute; }
+.zh-real .inset-0 { inset: 0; }
+.zh-real .top-0 { top: 0; }
+.zh-real .block { display: block; }
+.zh-real .flex { display: flex; }
+.zh-real .grid { display: grid; }
+.zh-real .inline-grid { display: inline-grid; }
+.zh-real .flex-col { flex-direction: column; }
+.zh-real .flex-1 { flex: 1; }
+.zh-real .basis-0 { flex-basis: 0; }
+.zh-real .shrink-0 { flex-shrink: 0; }
+.zh-real .min-w-0 { min-width: 0; }
+.zh-real .items-center { align-items: center; }
+.zh-real .items-start { align-items: flex-start; }
+.zh-real .justify-center { justify-content: center; }
+.zh-real .justify-between { justify-content: space-between; }
+.zh-real .place-items-center { place-items: center; }
+.zh-real .overflow-hidden { overflow: hidden; }
+.zh-real .overflow-y-auto { overflow-y: auto; }
+.zh-real .overscroll-contain { overscroll-behavior: contain; }
+.zh-real .\[scrollbar-width\:none\] { scrollbar-width: none; }
+
+/* type */
+.zh-real .font-medium { font-weight: 500; }
+.zh-real .leading-none { line-height: 1; }
+.zh-real .not-italic { font-style: normal; }
+.zh-real .list-none { list-style-type: none; }
+.zh-real .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.zh-real .whitespace-nowrap { white-space: nowrap; }
+
+/* look */
+.zh-real .rounded-full { border-radius: 9999px; }
+.zh-real .object-cover { object-fit: cover; }
+.zh-real .select-none { user-select: none; -webkit-user-select: none; }
+.zh-real .pointer-events-none { pointer-events: none; }
+.zh-real .cursor-pointer { cursor: pointer; }
+.zh-real .opacity-50 { opacity: 0.5; }
+.zh-real .grayscale { filter: grayscale(100%); }
+.zh-real .transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.zh-real .duration-200 { transition-duration: 200ms; }
+
+/* the tab segments and the details nav read their colours from custom properties */
+.zh-real .bg-\[var\(--tab-bg\)\] { background-color: var(--tab-bg); }
+.zh-real .text-\[var\(--tab-fg\)\] { color: var(--tab-fg); }
+.zh-real .hover\:bg-\[var\(--tab-hover\)\]:hover { background-color: var(--tab-hover); }
+.zh-real .hover\:text-\[var\(--tab-ink\)\]:hover { color: var(--tab-ink); }
+.zh-real .hover\:bg-\[var\(--cld-well\)\]:hover { background-color: var(--cld-well); }
+.zh-real .hover\:text-\[var\(--cld-ink\)\]:hover { color: var(--cld-ink); }
+.zh-real .disabled\:pointer-events-none:disabled { pointer-events: none; }
+.zh-real .disabled\:opacity-35:disabled { opacity: 0.35; }
+
+/* the coach's skills rows */
+.zh-real .text-\[\#4A4D54\] { color: #4a4d54; }
+.zh-real .group:hover .group-hover\:text-\[\#F2F2F3\] { color: #f2f2f3; }
+.zh-real .hover\:bg-\[\#38393E\]:hover { background-color: #38393e; }
+.zh-real .active\:scale-\[\.98\]:active { scale: 0.98; }
+
+/* focus rings */
+.zh-real .focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
+.zh-real .focus-visible\:outline:focus-visible { outline-style: solid; }
+.zh-real .focus-visible\:outline-2:focus-visible { outline-width: 2px; }
+.zh-real .focus-visible\:outline-offset-2:focus-visible { outline-offset: 2px; }
+.zh-real .focus-visible\:outline-\[rgba\(20\,22\,26\,0\.35\)\]:focus-visible { outline-color: rgba(20, 22, 26, 0.35); }
+.zh-real .focus-visible\:outline-\[rgba\(255\,255\,255\,0\.35\)\]:focus-visible { outline-color: rgba(255, 255, 255, 0.35); }

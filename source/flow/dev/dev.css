@@ -1,0 +1,811 @@
+/* Developer mode, in the DialKit manner: solid slabs, one hairline, labelled rows. Tokens only, so it follows the style and the dark stage. */
+.zdm {
+  display: contents;
+}
+
+.zdm-gear,
+.zdm-round {
+  display: inline-grid;
+  place-items: center;
+  color: var(--zj-ink3);
+  transition: transform 120ms var(--zj-e), color 120ms var(--zj-e), background-color 120ms var(--zj-e);
+}
+.zdm-gear {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+  z-index: 9500;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--zj-r-ctl);
+  background: var(--zj-sheet);
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+.zdm-gear svg {
+  transition: transform var(--z4-spring-ms) var(--z4-spring);
+}
+.zdm-gear:hover,
+.zdm-gear[data-open] {
+  color: var(--zj-ink);
+}
+.zdm-gear[data-open] svg {
+  transform: rotate(60deg);
+}
+.zdm-gear:active,
+.zdm-round:active {
+  transform: translateY(1px);
+}
+.zdm-gear:focus-visible,
+.zdm-round:focus-visible,
+.zdm-row:focus-visible,
+.zdm-g-h:focus-visible,
+.zdm-do-b:focus-visible,
+.zdm-tick:focus-visible {
+  outline: 2px solid var(--zj-ink);
+  outline-offset: 1px;
+}
+
+/* the gear sits in the bottom right corner, out of the page. The panel grows up out of it and goes back the same way */
+.zdm-wrap {
+  position: fixed;
+  right: 26px;
+  bottom: 66px;
+  z-index: 9500;
+  transform-origin: calc(100% - 16px) calc(100% + 8px);
+  transform: translateY(6px) scale(0.96);
+  filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 180ms var(--zj-e), filter 180ms var(--zj-e), opacity 180ms var(--zj-e), visibility 0s 180ms;
+}
+.zdm-wrap[data-open] {
+  transform: none;
+  filter: none;
+  opacity: 1;
+  visibility: visible;
+  transition: transform var(--z4-snap-ms) var(--z4-snap), filter 200ms var(--zj-e), opacity 120ms var(--zj-e), visibility 0s;
+}
+/* b12 (his note: "make the setting thing more bigger, it does not grow, I need to scroll horizontal"): wider, as tall as
+   what it holds up to the screen, and never a sideways scroll */
+.z4-dial.zdm-panel {
+  --d-bg: var(--zj-sheet);
+  --d-line: var(--zj-line2);
+  --d-on: var(--zj-well2);
+  /* the controls' own slabs: a wash of the ink, so they stand one step off the panel on light and on dark */
+  --zdm-wash: color-mix(in srgb, var(--zj-ink) 6%, transparent);
+  --zdm-wash2: color-mix(in srgb, var(--zj-ink) 12%, transparent);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 2px;
+  width: 384px;
+  max-width: calc(100vw - 52px);
+  max-height: calc(100vh - 92px);
+  padding: 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  font-size: 13px;
+  line-height: 18px;
+  box-shadow: inset 0 0 0 1px var(--d-line), var(--zj-sh-pop);
+}
+/* on the dark stage the slabs sit one step above the panels behind them */
+.zd .z4-dial.zdm-panel {
+  --d-bg: var(--zj-well);
+  --d-on: var(--zj-well2);
+}
+.zd .zdm-gear,
+.zd .zdm-hud {
+  background: var(--zj-well);
+}
+
+.zdm-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  margin-bottom: 4px;
+  padding: 0 0 0 2px;
+}
+/* tabs: plain words, the one you are on in a thin outline pill */
+.zdm-tabs {
+  display: flex;
+  gap: 2px;
+  margin-right: auto;
+}
+.zdm-tabs button {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--zj-r-pill);
+  color: var(--zj-ink3);
+  font-weight: 500;
+  transition: color 120ms var(--zj-e), box-shadow 120ms var(--zj-e);
+}
+.zdm-tabs button:hover {
+  color: var(--zj-ink);
+}
+.zdm-tabs button[aria-selected='true'] {
+  color: var(--zj-ink);
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+.zdm-count {
+  margin-right: 4px;
+  color: var(--zj-ink4);
+  font-variant-numeric: tabular-nums;
+}
+.zdm-round {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--zj-r-sm);
+}
+.zdm-round:hover:not(:disabled) {
+  background: var(--d-on);
+  color: var(--zj-ink);
+}
+.zdm-round:disabled {
+  color: var(--zj-line2);
+}
+
+/* every moment as one short dash, gaps between the sections (the landing slab at the top) */
+.zdm-ticks {
+  display: inline-flex;
+  gap: 7px;
+}
+.zdm-tg {
+  display: inline-flex;
+}
+.zdm-tick {
+  position: relative;
+  display: block;
+  width: 8px;
+  height: 18px;
+}
+.zdm-tick::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 4px;
+  width: 2px;
+  height: 10px;
+  border-radius: 1px;
+  background: var(--zj-line2);
+  transition: background-color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zdm-tick[data-state='past']::before {
+  background: var(--zj-ink4);
+}
+.zdm-tick[data-state='on']::before {
+  background: var(--zj-ink);
+  transform: scaleY(1.4);
+}
+button.zdm-tick:hover::before {
+  background: var(--zj-ink);
+}
+
+.zdm-do {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--zj-well);
+}
+.zdm-do-b {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 30px;
+  padding: 0 6px;
+  border-radius: var(--zj-r-sm);
+  color: var(--zj-ink);
+  transition: background-color 120ms var(--zj-e);
+}
+.zdm-do-b:hover {
+  background: var(--d-on);
+}
+.zdm-do-b span {
+  min-width: 0;
+  padding: 6px 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.zdm-list {
+  display: grid;
+  gap: 1px;
+  margin: 4px 0;
+  padding: 4px 0;
+  box-shadow: 0 -1px 0 var(--zj-line), 0 1px 0 var(--zj-line);
+}
+.zdm-g-h,
+.zdm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--zj-r-sm);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e);
+}
+.zdm-g-h {
+  color: var(--zj-ink3);
+}
+.zdm-g-h svg {
+  color: var(--zj-ink4);
+  transform: rotate(-90deg);
+  transition: transform 200ms var(--zj-e);
+}
+.zdm-g[data-open] .zdm-g-h {
+  color: var(--zj-ink);
+}
+.zdm-g[data-open] .zdm-g-h svg {
+  transform: none;
+}
+.zdm-row {
+  padding-left: 18px;
+  color: var(--zj-ink3);
+}
+.zdm-g-h:hover,
+.zdm-row:hover {
+  background: var(--zj-well);
+  color: var(--zj-ink);
+}
+.zdm-row[aria-current] {
+  background: var(--d-on);
+  color: var(--zj-ink);
+}
+
+.zdm kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+  color: var(--zj-ink3);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* where you landed: a small slab that drops from the top and goes back up */
+.zdm-hud {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--zj-r-pill);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-pop);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -14px) scale(0.96);
+  filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 180ms var(--zj-e), filter 180ms var(--zj-e), opacity 180ms var(--zj-e), visibility 0s 180ms;
+}
+.zdm-hud[data-on] {
+  transform: translate(-50%, 0);
+  filter: none;
+  opacity: 1;
+  visibility: visible;
+  transition: transform var(--z4-snap-ms) var(--z4-snap), filter 200ms var(--zj-e), opacity 120ms var(--zj-e), visibility 0s;
+}
+.zdm-hud-g {
+  color: var(--zj-ink3);
+}
+.zdm-hud-l {
+  color: var(--zj-ink);
+  font-weight: 500;
+}
+
+/* a small heading over a group of controls */
+.zdm-sub {
+  margin: 12px 0 2px;
+  padding: 0 10px;
+  color: var(--zj-ink3);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* presets: the one in use in a thin outline pill, Save keeps what you have now, Copy hands it over as CSS */
+.zdm-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 2px 4px;
+}
+.zdm-pre {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  border-radius: var(--zj-r-pill);
+  background: var(--zdm-wash);
+  color: var(--zj-ink2);
+  transition: box-shadow 120ms var(--zj-e), color 120ms var(--zj-e);
+}
+.zdm-pre > button:first-child {
+  height: 100%;
+  padding: 0 12px;
+  border-radius: inherit;
+}
+.zdm-pre:has(.zdm-pre-x) > button:first-child {
+  padding-right: 4px;
+}
+.zdm-pre:hover,
+.zdm-pre[data-on] {
+  color: var(--zj-ink);
+}
+.zdm-pre[data-on] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+.zdm-pre-x {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+  border-radius: 50%;
+  color: var(--zj-ink4);
+}
+.zdm-pre-x:hover {
+  background: var(--d-on);
+  color: var(--zj-ink);
+}
+.zdm-pre-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px 0 10px;
+  border-radius: var(--zj-r-pill);
+  color: var(--zj-ink3);
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+  transition: color 120ms var(--zj-e), box-shadow 120ms var(--zj-e);
+}
+.zdm-pre-add:hover {
+  color: var(--zj-ink);
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+
+/* a size: the row is the slider. A slab, the part up to the value one step brighter, a thin handle at its edge */
+.zdm-sls {
+  display: grid;
+  gap: 4px;
+}
+.zdm-sl {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--zdm-wash);
+  color: var(--zj-ink2);
+  overflow: hidden;
+  isolation: isolate;
+  cursor: ew-resize;
+}
+.zdm-sl::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: -1;
+  width: calc(var(--p) * 100%);
+  background: var(--zdm-wash2);
+}
+.zdm-sl::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: calc(var(--p) * 100% - 4px);
+  width: 2px;
+  border-radius: 1px;
+  background: var(--zj-ink4);
+  transition: background-color 120ms var(--zj-e);
+}
+.zdm-sl:hover::after,
+.zdm-sl:focus-within::after {
+  background: var(--zj-ink);
+}
+.zdm-sl b {
+  color: var(--zj-ink3);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.zdm-sl[data-set],
+.zdm-sl[data-set] b {
+  color: var(--zj-ink);
+}
+.zdm-sl input,
+.zdm-sw input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+.zdm-sl:focus-within {
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+
+/* colours: one row per role, the dark and the light value side by side */
+.zdm-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px 112px;
+  align-items: center;
+  gap: 4px;
+  padding: 0 2px;
+}
+.zdm-cols-1 {
+  grid-template-columns: minmax(0, 1fr) 112px;
+  margin-top: 8px;
+}
+.zdm-col-r {
+  display: contents;
+}
+.zdm-col-r > span,
+.zdm-col-h {
+  padding-left: 8px;
+  color: var(--zj-ink2);
+}
+.zdm-col-h {
+  padding-left: 2px;
+  color: var(--zj-ink4);
+  font-size: 12px;
+}
+.zdm-sw {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px 0 6px;
+  border-radius: 10px;
+  background: var(--zdm-wash);
+  color: var(--zj-ink3);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: box-shadow 120ms var(--zj-e);
+}
+.zdm-sw:hover,
+.zdm-sw:focus-within {
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+.zdm-sw[data-set] {
+  color: var(--zj-ink);
+}
+.zdm-sw i {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+
+/* b20: which screen Look tunes, and the PiP's 1x 2x 3x, both in the thin outline pill */
+.zdm-screens,
+.zdm-scale {
+  margin: 2px 0 4px;
+  padding: 0 4px;
+}
+
+/* b21, Look in the Figma manner: sections with a title you fold, compact fields in pairs, the label is the scrub handle */
+.zdm-sec {
+  display: grid;
+  gap: 4px;
+  padding: 6px 0 8px;
+}
+.zdm-sec-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding-right: 4px;
+}
+.zdm-sec-h > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 8px 0 4px;
+  border-radius: var(--zj-r-sm);
+  color: var(--zj-ink);
+  font-weight: 500;
+}
+.zdm-sec-h > button svg {
+  color: var(--zj-ink4);
+  transform: rotate(-90deg);
+  transition: transform 200ms var(--zj-e);
+}
+.zdm-sec[data-open] .zdm-sec-h > button svg {
+  transform: none;
+}
+.zdm-sec-a {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: auto;
+}
+.zdm-sec-n {
+  margin-left: auto;
+  color: var(--zj-ink4);
+  font-size: 12px;
+}
+.zdm-sec-b {
+  display: grid;
+  gap: 4px;
+  padding: 0 2px;
+}
+.zdm-sec-b > .zdm-sub {
+  margin: 8px 0 0;
+  padding: 0 4px;
+}
+.zdm-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--zj-r-sm);
+  color: var(--zj-ink3);
+}
+.zdm-icon:hover {
+  background: var(--zdm-wash);
+  color: var(--zj-ink);
+}
+
+.zdm-fg {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+.zdm-f {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px 0 0;
+  border-radius: 8px;
+  background: var(--zdm-wash);
+  color: var(--zj-ink3);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow 120ms var(--zj-e);
+}
+.zdm-f:hover {
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+}
+.zdm-f:focus-within {
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+.zdm-f-l {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding-left: 10px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 32px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: ew-resize;
+  user-select: none;
+  touch-action: none;
+}
+.zdm-f input {
+  flex: 0 0 52px;
+  width: 52px;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--zj-ink3);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+}
+.zdm-f i {
+  flex: none;
+  color: var(--zj-ink4);
+  font-size: 12px;
+  font-style: normal;
+}
+.zdm-f[data-set] .zdm-f-l,
+.zdm-f[data-set] input {
+  color: var(--zj-ink);
+}
+
+/* a text style row: the sample at its own size, the name over where it is used, the numbers on the right */
+.zdm-ts {
+  display: grid;
+  gap: 4px;
+  border-radius: 10px;
+}
+.zdm-ts[data-open] {
+  padding: 0 0 6px;
+}
+.zdm-ts-h {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px 0 4px;
+  border-radius: 10px;
+  text-align: left;
+  transition: background-color 120ms var(--zj-e);
+}
+.zdm-ts-h:hover,
+.zdm-ts[data-open] .zdm-ts-h {
+  background: var(--zdm-wash);
+}
+.zdm-ts-h b {
+  display: grid;
+  place-items: center;
+  height: 32px;
+  color: var(--zj-ink);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.zdm-ts-h span {
+  display: grid;
+  min-width: 0;
+  color: var(--zj-ink);
+}
+.zdm-ts-h em {
+  overflow: hidden;
+  color: var(--zj-ink4);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.zdm-ts-h small {
+  color: var(--zj-ink3);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.zdm-ts[data-set] .zdm-ts-h small {
+  color: var(--zj-ink);
+}
+.zdm-ts .zdm-fg {
+  padding: 0 4px;
+}
+
+/* Inspect: one plain key, then what it does */
+.zdm-insbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 2px 6px;
+  color: var(--zj-ink4);
+  font-size: 12px;
+}
+.zdm-ins-go {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px 0 10px;
+  border-radius: var(--zj-r-pill);
+  color: var(--zj-ink2);
+  font-size: 13px;
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+  transition: color 120ms var(--zj-e), box-shadow 120ms var(--zj-e), background-color 120ms var(--zj-e);
+}
+.zdm-ins-go:hover {
+  color: var(--zj-ink);
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+.zdm-ins-go[aria-pressed='true'] {
+  background: var(--zj-ink);
+  color: var(--d-bg);
+  box-shadow: none;
+}
+.zdm-pick {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px 4px;
+  font-size: 12px;
+}
+.zdm-pick code {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--zj-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.zdm-pick span {
+  flex: none;
+  color: var(--zj-ink4);
+}
+
+/* the frames Inspect draws over the page: a hairline round what you point at, a firmer one round what you picked */
+[data-zdm-inspecting],
+[data-zdm-inspecting] * {
+  cursor: crosshair !important;
+}
+.zdm-ins-box {
+  position: fixed;
+  z-index: 9400;
+  box-shadow: 0 0 0 1px #0d99ff;
+  pointer-events: none;
+}
+.zdm-ins-box[data-picked] {
+  box-shadow: 0 0 0 1.5px #0d99ff;
+  background: rgba(13, 153, 255, 0.06);
+}
+.zdm-ins-tag {
+  position: absolute;
+  left: -1px;
+  bottom: calc(100% + 4px);
+  max-width: 360px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #0d99ff;
+  color: #fff;
+  font: 500 11px/16px ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zdm-ins-tag[data-below] {
+  top: calc(100% + 4px);
+  bottom: auto;
+}
+.zdm-ins-box[data-picked] .zdm-ins-tag {
+  display: none;
+}
+.zdm-ins-box[data-picked]:only-child .zdm-ins-tag {
+  display: block;
+}
+
+/* b23: the link to every build */
+.zdm-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(10, 37, 64, 0.14);
+  color: inherit;
+  font-size: 12px;
+  text-decoration: none;
+  transition: box-shadow 120ms ease;
+}
+.zdm-link:hover {
+  box-shadow: inset 0 0 0 1px rgba(10, 37, 64, 0.32);
+}
+.zd .zdm-link {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+.zdm-link svg {
+  width: 14px;
+  height: 14px;
+}

@@ -1,0 +1,64 @@
+{
+  "n": 8,
+  "badge": "b8",
+  "startsAtXp": 7000,
+  "rolesAtLevel": 5,
+  "rolesOpenByNow": 83,
+  "rolesDeltaVsPrev": 5,
+  "pay": { "est": "$139k", "deltaYear": "+$81k a year" },
+  "scenariosToUnlock": 7,
+  "scenario": { "name": "Pipeline health dashboard", "company": "Zoom", "domain": "zoom.com" },
+  "work": "Build what leadership reads every week",
+  "wantToSee": "The five numbers that matter, nothing else",
+  "demonstrated": [
+    "Built the dashboard leadership checks every Monday",
+    "Picked the five numbers that matter and cut the rest",
+    "Flagged a risk before anyone asked"
+  ],
+  "companies": {
+    "stage": "Mostly late stage private companies and public companies",
+    "size": "Most have 1,200 to 2,400 people",
+    "remote": "Hybrid for 3 of 5 roles, US",
+    "line": "Leadership reads your numbers every week"
+  },
+  "roles": [
+    {
+      "title": "Senior Salesforce Engineer",
+      "company": "MongoDB",
+      "domain": "mongodb.com",
+      "pay": "$118k to 231k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "GTM Senior Business Systems Analyst, Pre-Sales",
+      "company": "Ramp",
+      "domain": "ramp.com",
+      "pay": "$134k to 209k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Senior Analyst, GTM Systems & Tools (Customer Engineering)",
+      "company": "Wiz",
+      "domain": "wiz.io",
+      "pay": "$132k to 180k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Sr Analytics Engineer",
+      "company": "Aceable",
+      "domain": "aceable.com",
+      "pay": "$140k to 154k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Senior GTM Engineering Analyst",
+      "company": "1Password",
+      "domain": "1password.com",
+      "pay": "$113k to 158k",
+      "mode": "Remote"
+    }
+  ],
+  "moreRoles": 0,
+  "moreRolesBeyondRow": 2,
+  "logos": ["mongodb.com", "ramp.com", "wiz.io", "aceable.com", "1password.com"]
+}

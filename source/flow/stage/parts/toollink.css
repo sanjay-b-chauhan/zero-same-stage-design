@@ -1,0 +1,66 @@
+/* b13, her tool inside her words (his note: "'Open in Claude' should be the whole link ... underlined ... blue ... a super
+   banger"). It runs in her sentence like a word: the real mark, the three words underlined in the stage's blue, the arrow
+   that says it leaves. Hover fills the underline and lifts the arrow, the Claude spark turns; a press sinks the link and
+   throws the arrow out the way it is going, then the app opens. Its own file so it never collides with stage.css. */
+.zs2-her .zs2-toollink[data-inline] {
+  display: inline-block;
+  vertical-align: baseline;
+  min-height: 0;
+  max-width: 100%;
+  border-radius: 6px;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  transform-origin: 0 70%;
+  transition: transform 260ms var(--z4-spring), color 120ms var(--zj-e);
+}
+.zs2-her .zs2-toollink[data-inline] .zs2-toollink-ico {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  vertical-align: -2px;
+  transition: transform 520ms var(--z4-spring);
+}
+.zs2-her .zs2-toollink[data-inline] .zs2-toollink-t {
+  overflow: visible;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--zs2-link) 50%, transparent);
+  transition: text-decoration-color 160ms var(--zj-e), text-underline-offset 260ms var(--z4-spring);
+}
+.zs2-her .zs2-toollink[data-inline] .zs2-toollink-go {
+  display: inline-block;
+  margin-left: 2px;
+  vertical-align: -1px;
+}
+.zs2-her .zs2-toollink[data-inline]:hover .zs2-toollink-t {
+  text-decoration-color: var(--zs2-link);
+  text-underline-offset: 4px;
+}
+.zs2-her .zs2-toollink[data-inline]:hover .zs2-toollink-go {
+  transform: translate(2px, -2px);
+}
+.zs2-her .zs2-toollink[data-inline]:hover .zs2-toollink-ico[src*='claude'] {
+  transform: rotate(60deg);
+}
+.zs2-her .zs2-toollink[data-inline]:active {
+  transform: scale(0.96);
+  transition-duration: 90ms;
+}
+.zs2-her .zs2-toollink[data-inline]:active .zs2-toollink-go {
+  transform: translate(5px, -5px);
+  transition-duration: 120ms;
+}
+.zs2-her .zs2-toollink[data-inline]:focus-visible {
+  outline: 2px solid var(--zs2-link);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2-her .zs2-toollink[data-inline],
+  .zs2-her .zs2-toollink[data-inline] .zs2-toollink-ico,
+  .zs2-her .zs2-toollink[data-inline] .zs2-toollink-go {
+    transition-duration: 1ms;
+  }
+}

@@ -1,0 +1,102 @@
+/* The stand-in Room. Frame grows and whitens by transition, the way a shell most likely will. */
+.lab {
+  position: fixed;
+  inset: 0;
+  background: var(--zj-canvas);
+  color: var(--zj-ink);
+}
+.lab-sheet {
+  position: absolute;
+  inset: 14px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: var(--zj-sh-sheet);
+}
+.lab-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 16px;
+}
+.lab-title {
+  font-weight: 500;
+}
+.lab-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: 0 16px 16px;
+}
+.lab-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--z4-frame);
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+  transition: box-shadow 400ms var(--zj-e);
+  --plan-face-top: max(calc(56px * var(--z4-air)), calc(50% - 268px));
+}
+.lab[data-fixed='1'] .lab-frame {
+  --plan-face-top: initial;
+}
+.lab[data-mode='objective'] .lab-frame {
+  box-shadow: inset 0 0 0 1px transparent;
+}
+.lab-white {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 500ms var(--zj-e);
+}
+.lab[data-mode='objective'] .lab-white {
+  opacity: 1;
+}
+.lab-face {
+  position: absolute;
+  left: 50%;
+  top: var(--plan-face-top, 56px);
+  z-index: 1;
+  margin-left: -32px;
+  transition: transform 500ms var(--z4-spring), filter 300ms var(--zj-e), opacity 300ms var(--zj-e);
+}
+.lab[data-mode='objective'] .lab-face {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(-16px) scale(0.8);
+}
+.lab-cap {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: calc(var(--plan-face-top, 56px) + 74px);
+  z-index: 1;
+  text-align: center;
+  color: var(--zj-ink2);
+  font-size: 14px;
+  line-height: 20px;
+}
+.lab-bar {
+  flex: none;
+  height: 44px;
+  margin-top: 10px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--zj-sh-ring);
+  transition: height var(--z4-spring-ms) var(--z4-spring), margin-top var(--z4-spring-ms) var(--z4-spring), opacity 200ms var(--zj-e);
+}
+.lab[data-mode='objective'] .lab-bar {
+  height: 0;
+  margin-top: 0;
+  opacity: 0;
+}

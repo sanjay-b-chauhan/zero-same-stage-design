@@ -1,0 +1,469 @@
+{
+  "meta": {
+    "project_brief_id": 4,
+    "duration_target_sec": 60,
+    "duration_preset": "short",
+    "seed": 654,
+    "generated_at_iso": "2026-02-11T12:10:18.186208",
+    "company_name": "Company",
+    "run_id": "Vivid-Iron_4_short_20260211_121018"
+  },
+  "cast": [
+    {
+      "person_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+      "name": "Avery Kim ",
+      "role": "Marketing Manager",
+      "persona_description": null,
+      "persona_archetype": null,
+      "communication_style": null,
+      "goals_and_motivations": null,
+      "knowledge_base_tags": [],
+      "voice_id": "BIvP0GN1cAtSRTxNHnWS",
+      "avatar_url": "https://gzyfqozaremfkgrkrufb.supabase.co/storage/v1/object/public/iamlost/avatar_asset/Avery_Kim__1758622457586_Gemini_Generated_Image_yots16yots16yots.png",
+      "lane": "facilitator",
+      "speaking_share": 0.3,
+      "delivery": {
+        "tone": "calm",
+        "brevity": 0.7,
+        "humor": 0.25,
+        "assertiveness": 0.5,
+        "formality": 0.6,
+        "pace": "fast"
+      }
+    },
+    {
+      "person_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+      "name": "Diego Martinez ",
+      "role": "Social Media Strategist ",
+      "persona_description": null,
+      "persona_archetype": null,
+      "communication_style": null,
+      "goals_and_motivations": null,
+      "knowledge_base_tags": [],
+      "voice_id": "Oq0Y9Oagw3Lmws4ZAnY5",
+      "avatar_url": "https://gzyfqozaremfkgrkrufb.supabase.co/storage/v1/object/public/iamlost/avatar_asset/Diego_Martinez_1759151343779_Gemini_Generated_Image_jhtt8rjhtt8rjhtt.png",
+      "lane": "execution",
+      "speaking_share": 0.25,
+      "delivery": {
+        "tone": "playful",
+        "brevity": 0.7,
+        "humor": 0.55,
+        "assertiveness": 0.5,
+        "formality": 0.5,
+        "pace": "fast"
+      }
+    },
+    {
+      "person_id": "bd5f1579-9865-4300-bc62-78a35551eee1",
+      "name": "Priya Shah",
+      "role": "Data Analyst ",
+      "persona_description": null,
+      "persona_archetype": null,
+      "communication_style": null,
+      "goals_and_motivations": null,
+      "knowledge_base_tags": [],
+      "voice_id": "kL06KYMvPY56NluIQ72m",
+      "avatar_url": "https://gzyfqozaremfkgrkrufb.supabase.co/storage/v1/object/public/iamlost/avatar_asset/Priya_Shah__1759151423363_Gemini_Generated_Image_4ydt224ydt224ydt.png",
+      "lane": "quality_risk",
+      "speaking_share": 0.2,
+      "delivery": {
+        "tone": "calm",
+        "brevity": 0.7,
+        "humor": 0.25,
+        "assertiveness": 0.5,
+        "formality": 0.3,
+        "pace": "normal"
+      }
+    },
+    {
+      "person_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+      "name": "Leo Anderson ",
+      "role": "Strategy",
+      "persona_description": null,
+      "persona_archetype": null,
+      "communication_style": null,
+      "goals_and_motivations": null,
+      "knowledge_base_tags": [],
+      "voice_id": "ODKfF1EGCDiD1nUTJmqW",
+      "avatar_url": "https://gzyfqozaremfkgrkrufb.supabase.co/storage/v1/object/public/iamlost/avatar_asset/Leo_Anderson__1758629270860_Gemini_Generated_Image_uuck6muuck6muuck.png",
+      "lane": "product_scope",
+      "speaking_share": 0.25,
+      "delivery": {
+        "tone": "calm",
+        "brevity": 0.7,
+        "humor": 0.25,
+        "assertiveness": 0.5,
+        "formality": 0.6,
+        "pace": "fast"
+      }
+    }
+  ],
+  "segments": [
+    {
+      "id": "join",
+      "goal": "Quick join + audio check",
+      "lines": [
+        {
+          "line_id": "line_0",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Hey team, quick audio check. Can everyone hear me okay?",
+          "delivery_hint": null,
+          "est_sec": 3.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_1",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "Loud and clear!",
+          "delivery_hint": null,
+          "est_sec": 1.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_2",
+          "speaker_id": "bd5f1579-9865-4300-bc62-78a35551eee1",
+          "text": "Yep, I'm good.",
+          "delivery_hint": null,
+          "est_sec": 1.5,
+          "context_point_id": null,
+          "training_point_id": null
+        }
+      ]
+    },
+    {
+      "id": "problem",
+      "goal": "The problem we are solving",
+      "lines": [
+        {
+          "line_id": "line_3",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Alright, let's jump in. We've got a bit of a challenge with Mario Kart's new user growth.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_4",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "It's down 10% from last month, which isn't ideal.",
+          "delivery_hint": null,
+          "est_sec": 3.5,
+          "context_point_id": "growth_down_10_percent",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_5",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "Yeah, that's what we're looking to turn around.",
+          "delivery_hint": null,
+          "est_sec": 3.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_6",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Exactly. To tackle this, we're launching a limited-time event.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_7",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "It's called 'Mario Kart Shell Showdown'.",
+          "delivery_hint": null,
+          "est_sec": 2.5,
+          "context_point_id": "shell_showdown_event",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_8",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "Oh, the blue shell only one? That's gonna be chaos!",
+          "delivery_hint": "playful, a little laugh",
+          "est_sec": 4.0,
+          "context_point_id": "blue_shell_only",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_9",
+          "speaker_id": "bd5f1579-9865-4300-bc62-78a35551eee1",
+          "text": "Sounds fun, actually.",
+          "delivery_hint": null,
+          "est_sec": 2.0,
+          "context_point_id": null,
+          "training_point_id": null
+        }
+      ]
+    },
+    {
+      "id": "overview",
+      "goal": "Goals + what success looks like",
+      "lines": [
+        {
+          "line_id": "line_10",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Chaos we can market! Leo, can you walk us through the goals for this?",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_11",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "Sure thing. We're aiming for a 15% increase in new user growth.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": "new_user_growth_15_percent",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_12",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "And we also want to boost our daily active users by 10%.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": "dau_10_percent",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_13",
+          "speaker_id": "bd5f1579-9865-4300-bc62-78a35551eee1",
+          "text": "Those are solid targets.",
+          "delivery_hint": null,
+          "est_sec": 2.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_14",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "The main challenge is building a breakthrough multi-channel campaign.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": "multi_channel_campaign",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_15",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "It needs to drive awareness, engagement, and measurable results.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_16",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "And keep that Mario Kart feel, right? Brand consistency is key.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": null,
+          "training_point_id": null
+        }
+      ]
+    },
+    {
+      "id": "approach",
+      "goal": "Discussion: how we\u2019ll fix it",
+      "lines": [
+        {
+          "line_id": "line_17",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Spot on, Diego. So, how are we thinking about approaching this?",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_18",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "I think we really lean into the 'multi-channel' part. We need to hit everywhere.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": "multi_channel_campaign",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_19",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "And definitely keep those measurable results in mind from the start.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_20",
+          "speaker_id": "bd5f1579-9865-4300-bc62-78a35551eee1",
+          "text": "We should also ensure all our messaging feels consistent with the brand.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_21",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "Yeah, that's crucial. We can't stray too far.",
+          "delivery_hint": null,
+          "est_sec": 3.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_22",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "Right. We'll build out the campaign from there, always checking against those goals.",
+          "delivery_hint": null,
+          "est_sec": 5.0,
+          "context_point_id": null,
+          "training_point_id": null
+        }
+      ]
+    },
+    {
+      "id": "deliverables_done",
+      "goal": "Deliverables + definition of done",
+      "lines": [
+        {
+          "line_id": "line_23",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Okay, let's talk about what we'll actually be producing. Deliverables.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_24",
+          "speaker_id": "bd5f1579-9865-4300-bc62-78a35551eee1",
+          "text": "First, we'll need that Marketing Campaign Report, I think?",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": "marketing_campaign_report",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_25",
+          "speaker_id": "e6a4b557-bd5c-4833-b380-2b8cd227b018",
+          "text": "Definitely. And a strategy presentation outlining everything.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": "strategy_presentation",
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_26",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "So, those two main outputs, then. Got it.",
+          "delivery_hint": null,
+          "est_sec": 3.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_27",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Exactly. Those are our key outputs for this.",
+          "delivery_hint": null,
+          "est_sec": 3.5,
+          "context_point_id": null,
+          "training_point_id": null
+        }
+      ]
+    },
+    {
+      "id": "wrap",
+      "goal": "Next steps + recap",
+      "lines": [
+        {
+          "line_id": "line_28",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "Alright team, that covers the kickoff. Let's get this into a formal brief.",
+          "delivery_hint": null,
+          "est_sec": 4.5,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_29",
+          "speaker_id": "350c9586-c357-4c96-a7b7-00ad01624315",
+          "text": "We'll circle back soon to review initial concepts.",
+          "delivery_hint": null,
+          "est_sec": 4.0,
+          "context_point_id": null,
+          "training_point_id": null
+        },
+        {
+          "line_id": "line_30",
+          "speaker_id": "64e853ff-cca1-4340-9e18-1ac1e4ef0044",
+          "text": "Sounds like a plan!",
+          "delivery_hint": null,
+          "est_sec": 2.0,
+          "context_point_id": null,
+          "training_point_id": null
+        }
+      ]
+    }
+  ],
+  "context_points": [
+    {
+      "id": "growth_down_10_percent",
+      "term": "10% Growth Drop",
+      "description": "Mario Kart's new user growth is down 10%.",
+      "bucket": "Problem"
+    },
+    {
+      "id": "shell_showdown_event",
+      "term": "Shell Showdown Event",
+      "description": "Limited-time Mario Kart event.",
+      "bucket": "Project Context"
+    },
+    {
+      "id": "blue_shell_only",
+      "term": "Blue Shell Only",
+      "description": "Main selling point: blue shell only event.",
+      "bucket": "Project Context"
+    },
+    {
+      "id": "new_user_growth_15_percent",
+      "term": "15% New User Growth",
+      "description": "Target increase in new users.",
+      "bucket": "Goal"
+    },
+    {
+      "id": "dau_10_percent",
+      "term": "10% DAU Increase",
+      "description": "Target increase in daily active users.",
+      "bucket": "Goal"
+    },
+    {
+      "id": "multi_channel_campaign",
+      "term": "Multi-Channel Campaign",
+      "description": "Campaign needs to span multiple channels.",
+      "bucket": "Project Context"
+    },
+    {
+      "id": "marketing_campaign_report",
+      "term": "Marketing Campaign Report",
+      "description": "Detailed report on campaign performance.",
+      "bucket": "Deliverable"
+    },
+    {
+      "id": "strategy_presentation",
+      "term": "Strategy Presentation",
+      "description": "Outline of the campaign strategy.",
+      "bucket": "Deliverable"
+    }
+  ],
+  "training_points": []
+}

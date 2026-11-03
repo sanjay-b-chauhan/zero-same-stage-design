@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>zero · Reducing Host Cancellations at Airbnb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  /* == DESIGN TOKENS == */
+  :root {
+    --bg:#0F0E10; --ink:#FFFFFF; --label:#CFC9CC; --meta:rgba(255,255,255,.5);
+    --line:rgba(255,255,255,.15); --line-2:rgba(255,255,255,.28);
+    --faint:rgba(255,255,255,.08); --tile:#1B191D; --bar:rgba(255,255,255,.30);
+    --brand:#FF385C; --accent:#FF385C;
+    --good:#00A699; --good-tint:rgba(0,166,153,.14);
+    --bad:#FF385C;  --bad-tint:rgba(255,56,92,.14);
+    --hero:#FF385C; --hero-gradient:linear-gradient(135deg,#FF385C 0%,#BD1E59 100%);
+    --on-hero:#FFFFFF; --on-hero-dim:rgba(255,255,255,.85); --on-hero-em:#FFFFFF;
+    --fdisp:'Plus Jakarta Sans',system-ui,sans-serif;
+    --fsans:'Plus Jakarta Sans',system-ui,sans-serif;
+    --ease:cubic-bezier(.2,.75,.2,1);
+    --ease-out:cubic-bezier(0.22,1,0.36,1);
+    --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+    --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-xl:24px; --radius-pill:999px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:var(--bg);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-family:var(--fsans);color:var(--ink)}
+  /* == STAGE == */
+  .stage{position:fixed;inset:0;overflow:hidden;background:var(--bg)}
+  /* == PANELS == */
+  .panel{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:clamp(40px,7cqmin,84px);gap:clamp(14px,2.4cqmin,30px);
+    overflow:hidden;opacity:0;pointer-events:none}
+  .panel.active{pointer-events:auto}
+  .panel>*{max-width:100%;overflow-wrap:anywhere}
+  .panel.fill{background:var(--hero-gradient)}
+  .panel.fill .wordmark{color:var(--on-hero)}
+  .panel.fill .statement{color:var(--on-hero)}
+  .panel.fill .statement em{color:var(--on-hero-em)}
+  .wordmark{position:absolute;top:clamp(26px,5cqmin,48px);left:clamp(30px,5cqmin,58px);
+    font-size:clamp(16px,2.8cqmin,27px);font-weight:800;letter-spacing:-.04em;color:var(--ink)}
+  .u{opacity:0;transform:translateY(16px)}
+  .held{opacity:0;transform:translateY(14px)}
+  .tool-mark{display:inline-flex;align-items:center;gap:clamp(8px,1.4cqmin,14px);
+    line-height:1;vertical-align:middle}
+  .tool-mark img{display:block;flex-shrink:0}
+  .tool-mark-fallback{display:none;font-family:var(--fdisp);font-weight:800;
+    letter-spacing:-.02em;color:currentColor;line-height:1}
+  .statement{font-family:var(--fdisp);font-weight:800;font-size:clamp(30px,min(6.4cqw,11.4cqh),88px);
+    letter-spacing:-.04em;line-height:1.06;max-width:min(1120px,94%);color:var(--ink)}
+  .statement em{font-style:normal;color:var(--accent)}
+  .statement em.g{color:var(--good)}
+  .statement em.b{color:var(--bad)}
+  .lbl{font-size:clamp(16px,3.8cqmin,32px);font-weight:600;color:var(--label);
+    max-width:min(980px,92%);line-height:1.35}
+  .lbl b{color:var(--ink)}
+  .num{font-family:var(--fdisp);font-weight:800;
+    font-size:clamp(56px,min(15.6cqw,27.8cqh),230px);
+    letter-spacing:-.05em;line-height:.84;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .num.bad{color:var(--bad)}
+  .num.good{color:var(--good)}
+  .num.u{transform:translateY(14px) scale(1.25);opacity:0}
+  .cover{max-width:min(1140px,94%);display:flex;flex-direction:column;align-items:center;
+    gap:clamp(14px,2.6cqmin,28px)}
+  .cover .big{font-family:var(--fdisp);font-weight:800;
+    font-size:clamp(40px,min(9cqw,16cqh),128px);
+    letter-spacing:-.05em;line-height:.96;color:var(--on-hero)}
+  .cover .big em{font-style:normal;color:var(--on-hero-em)}
+  .cover .sub{font-size:clamp(16px,4cqmin,34px);color:var(--on-hero-dim);font-weight:600}
+  .pillnote{font-size:clamp(14px,3cqmin,24px);font-weight:700;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    color:var(--on-hero);padding:.5em 1.2em;border-radius:var(--radius-pill)}
+  .flow{display:flex;align-items:center;gap:clamp(18px,4.5cqmin,48px);flex-wrap:wrap;justify-content:center}
+  .flow .fnum{font-family:var(--fdisp);font-weight:800;
+    font-size:clamp(44px,min(11.7cqw,20.8cqh),170px);
+    letter-spacing:-.05em;line-height:.85;font-variant-numeric:tabular-nums}
+  .flow .fnum.bad{color:var(--bad)}
+  .flow .fnum.good{color:var(--good)}
+  .flow .fop{display:flex;flex-direction:column;align-items:center;gap:.3em}
+  .flow .fop .pill{background:var(--tile);border:1px solid var(--line);color:var(--ink);
+    font-weight:800;font-size:clamp(13px,2.4cqmin,23px);padding:.35em .9em;border-radius:var(--radius-pill)}
+  .flow .fop .ar{font-size:clamp(22px,5cqmin,46px);color:var(--label)}
+  .suspects{display:flex;gap:clamp(16px,3cqmin,30px);flex-wrap:wrap;justify-content:center;width:min(1040px,96%)}
+  .scard{flex:1 1 300px;border:2px solid var(--line-2);border-radius:var(--radius-xl);
+    padding:clamp(24px,4cqmin,46px);display:flex;flex-direction:column;gap:.4em;text-align:left;
+    opacity:0;transform:translateY(12px)}
+  .scard .q{font-family:var(--fdisp);font-size:clamp(40px,10cqmin,74px);font-weight:800;
+    color:var(--accent);line-height:.9}
+  .scard .cn{font-family:var(--fdisp);font-size:clamp(24px,6.4cqmin,48px);font-weight:800;
+    letter-spacing:-.02em;color:var(--ink)}
+  .scard .cd{font-size:clamp(14px,2.6cqmin,20px);font-weight:600;color:var(--label);margin-top:.2em}
+  .compare{display:flex;gap:clamp(16px,3cqmin,30px);width:min(1100px,96%);flex-wrap:wrap;justify-content:center}
+  .ccol{flex:1 1 320px;background:var(--tile);border:1px solid var(--line);
+    border-radius:var(--radius-xl);padding:clamp(28px,4.2cqmin,48px);
+    text-align:left;display:flex;flex-direction:column;gap:.5em;justify-content:center;
+    opacity:0;transform:translateY(12px)}
+  .ccol .clab{font-size:clamp(12px,2.2cqmin,16px);font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--meta)}
+  .ccol.bad .clab{color:var(--bad)}
+  .ccol.good .clab{color:var(--good)}
+  .ccol .ctitle{font-family:var(--fdisp);font-size:clamp(24px,7cqmin,56px);font-weight:800;
+    letter-spacing:-.03em;line-height:1.03;color:var(--ink)}
+  .hbars{width:min(940px,94%);display:flex;flex-direction:column;gap:clamp(14px,2.8cqmin,24px)}
+  .hbar{display:flex;align-items:center;gap:clamp(12px,2.4cqmin,22px);
+    opacity:0;transform:translateY(10px)}
+  .hbar .hk{flex:0 0 28%;text-align:right;font-size:clamp(13px,3cqmin,22px);font-weight:700;color:var(--label)}
+  .hbar .htrack{flex:1;height:clamp(24px,6.5cqmin,50px);background:rgba(255,255,255,.08);
+    border-radius:9px;overflow:hidden}
+  .hbar .hfill{height:100%;border-radius:9px;width:0}
+  .hbar .hfill.hot{background:var(--bad)}
+  .hbar .hfill.good{background:var(--good)}
+  .hbar .hfill.neutral{background:var(--bar)}
+  .hbar .hv{flex:0 0 16%;font-family:var(--fdisp);font-size:clamp(15px,3.4cqmin,26px);
+    font-weight:800;text-align:left;color:var(--ink)}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.6cqmin,26px);width:min(1060px,94%)}
+  .pgrid.row3{grid-template-columns:repeat(3,1fr)}
+  .pcell{background:var(--tile);border:1px solid var(--line);border-radius:var(--radius-xl);
+    padding:clamp(20px,3.8cqmin,42px);text-align:left;display:flex;gap:clamp(16px,2.8cqmin,28px);align-items:center;
+    opacity:0;transform:translateY(12px)}
+  .pcell .n{font-family:var(--fdisp);font-size:clamp(34px,11cqmin,80px);font-weight:800;
+    color:var(--accent);line-height:.85;white-space:nowrap;flex-shrink:0;
+    min-width:clamp(48px,9.5cqmin,90px);letter-spacing:-.04em}
+  .pcell .t{font-family:var(--fdisp);font-size:clamp(18px,5cqmin,36px);font-weight:800;
+    letter-spacing:-.02em;line-height:1.06;color:var(--ink)}
+  .pcell .d{font-size:clamp(13px,2.4cqmin,18px);font-weight:600;color:var(--label);margin-top:.25em;line-height:1.3}
+  .checks{display:flex;flex-direction:column;gap:clamp(14px,3cqmin,26px)}
+  .ck-row{display:flex;align-items:center;gap:clamp(12px,2.4cqmin,22px);
+    font-family:var(--fdisp);font-size:clamp(18px,4.8cqmin,40px);font-weight:700;
+    letter-spacing:-.02em;color:var(--ink);text-align:left;
+    opacity:0;transform:translateX(-12px)}
+  .ck-row .ck{color:var(--good);font-weight:800}
+  .deliv{font-family:var(--fdisp);font-weight:800;
+    font-size:clamp(34px,min(7cqw,12cqh),96px);
+    letter-spacing:-.04em;line-height:1.03;max-width:min(1060px,94%);color:var(--ink)}
+  .deliv em{font-style:normal;color:var(--accent)}
+  .chart{width:100%;display:flex;justify-content:center}
+  .chart svg{width:min(94%,1040px)}
+  svg{display:block;overflow:visible}
+  .vwrap{display:flex;flex-direction:column;align-items:center;width:100%;gap:clamp(16px,3cqmin,34px)}
+  .qblock{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(12px,2cqmin,22px);
+    max-width:min(900px,90%);text-align:left;opacity:0;transform:translateY(16px)}
+  .qmark{font-family:var(--fdisp);font-size:clamp(56px,13cqmin,110px);font-weight:800;
+    color:var(--accent);line-height:.6;display:block;margin-bottom:-.05em}
+  .qtext{font-family:var(--fdisp);font-size:clamp(22px,5.4cqmin,50px);font-weight:700;
+    letter-spacing:-.03em;line-height:1.15;color:var(--ink)}
+  .qattr{font-size:clamp(13px,2.6cqmin,20px);font-weight:600;color:var(--label)}
+  .timeline{display:flex;flex-direction:column;gap:0;width:min(820px,90%)}
+  .tl-item{display:flex;gap:clamp(16px,3.2cqmin,30px);align-items:flex-start;
+    opacity:0;transform:translateX(-14px)}
+  .tl-dot{flex-shrink:0;width:clamp(16px,3.2cqmin,28px);height:clamp(16px,3.2cqmin,28px);
+    border-radius:50%;background:var(--accent);margin-top:.28em;position:relative}
+  .tl-dot::after{content:'';position:absolute;left:50%;top:100%;width:2px;
+    height:clamp(16px,3.4cqmin,30px);background:var(--line);transform:translateX(-50%)}
+  .tl-item:last-child .tl-dot::after{display:none}
+  .tl-body{display:flex;flex-direction:column;gap:.15em;padding-bottom:clamp(12px,2.6cqmin,24px)}
+  .tl-title{font-family:var(--fdisp);font-size:clamp(17px,4.2cqmin,34px);font-weight:800;
+    letter-spacing:-.02em;color:var(--ink)}
+  .tl-desc{font-size:clamp(13px,2.4cqmin,18px);font-weight:600;color:var(--label);line-height:1.35}
+  .donut-wrap{display:flex;align-items:center;gap:clamp(28px,5.6cqmin,56px);
+    flex-wrap:wrap;justify-content:center}
+  .donut-svg{width:clamp(150px,34cqmin,260px);height:clamp(150px,34cqmin,260px);flex-shrink:0}
+  .donut-meta{display:flex;flex-direction:column;align-items:flex-start;gap:.3em}
+  .donut-pct{font-family:var(--fdisp);font-size:clamp(44px,12cqmin,96px);font-weight:800;
+    letter-spacing:-.05em;line-height:.88;color:var(--ink)}
+  .donut-pct.bad{color:var(--bad)}
+  .donut-pct.good{color:var(--good)}
+  .donut-label{font-size:clamp(14px,2.8cqmin,22px);font-weight:600;color:var(--label)}
+</style>
+
+<!-- brand asset overrides -->
+<style>
+  :root {
+    --green-500: #FF385C;
+    --green-700: #B22740;
+    --green-800: #B22740;
+    --green-900: #B22740;
+    --green-400: #FF4F6F;
+    --green-200: #FF4F6F;
+    --green-100: #222222;
+    --green-50: #141414;
+    --bg: #222222;
+    --bad: #FF6B6B;
+    --ink: #FFFFFF;
+    --good: #FF385C;
+    --hero: #FF385C;
+    --meta: rgba(255,255,255,.55);
+    --tile: #333333;
+    --brand: #FF385C;
+    --label: #B3B3B3;
+    --accent: #FF385C;
+    --bad-tint: rgba(255,107,107,.14);
+    --good-tint: rgba(255,56,92,0.14);
+    --hero-gradient: linear-gradient(135deg,#FF385C 0%,#BF2A45 100%);
+  }
+  /* brand logo — replaces the text wordmark on every panel */
+  .wordmark{
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: clamp(8px, 1.4cqmin, 16px) !important;
+    /* hide the literal text node; kept in DOM for a11y */
+    font-size: 0 !important;
+    color: transparent !important;
+    line-height: 1 !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+  }
+  .wordmark::before{
+    content: "" !important;
+    display: inline-block !important;
+    background-image: url("https://cdn.brandfetch.io/idkuvXnjOH/theme/light/logo.svg?c=1bxskwwdp44ugeqnoslan72s7cowiphe4VD") !important;
+    background-repeat: no-repeat !important;
+    background-position: left center !important;
+    background-size: contain !important;
+    width: clamp(110px, 16cqmin, 220px) !important;
+    height: clamp(30px, 4.5cqmin, 56px) !important;
+    flex-shrink: 0 !important;
+  }
+  /* cover / hero panels — bigger logo, per-panel asset */
+  .panel.fill .wordmark::before{
+    width: clamp(140px, 20cqmin, 280px) !important;
+    height: clamp(38px, 5.5cqmin, 68px) !important;
+    filter: none !important;
+  }
+</style>
+</head>
+
+<body>
+<main class="stage">
+  <div class="mode mode-concept active" id="mode-concept">
+
+    <!-- ===== INTRO ===== -->
+    <div class="panel fill" id="p-b1-1">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="cover u">
+        <div class="big">Host cancellations are<br><em>bleeding us dry</em>.</div>
+        <div class="sub">Jay Shah, Director of Marketplace Operations</div>
+      </div>
+      <div class="pillnote held" id="pill-cover">Six months. Fourteen percent. Nine million lost.</div>
+    </div>
+
+    <!-- ===== PROBLEM ===== -->
+    <div class="panel" id="p-b2-1">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u">The marketplace runs on <em class="g">trust</em>.</div>
+    </div>
+
+    <div class="panel" id="p-b2-2">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u">One cancel is a <em>total disaster</em>.</div>
+      <div class="statement held" id="stat2-b2-2" style="font-size:clamp(22px,4.6cqmin,52px)">And a massive headache for <em>support</em>.</div>
+    </div>
+
+    <div class="panel" id="p-b2-3">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="vwrap">
+        <div class="statement u" style="font-size:clamp(24px,5cqmin,56px)">The rate climbed fast.</div>
+        <div class="chart u">
+          <svg viewBox="0 0 1040 480">
+            <line x1="72" y1="408" x2="968" y2="408" stroke="var(--line)" stroke-width="2"/>
+            <polyline id="trendline"
+              points="72,330 376,320 580,250 968,150"
+              fill="none" stroke="var(--ink)" stroke-width="9"
+              stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="72" cy="330" r="11" fill="var(--ink)"/>
+            <text x="84" y="306" font-size="32" font-weight="800" fill="var(--ink)" font-family="var(--fdisp)">11%</text>
+            <circle cx="968" cy="150" r="13" fill="var(--ink)"/>
+            <text x="956" y="120" text-anchor="end" font-size="48" font-weight="800" fill="var(--ink)" font-family="var(--fdisp)">14%</text>
+            <text x="72" y="456" font-size="20" fill="var(--label)">6 months ago</text>
+            <text x="968" y="456" text-anchor="end" font-size="20" fill="var(--label)">today</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-b2-4">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="vwrap">
+        <div class="statement u" style="font-size:clamp(24px,5cqmin,58px)">Two suspects. No evidence yet.</div>
+        <div class="suspects">
+          <div class="scard" id="sc-1">
+            <div class="q">?</div>
+            <div class="cn">Calendar conflicts</div>
+            <div class="cd">Hosts double-booked or unavailable</div>
+          </div>
+          <div class="scard" id="sc-2">
+            <div class="q">?</div>
+            <div class="cn">Pricing mistakes</div>
+            <div class="cd">Rates set too low to fulfill</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-b2-5">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u" style="font-size:clamp(20px,4cqmin,40px)">Every cancellation costs us</div>
+      <div class="num u">$28</div>
+    </div>
+
+    <div class="panel" id="p-b2-6">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u" style="font-size:clamp(20px,4cqmin,40px)">Across the whole platform</div>
+      <div class="num u">$9M+</div>
+    </div>
+
+    <div class="panel" id="p-b2-7">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u">We're burning money on <em>support</em><br>instead of growing the <em class="g">community</em>.</div>
+    </div>
+
+    <!-- ===== OUTCOME ===== -->
+    <div class="panel" id="p-b3-1">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u">Let's lock onto <em>two main targets</em>.</div>
+    </div>
+
+    <div class="panel" id="p-b3-2">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="flow u">
+        <div class="fnum">14%</div>
+        <div class="fop">
+          <span class="pill">cut to</span>
+          <span class="ar">&#8594;</span>
+        </div>
+        <div class="fnum good">10%</div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-b3-3">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u" style="font-size:clamp(20px,4cqmin,40px)">Annual operational savings</div>
+      <div class="num good u">$3M</div>
+    </div>
+
+    <div class="panel" id="p-b3-4">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u" style="font-size:clamp(26px,5.4cqmin,62px)">Two numbers decide this.</div>
+      <div class="compare">
+        <div class="ccol bad" id="cc-1">
+          <div class="clab">KPI 1</div>
+          <div class="ctitle">Cancellation rate</div>
+        </div>
+        <div class="ccol good" id="cc-2">
+          <div class="clab">KPI 2</div>
+          <div class="ctitle">Operational savings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROCESS ===== -->
+    <div class="panel" id="p-b4-1">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u">Here's the <em>roadmap</em>.</div>
+    </div>
+
+    <div class="panel" id="p-b4-2">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="pgrid">
+        <div class="pcell" id="pc-1"><div class="n">01</div><div><div class="t">Trend analysis</div><div class="d">Six-month cancellation rate by cohort</div></div></div>
+        <div class="pcell" id="pc-2"><div class="n">02</div><div><div class="t">Root cause</div><div class="d">Segment by reason code</div></div></div>
+        <div class="pcell" id="pc-3"><div class="n">03</div><div><div class="t">Cost model</div><div class="d">Map the $9M breakdown</div></div></div>
+        <div class="pcell" id="pc-4"><div class="n">04</div><div><div class="t">Recommendation</div><div class="d">One operational fix with projected savings</div></div></div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-b4-3">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="deliv u">Final Operational Proposal.<br>One doc. <em>Save $3M</em>.</div>
+    </div>
+
+    <div class="panel" id="p-b4-4">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="checks">
+        <div class="ck-row" id="ck-1"><span class="ck">&#10003;</span>Trend from 11% to 14%</div>
+        <div class="ck-row" id="ck-2"><span class="ck">&#10003;</span>Primary cancellation driver</div>
+        <div class="ck-row" id="ck-3"><span class="ck">&#10003;</span>$9M cost breakdown</div>
+        <div class="ck-row" id="ck-4"><span class="ck">&#10003;</span>One fix with $3M savings projection</div>
+      </div>
+    </div>
+
+    <!-- ===== OUTRO ===== -->
+    <div class="panel" id="p-b5-1">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u">One solid recommendation.<br><em>Serious money saved</em>.</div>
+    </div>
+
+    <div class="panel fill" id="p-b5-2">
+      <span class="wordmark">Reducing Host Cancellations at Airbnb</span>
+      <div class="statement u" style="font-size:clamp(40px,min(8cqw,14cqh),110px)">Let's <em>get after it</em>.</div>
+    </div>
+
+  </div>
+</main>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+
+  var E_OUT   = 'power3.out';
+  var E_PANEL = 'power2.out';
+  var E_BACK  = 'back.out(1.6)';
+  var E_DRAW  = 'power2.inOut';
+
+  function setPanel(id) {
+    if (id) {
+      var already = document.getElementById(id);
+      if (already && already.classList.contains('active')) return;
+    }
+    var prev = document.querySelector('.panel.active');
+    if (prev) {
+      prev.classList.remove('active');
+      gsap.to(prev, {opacity: 0, duration: 0.22, ease: E_PANEL, overwrite: true});
+      gsap.delayedCall(0.22, function(){
+        gsap.set(prev.querySelectorAll('.u:not(.num)'), {opacity: 0, y: 16, x: 0, scale: 1});
+        gsap.set(prev.querySelectorAll('.num.u'),       {opacity: 0, scale: 1.22, y: 14});
+        gsap.set(prev.querySelectorAll('.held'),        {opacity: 0, y: 14, x: 0});
+        gsap.set(prev.querySelectorAll('.scard,.ccol,.hbar,.pcell'), {opacity: 0, y: 12});
+        gsap.set(prev.querySelectorAll('.ck-row,.tl-item'), {opacity: 0, x: -12, y: 0});
+        gsap.set(prev.querySelectorAll('.qblock'), {opacity: 0, y: 16});
+        gsap.set(prev.querySelectorAll('.hfill'),  {width: '0%'});
+        prev.querySelectorAll('.scard,.ccol,.hbar,.pcell,.ck-row,.tl-item,.held').forEach(function(el){ el.classList.remove('show'); });
+      });
+    }
+    if (!id) return;
+    var el = $(id);
+    if (!el) return;
+    el.classList.add('active');
+    gsap.fromTo(el, {opacity: 0}, {opacity: 1, duration: 0.38, ease: E_PANEL, overwrite: true});
+    var uEls = Array.prototype.filter.call(el.querySelectorAll('.u'), function(e){ return !e.classList.contains('num'); });
+    if (uEls.length) {
+      gsap.fromTo(uEls,
+        {opacity: 0, y: 22},
+        {opacity: 1, y: 0, stagger: 0.085, duration: 0.58, ease: E_OUT, delay: 0.06, overwrite: true}
+      );
+    }
+    var numEls = el.querySelectorAll('.num.u');
+    if (numEls.length) {
+      gsap.fromTo(numEls,
+        {opacity: 0, scale: 1.22, y: 14},
+        {opacity: 1, scale: 1, y: 0, duration: 0.68, ease: E_BACK, delay: 0.1, overwrite: true}
+      );
+    }
+  }
+
+  function show(id) {
+    var el = $(id);
+    if (!el) return;
+    el.classList.add('show');
+    if (el.classList.contains('ck-row') || el.classList.contains('tl-item')) {
+      gsap.to(el, {opacity: 1, x: 0, duration: 0.46, ease: E_OUT, overwrite: true});
+    } else {
+      gsap.to(el, {opacity: 1, y: 0, duration: 0.46, ease: E_OUT, overwrite: true});
+    }
+  }
+
+  function hide(id) {
+    var el = $(id);
+    if (!el) return;
+    el.classList.remove('show');
+    if (el.classList.contains('ck-row') || el.classList.contains('tl-item')) {
+      gsap.set(el, {opacity: 0, x: -12, y: 0});
+    } else {
+      gsap.set(el, {opacity: 0, y: 12, x: 0});
+    }
+  }
+
+  function showSequence(ids, gapMs) {
+    gapMs = (gapMs == null ? 220 : gapMs);
+    (ids || []).forEach(function(id, i){ setTimeout(function(){ show(id); }, i * gapMs); });
+  }
+
+  function domOp(id, selector, op, value, autoRemoveMs) {
+    var el = id ? $(id) : (selector ? document.querySelector(selector) : null);
+    if (!el) return;
+    switch (op) {
+      case 'add_class':    el.classList.add(value);    if (autoRemoveMs) setTimeout(function(){ el.classList.remove(value); }, autoRemoveMs); break;
+      case 'remove_class': el.classList.remove(value); break;
+      case 'toggle_class': el.classList.toggle(value); break;
+      case 'set_text':     el.textContent = value;     break;
+      case 'set_style':    if (typeof value === 'object') Object.assign(el.style, value); break;
+      case 'set_attr':     if (typeof value === 'object') Object.entries(value).forEach(function(e){ el.setAttribute(e[0], e[1]); }); break;
+    }
+  }
+
+  function domSequence(ids, op, value, gapMs) {
+    gapMs = (gapMs == null ? 600 : gapMs);
+    (ids || []).forEach(function(id, i){ setTimeout(function(){ domOp(id, null, op, value, null); }, i * gapMs); });
+  }
+
+  function fillBar(id, target, durationMs, ease) {
+    var bar = $(id);
+    if (!bar) return;
+    var fill = bar.querySelector('.hfill');
+    if (!fill) return;
+    var w = (target != null ? String(target) : (bar.dataset.w || '80%'));
+    var d = (durationMs != null && durationMs > 0) ? (durationMs / 1000) : 1.0;
+    gsap.fromTo(fill, {width: '0%'},
+      {width: w, duration: d, ease: ease || E_OUT, overwrite: true});
+  }
+
+  function _resetTrendline() {
+    var tl = $('trendline');
+    if (!tl) return;
+    var L = (typeof tl.getTotalLength === 'function') ? Math.ceil(tl.getTotalLength()) + 2 : 9999;
+    gsap.set(tl, {attr: {'stroke-dasharray': L, 'stroke-dashoffset': L}});
+  }
+
+  function drawLine(id, durationMs, ease) {
+    var line = $(id || 'trendline');
+    if (!line) return;
+    var L = (typeof line.getTotalLength === 'function') ? Math.ceil(line.getTotalLength()) + 2 : 9999;
+    var d = (durationMs != null && durationMs > 0) ? (durationMs / 1000) : 1.6;
+    gsap.set(line, {attr: {'stroke-dasharray': L, 'stroke-dashoffset': L}});
+    gsap.to(line, {attr: {'stroke-dashoffset': 0}, duration: d, ease: ease || E_DRAW, overwrite: true});
+  }
+
+  function drawArc(id, durationMs, ease) {
+    var arc = id ? $(id) : document.querySelector('.donut-arc');
+    if (!arc) return;
+    var circ = parseFloat(arc.getAttribute('data-circumference') || '314');
+    var pct  = parseFloat(arc.getAttribute('data-pct') || '0') / 100;
+    var end  = circ * (1 - pct);
+    var d = (durationMs != null && durationMs > 0) ? (durationMs / 1000) : 1.3;
+    gsap.fromTo(arc,
+      {attr: {'stroke-dasharray': circ, 'stroke-dashoffset': circ}},
+      {attr: {'stroke-dashoffset': end}, duration: d, ease: ease || E_DRAW, overwrite: true}
+    );
+  }
+
+  var _panelObserver = new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      if (m.type !== 'attributes' || m.attributeName !== 'class') return;
+      var panel = m.target;
+      if (!panel.classList.contains('panel') || !panel.classList.contains('active')) return;
+      var line = panel.querySelector('#trendline');
+      if (line) {
+        var L = (typeof line.getTotalLength === 'function') ? Math.ceil(line.getTotalLength()) + 2 : 9999;
+        gsap.set(line, {attr: {'stroke-dasharray': L, 'stroke-dashoffset': L}});
+      }
+      panel.querySelectorAll('.donut-arc').forEach(function(arc){
+        var circ = parseFloat(arc.getAttribute('data-circumference') || '314');
+        gsap.set(arc, {attr: {'stroke-dasharray': circ, 'stroke-dashoffset': circ}});
+      });
+      panel.querySelectorAll('.hfill').forEach(function(fill){
+        gsap.set(fill, {width: '0%'});
+      });
+    });
+  });
+  document.querySelectorAll('.panel').forEach(function(p){
+    _panelObserver.observe(p, {attributes: true});
+  });
+  _resetTrendline();
+
+  function resetAction(clearTypewriters, hideIds) {
+    (hideIds || []).forEach(function(id){ hide(id); });
+  }
+
+  var ACTIONS = {
+    set_panel:         function(a){ setPanel(a.id); },
+    set_active_panel:  function(a){ setPanel(a.id); },
+    set_mode:          function(){},
+    set_scene_label:   function(){},
+    show:              function(a){ show(a.id); if (a.auto_hide_ms) setTimeout(function(){ hide(a.id); }, a.auto_hide_ms); },
+    hide:              function(a){ hide(a.id); },
+    show_sequence:     function(a){ showSequence(a.ids, a.gap_ms); },
+    dom_sequence:      function(a){ domSequence(a.ids, a.op, a.value, a.gap_ms); },
+    dom:               function(a){ domOp(a.id, a.selector, a.op, a.value, a.auto_remove_ms); },
+    fill_bar:          function(a){ fillBar(a.id, a.target, a.duration_ms, a.ease); },
+    draw_line:         function(a){ drawLine(a.id, a.duration_ms, a.ease); },
+    draw_arc:          function(a){ drawArc(a.id, a.duration_ms, a.ease); },
+    reset:             function(a){ resetAction(a.clear_typewriters, a.hide_ids); },
+    activate:          function(a){ var el=$(a.id); if(el) el.classList.add(a.cls); },
+    deactivate:        function(a){ var el=$(a.id); if(el) el.classList.remove(a.cls); },
+    show_callout:      function(a){ show(a.id); },
+    hide_callout:      function(a){ hide(a.id); },
+    set_chapter:       function(){},
+    move_cursor:       function(){},
+    typewriter:        function(){},
+    set_chrome_view:   function(){},
+    set_active_app:    function(){},
+    lottie_play:       function(){},
+    pulse_id:          function(){},
+  };
+
+  window.dispatch = function(action, args) {
+    var fn = ACTIONS[action];
+    if (fn) { try { fn(args || {}); } catch(e) { console.warn('[dispatch]', action, e); } }
+    else { console.warn('[dispatch] unknown action:', action); }
+  };
+
+  window.resetVisual = function() {
+    gsap.globalTimeline.clear();
+    document.querySelectorAll('.panel').forEach(function(p){
+      p.classList.remove('active');
+      gsap.set(p, {opacity: 0});
+    });
+    document.querySelectorAll('.u:not(.num)').forEach(function(el){
+      gsap.set(el, {opacity: 0, y: 16, x: 0, scale: 1});
+    });
+    document.querySelectorAll('.num.u').forEach(function(el){
+      gsap.set(el, {opacity: 0, scale: 1.22, y: 14});
+    });
+    document.querySelectorAll('.held').forEach(function(el){
+      el.classList.remove('show');
+      gsap.set(el, {opacity: 0, y: 14, x: 0});
+    });
+    document.querySelectorAll('.scard,.ccol,.hbar,.pcell').forEach(function(el){
+      el.classList.remove('show');
+      gsap.set(el, {opacity: 0, y: 12, x: 0});
+    });
+    document.querySelectorAll('.ck-row,.tl-item').forEach(function(el){
+      el.classList.remove('show');
+      gsap.set(el, {opacity: 0, x: -12, y: 0});
+    });
+    document.querySelectorAll('.qblock').forEach(function(el){
+      gsap.set(el, {opacity: 0, y: 16, x: 0});
+    });
+    document.querySelectorAll('.hfill').forEach(function(fill){
+      gsap.set(fill, {width: '0%', clearProps: 'transition'});
+    });
+    document.querySelectorAll('.donut-arc').forEach(function(arc){
+      var circ = parseFloat(arc.getAttribute('data-circumference') || '314');
+      gsap.set(arc, {attr: {'stroke-dasharray': circ, 'stroke-dashoffset': circ}});
+    });
+    _resetTrendline();
+
+    var firstPanel = document.querySelector('.panel');
+    if (firstPanel) {
+      firstPanel.classList.add('active');
+      gsap.set(firstPanel, {opacity: 1});
+      gsap.set(firstPanel.querySelectorAll('.u:not(.num)'), {opacity: 1, y: 0, x: 0});
+      gsap.set(firstPanel.querySelectorAll('.num.u'), {opacity: 1, scale: 1, y: 0});
+    }
+  };
+
+  gsap.set(document.querySelectorAll('.panel'), {opacity: 0});
+  gsap.set(document.querySelectorAll('.u:not(.num)'), {opacity: 0, y: 16});
+  gsap.set(document.querySelectorAll('.num.u'), {opacity: 0, scale: 1.22, y: 14});
+  gsap.set(document.querySelectorAll('.held'), {opacity: 0, y: 14});
+  gsap.set(document.querySelectorAll('.scard,.ccol,.hbar,.pcell'), {opacity: 0, y: 12});
+  gsap.set(document.querySelectorAll('.ck-row,.tl-item'), {opacity: 0, x: -12});
+  gsap.set(document.querySelectorAll('.qblock'), {opacity: 0, y: 16});
+
+  var firstPanel = document.querySelector('.panel');
+  if (firstPanel) {
+    firstPanel.classList.add('active');
+    gsap.set(firstPanel, {opacity: 1});
+    var uFirst = Array.prototype.filter.call(firstPanel.querySelectorAll('.u'), function(e){ return !e.classList.contains('num'); });
+    if (uFirst.length) {
+      gsap.fromTo(uFirst, {opacity: 0, y: 22}, {opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: E_OUT, delay: 0.12});
+    }
+    var numFirst = firstPanel.querySelectorAll('.num.u');
+    if (numFirst.length) {
+      gsap.fromTo(numFirst, {opacity: 0, scale: 1.22, y: 14}, {opacity: 1, scale: 1, y: 0, duration: 0.7, ease: E_BACK, delay: 0.18});
+    }
+  }
+
+})();
+</script>
+</body>
+</html>

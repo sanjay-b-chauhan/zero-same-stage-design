@@ -1,0 +1,5 @@
+/* Tailwind v4 detects content from the CSS file's own directory. This entry
+ * lives beside the standalone build, so point the scanner back at the real app
+ * source — without it none of the component utility classes get generated. */
+@import '../src/index.css';
+@source '../src';

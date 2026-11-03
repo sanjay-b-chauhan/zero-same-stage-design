@@ -1,0 +1,770 @@
+/* The deck. Colour, line, shadow, radius and font only from tokens, so one switch restyles it. Air scales with --z4-air.
+   White and grey, hairlines and ink. Red only for a real problem, green only for Verified. Fixed px type. */
+.dk {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+  color: var(--zj-ink2);
+  --dk-turn: 900ms;
+}
+.dk p {
+  margin: 0;
+}
+.dk-layer {
+  position: absolute;
+  inset: 0 0 52px;
+  display: grid;
+  place-items: center;
+  padding: calc(20px * var(--z4-air)) calc(40px * var(--z4-air));
+}
+.dk-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(28px * var(--z4-air));
+  width: 100%;
+  max-width: 760px;
+}
+
+.dk-r {
+  visibility: hidden;
+}
+.dk-r.on {
+  visibility: visible;
+}
+
+/* words */
+.dk-words {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  text-align: center;
+}
+.dk-wl {
+  grid-area: 1 / 1;
+  width: 100%;
+}
+.dk-wl-c {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dk-w {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.dk-a {
+  font: 400 28px/34px var(--zj-font);
+  letter-spacing: -0.022em;
+  color: var(--zj-ink);
+  text-wrap: balance;
+}
+.dk-a.dk-two {
+  color: var(--zj-ink3);
+}
+.dk em {
+  font-style: normal;
+  color: var(--zj-ink);
+}
+.dk-say {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--zj-ink);
+}
+.dk-b {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--zj-ink2);
+  text-wrap: balance;
+}
+.dk-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+.dk-num {
+  font: 400 28px/34px var(--zj-font);
+  letter-spacing: -0.022em;
+  color: var(--zj-ink);
+  font-variant-numeric: tabular-nums;
+}
+.dk-lbl {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zj-ink3);
+}
+.dk-dl {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink3);
+}
+
+/* the cover: logo, who, then the one line */
+.dk-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.dk-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px !important;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink3);
+}
+.dk-cover-l {
+  margin-top: calc(20px * var(--z4-air)) !important;
+}
+.dk-minface {
+  display: inline-block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+  border-radius: var(--zj-r-pill);
+  background: var(--zj-well2);
+}
+.dk-minface img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* the dial */
+.dk-dial {
+  position: relative;
+  display: block;
+  flex: none;
+}
+.dk-dial-ticks,
+.dk-rotor {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.dk-tick {
+  stroke: var(--zj-line2);
+  stroke-linecap: round;
+  transition: stroke 160ms var(--zj-e);
+}
+.dk-tick.on {
+  stroke: var(--zj-ink);
+}
+.dk-tick.far {
+  stroke: var(--zj-due);
+}
+.dk-knob {
+  position: absolute;
+  border-radius: var(--zj-r-pill);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-ring);
+}
+.dk-dial-big .dk-knob {
+  box-shadow: var(--zj-sh-float);
+}
+.dk-rotor {
+  transition: transform var(--dk-turn) var(--z4-spring);
+}
+.dk-knurl {
+  stroke: var(--zj-line);
+  stroke-width: 0.75;
+}
+.dk-dish {
+  fill: none;
+  stroke: var(--zj-line);
+  stroke-width: 1;
+}
+.dk-ind {
+  stroke: var(--zj-ink);
+  stroke-linecap: round;
+}
+.dk-jump .dk-tick,
+.dk-jump .dk-rotor,
+.dk-jump .dk-bad,
+.dk-jump .dk-rr,
+.dk-jump .dk-p-line,
+.dk-jump .dk-chk,
+.dk-jump .dk-chk-i {
+  transition: none !important;
+}
+/* reduced motion: nothing turns or travels, a state just lands. Colour may still settle */
+@media (prefers-reduced-motion: reduce) {
+  .dk-rotor {
+    transition: none !important;
+  }
+  .dk-tick,
+  .dk-bad,
+  .dk-p-line,
+  .dk-chk,
+  .dk-chk-i {
+    transition-delay: 0s !important;
+  }
+}
+
+/* the price is a volume: tag, line, speaker, and the room that hears it */
+.dk-vol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(32px * var(--z4-air));
+}
+.dk-vol-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.dk-vol-o {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dk-vol-i {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--zj-r-pill);
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+  color: var(--zj-ink);
+}
+.dk-vol-pw {
+  display: grid;
+  min-width: 92px;
+}
+.dk-vol-pl {
+  grid-area: 1 / 1;
+}
+.dk-vol-p {
+  font: 400 28px/34px var(--zj-font);
+  letter-spacing: -0.022em;
+  color: var(--zj-ink);
+  font-variant-numeric: tabular-nums;
+}
+.dk-vol-l {
+  width: 56px;
+  height: 0;
+  border-top: 1px dashed var(--zj-line);
+}
+.dk-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 28px;
+}
+.dk-bars i {
+  display: block;
+  width: 6px;
+  border-radius: 3px;
+  background: var(--zj-line);
+  transform-origin: 50% 100%;
+  transition:
+    background-color 360ms var(--zj-e),
+    transform 520ms var(--z4-spring);
+}
+.dk-bars i:nth-child(1) {
+  height: 8px;
+}
+.dk-bars i:nth-child(2) {
+  height: 14px;
+}
+.dk-bars i:nth-child(3) {
+  height: 20px;
+}
+.dk-bars i:nth-child(4) {
+  height: 28px;
+}
+.dk-bars i[data-on='1'] {
+  background: var(--zj-ink);
+}
+.dk-bars i[data-hot='1'] {
+  background: var(--zj-due);
+}
+
+/* a crowd: people who stay, and the ones who walk out the door */
+.dk-crowd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--zj-ink2);
+}
+.dk-pp {
+  display: grid;
+  place-items: center;
+  transition:
+    transform 900ms var(--z4-spring),
+    filter 900ms var(--z4-spring),
+    color 360ms var(--zj-e);
+}
+.dk-pp[data-out='1'] {
+  color: var(--zj-ink3);
+  transform: translateX(48px) scale(0.86);
+  filter: blur(6px);
+  visibility: hidden;
+  transition:
+    transform 900ms var(--z4-spring),
+    filter 900ms var(--z4-spring),
+    visibility 0s linear 900ms;
+}
+.dk-door {
+  display: grid;
+  place-items: center;
+  margin-left: 14px;
+  color: var(--zj-line);
+  transition: color 360ms var(--zj-e);
+}
+.dk-door[data-on='1'] {
+  color: var(--zj-ink);
+}
+
+/* six markets, each one goes up at its real price */
+.dk-mks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 132px));
+  justify-content: center;
+  gap: 12px;
+}
+.dk-mkc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: var(--zj-r-card, 12px);
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+  transition: transform 520ms var(--z4-spring);
+}
+.dk-mkc[data-on='1'] {
+  transform: translateY(-6px);
+}
+.dk-mkc-c {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink3);
+}
+.dk-mkc-p {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--zj-ink);
+  font-variant-numeric: tabular-nums;
+}
+.dk-mkc-u {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  color: var(--zj-ink);
+  transform: translateY(6px) scale(0.6);
+  filter: blur(4px);
+  visibility: hidden;
+  transition:
+    transform 420ms var(--z4-spring),
+    filter 420ms var(--z4-spring),
+    visibility 0s linear 420ms;
+}
+.dk-mkc[data-on='1'] .dk-mkc-u {
+  transform: none;
+  filter: none;
+  visibility: visible;
+  transition:
+    transform 420ms var(--z4-spring),
+    filter 420ms var(--z4-spring),
+    visibility 0s;
+}
+
+/* compare */
+.dk-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 272px));
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+.dk .zj-card {
+  animation: none;
+}
+.dk .dk-cc {
+  align-items: center;
+  gap: 14px;
+  padding: 20px 16px 18px;
+  text-align: center;
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+}
+.dk-cc-t {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zj-ink);
+}
+
+/* tables: 12/16, no rules */
+.dk-tb {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.dk-tb th {
+  height: 28px;
+  padding: 0 8px;
+  font-weight: 400;
+  color: var(--zj-ink3);
+  text-align: left;
+  white-space: nowrap;
+}
+.dk-tb td {
+  height: 30px;
+  padding: 0 8px;
+  color: var(--zj-ink2);
+  white-space: nowrap;
+}
+.dk-rawwrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(20px * var(--z4-air));
+  width: 100%;
+}
+.dk-raw {
+  width: min(100%, 680px);
+  padding: 6px 6px 8px;
+  border-radius: var(--zj-r-card);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-panel);
+}
+.dk-raw-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink3);
+}
+.dk-raw-n {
+  color: var(--zj-ink);
+}
+.dk-rown {
+  color: var(--zj-ink4) !important;
+}
+.dk-bad {
+  display: inline-block;
+  min-width: 34px;
+  height: 20px;
+  margin-left: -6px;
+  padding: 0 6px;
+  border-radius: var(--zj-r-check);
+  line-height: 20px;
+  vertical-align: middle;
+  transition: color 180ms var(--zj-e), background-color 180ms var(--zj-e);
+}
+.dk-bad.on {
+  color: var(--zj-due);
+  background: color-mix(in srgb, var(--zj-due) 9%, transparent);
+}
+
+/* the one page */
+/* a page in its own proportion, so a blank one reads as a page */
+.dk-page {
+  width: 320px;
+  min-height: 452px;
+  padding: 22px 24px;
+  border-radius: var(--zj-r-row);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-sheet);
+}
+.dk-page-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dk-page-t {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--zj-ink);
+}
+.dk-page-rows {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+}
+.dk-pr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+}
+.dk-pr + .dk-pr {
+  box-shadow: 0 -1px 0 var(--zj-line);
+}
+.dk-pr-i {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--zj-r-pill);
+  box-shadow: inset 0 0 0 1px var(--zj-line);
+  color: var(--zj-ink);
+}
+.dk-pr-v {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zj-ink);
+}
+.dk-page-tb {
+  margin-top: 16px;
+}
+.dk-mk {
+  margin: 0;
+}
+.dk-mk th,
+.dk-mk td {
+  padding: 0;
+  text-align: right;
+}
+.dk-mk th:first-child,
+.dk-mk td:first-child {
+  width: 40px;
+  text-align: left;
+}
+.dk-mk td {
+  height: 26px;
+}
+.dk-mk-m {
+  color: var(--zj-ink) !important;
+}
+
+/* the roadmap: kit rows */
+.dk-road {
+  width: min(100%, 620px);
+  padding: 6px;
+  border-radius: var(--zj-r-card);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-panel);
+}
+.dk-rr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 14px 0 12px;
+  border-radius: var(--zj-r-row);
+  transition: background-color 200ms var(--zj-e);
+}
+.dk-rr.now {
+  background: var(--zj-well);
+}
+.dk-rn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--zj-r-pill);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-hair);
+  color: var(--zj-ink4);
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.dk-rr.on .dk-rn {
+  box-shadow: var(--zj-sh-ctl);
+  color: var(--zj-ink);
+}
+.dk-rc {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+.dk-rt {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zj-ink2);
+  white-space: nowrap;
+}
+.dk-rr.now .dk-rt {
+  color: var(--zj-ink);
+}
+.dk-rd {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dk-count {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.dk-rn-big {
+  width: 32px;
+  height: 32px;
+  box-shadow: var(--zj-sh-ctl);
+  color: var(--zj-ink2);
+}
+
+/* her bubble */
+.dk-ask {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.dk-bub {
+  padding: 10px 14px;
+  border-radius: var(--zj-r-row);
+  background: var(--zj-sheet);
+  box-shadow: var(--zj-sh-ring);
+  color: var(--zj-ink);
+  font-size: 16px;
+  line-height: 24px;
+}
+.dk-bub.dk-two {
+  color: var(--zj-ink3);
+}
+
+/* the proof */
+.dk-proof {
+  position: relative;
+  margin-bottom: 15px;
+}
+.dk-sheet {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: var(--zj-r-row);
+  background: var(--zj-sheet);
+}
+.dk-sf {
+  box-shadow: var(--zj-sh-sheet);
+}
+.dk-sf svg {
+  display: block;
+}
+.dk-sb1,
+.dk-sb2 {
+  transform-origin: 50% 100%;
+}
+.dk-sb1 {
+  transform: translateY(8px) scale(0.965);
+  box-shadow: var(--zj-sh-ring);
+}
+.dk-sb2 {
+  transform: translateY(15px) scale(0.93);
+  box-shadow: var(--zj-sh-ring);
+}
+.dk-p-ink {
+  fill: var(--zj-ink);
+}
+.dk-p-head {
+  fill: var(--zj-ink3);
+}
+.dk-p-rule {
+  stroke: var(--zj-line2);
+  stroke-width: 1;
+}
+.dk-p-line {
+  stroke: var(--zj-line2);
+  stroke-width: 1;
+  transition: stroke 200ms var(--zj-e);
+}
+.dk-p-line.claim.on {
+  stroke: var(--zj-ink);
+}
+.dk-chk {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--zj-r-pill);
+  background: var(--zj-sheet);
+  box-shadow: 0 0 0 1px var(--zj-line2), 0 0 0 3px var(--zj-sheet);
+  color: var(--zj-sheet);
+  transition: background-color 180ms var(--zj-e), box-shadow 180ms var(--zj-e);
+}
+.dk-chk.ck {
+  background: var(--zj-ink);
+  box-shadow: 0 0 0 1px var(--zj-ink), 0 0 0 3px var(--zj-sheet);
+}
+.dk-chk-i {
+  display: grid;
+  place-items: center;
+}
+
+/* the claims */
+.dk-claims {
+  width: min(100%, 560px);
+}
+.dk-cl {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 56px;
+  padding: 0 12px 0 14px;
+}
+.dk-cl + .dk-cl {
+  box-shadow: 0 -1px 0 var(--zj-line);
+}
+.dk-cl-n {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zj-ink);
+}
+.dk-src {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink3);
+}
+.dk-cl-s {
+  display: flex;
+  justify-content: flex-end;
+  flex: none;
+  width: 104px;
+}
+.dk-st-no {
+  color: var(--zj-due);
+}
+
+/* a short frame: the same type, less air */
+@container (max-height: 600px) {
+  .dk-col {
+    gap: 14px;
+  }
+  .dk-layer {
+    padding: 8px 32px;
+  }
+  .dk-tb td {
+    height: 26px;
+  }
+  .dk-mk td {
+    height: 22px;
+  }
+  .dk-pr {
+    min-height: 48px;
+  }
+}

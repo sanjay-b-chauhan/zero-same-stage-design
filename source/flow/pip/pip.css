@@ -1,0 +1,1427 @@
+/* The PIP in b36's language (flow/ds/b36.css, b36 css/core.css): plain slabs, two hairlines (a 1px black edge outside,
+   white .09 inside), text white / .62 / .38, radii 14 / 10 / 7, the bar 44 high. No blur behind, no shadow, no glass.
+   Prefix zp-. Closed it is one bar, Wispr Flow small: her face, where you are, icons only, each naming itself in a dark tip. */
+
+.zs2.zp {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--z-panel);
+  color: var(--z-tx);
+  overflow: hidden;
+  --zp-tip: var(--b-ground, #0b0b0c);
+  --zp-tip-tx: #fff;
+  --zp-tip-tx-2: rgba(255, 255, 255, 0.62);
+  --zp-tip-key: var(--b-slab3, #2c2c30);
+  --zp-tip-line: rgba(255, 255, 255, 0.14);
+  --zp-ring: rgba(255, 255, 255, 0.3);
+  --zp-pip: rgba(255, 255, 255, 0.16);
+  --zp-ease: var(--b-ease, cubic-bezier(0.2, 0.8, 0.2, 1));
+  --zp-soft: var(--b-soft, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* stuck mode reads in the small window too: it takes the stage's stuck ground, the way the big stage does */
+
+
+/* on the desktop the window is exactly the frame's size (Dock.tsx writes --zp-w and --zp-h), so the outline always hugs it */
+.zp-dock .zs2.zp {
+  width: calc(var(--zp-w, 100%) / var(--zp-k, 1));
+  height: calc(var(--zp-h, 100%) / var(--zp-k, 1));
+  zoom: var(--zp-k, 1);
+}
+
+/* a window that can't go as short as the bar keeps it in the middle of what it got */
+.zp[data-mode='real']:not([data-open]) {
+  justify-content: center;
+}
+
+/* ---------- the bar ---------- */
+
+.zp-bar {
+  flex: none;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 7px;
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.zp[data-open] .zp-bar::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 1px;
+  background: var(--b-hl, var(--z-line));
+  pointer-events: none;
+}
+.zp[data-mode='dock'] .zp-bar {
+  cursor: grab;
+  touch-action: none;
+}
+.zp[data-mode='dock'] .zp-bar[data-dragging] {
+  cursor: grabbing;
+}
+/* her face, b36's: 30, a hairline ring, the voice circle behind */
+.zp-face {
+  width: 30px;
+  height: 30px;
+  cursor: default;
+}
+.zp-face .zs2-face-circle {
+  background: rgba(255, 255, 255, 0.2);
+}
+.zp-face .zs2-face-img {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+/* the middle: one place, one thing */
+.zp-zone {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  position: relative;
+}
+.zp-swap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.zp-swap-cur {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.zp-swap-ghost {
+  pointer-events: none;
+}
+
+/* at rest the middle is b36's name card: her name, Manager under it */
+.zp-who {
+  margin-left: 4px;
+}
+.zp-who .b-who-n {
+  font-size: 13px;
+  line-height: 16px;
+}
+.zp-who .b-who-r {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+/* your voice: b36's bars and the time held */
+.zp-listen {
+  width: 100%;
+  height: 30px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.zp-listen .zs2-micbars {
+  flex: none;
+  height: 16px;
+  gap: 2px;
+  justify-content: flex-start;
+}
+.zp-listen .zs2-micbar {
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--z-tx);
+}
+.zp-listen .zs2-heldclock {
+  font-size: 12px;
+  color: var(--z-tx-2);
+}
+
+/* a slot landing, the coach stepping in */
+.zs2 .zp-land {
+  height: 30px;
+  max-width: 100%;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  border-radius: 15px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.16s;
+}
+.zs2 .zp-land:hover {
+  background: var(--z-raise);
+}
+/* a slot's name can run long: two short lines beat one cut in half */
+.zp-land-tx {
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  font-size: 12px;
+  line-height: 14px;
+}
+.zp-land:has(.zp-land-tick) {
+  padding: 0 8px 0 4px;
+}
+/* b36's tick token, white and green once verified. It sits in the first line so the second gets the full width */
+.zp-land-tick {
+  display: inline-grid;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  vertical-align: -3px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+}
+.zp-land-tick[data-verified] {
+  background: var(--g-grad);
+  color: #fff;
+}
+.zp-coach img {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+/* the one next action while the bar is all there is: b36's key, a white pill */
+.zs2 .zp-act {
+  height: 30px;
+  max-width: 100%;
+  padding: 0 14px;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--b-edge, #000);
+  color: #0b0b0c;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.14s, transform 0.12s var(--zp-ease);
+}
+.zs2 .zp-act:hover {
+  background: #ececec;
+}
+/* fixes to tick is work, not the key: an outline */
+.zs2 .zp-act[data-act='fixes'] {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--z-line-2);
+  color: var(--z-tx);
+}
+.zs2 .zp-act[data-act='fixes']:hover {
+  background: var(--z-raise);
+}
+.zs2 .zp-act:active {
+  transform: scale(0.97);
+}
+
+/* the review wait, named by her real step */
+.zp-wait {
+  min-width: 0;
+  height: 30px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--z-tx);
+}
+.zp-wait-label {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* the keys. One size, round, concentric with her face. The places you open sit in one outline pill; the one you are on is
+   filled. Hover fills a key and lifts its icon a pixel, a press sinks it, every key names itself in the tip */
+.zp-keys {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.zp-seg {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 34px;
+  padding: 2px;
+  margin-right: 2px;
+  border-radius: 17px;
+  box-shadow: inset 0 0 0 1px var(--z-line);
+}
+.zs2 .zp-key {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--z-tx-2);
+  transition: background-color 0.16s, color 0.14s, box-shadow 0.2s, transform 0.16s var(--zp-ease);
+}
+.zp-key svg {
+  display: block;
+  transition: transform 0.32s var(--z4-spring, var(--zp-ease));
+}
+.zs2 .zp-key:hover {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2 .zp-key:hover svg {
+  transform: translateY(-1px);
+}
+.zs2 .zp-key:active {
+  transform: scale(0.92);
+}
+.zs2 .zp-key:focus-visible {
+  outline: 1.5px solid var(--z-tx-2);
+  outline-offset: 1px;
+}
+/* the place you are looking at: filled inside the pill */
+.zs2 .zp-key[data-on] {
+  background: var(--z-raise-2);
+  color: var(--z-tx);
+}
+/* the mic: its own ring, and while she listens it is the one white key */
+.zs2 .zp-key[data-mic] {
+  box-shadow: inset 0 0 0 1px var(--z-line);
+}
+.zs2 .zp-key[data-mic][data-on] {
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--b-edge, #000);
+  color: #0b0b0c;
+}
+.zp-div {
+  flex: none;
+  width: 4px;
+}
+.zp-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--z-tx);
+  outline: 2px solid var(--z-panel);
+}
+.zp-key:hover .zp-dot {
+  outline-color: var(--z-raise);
+}
+
+/* ---------- under the bar ---------- */
+
+.zp-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.zp-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 4px var(--zp-pad, 8px) 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.zp-scroll::-webkit-scrollbar {
+  display: none;
+}
+.zp .zs2-res {
+  padding-top: 4px;
+}
+/* in the panel a file takes the panel's width, not the chat's 280 */
+.zp .zs2-res .zs2-card {
+  width: 100%;
+}/* one text edge: the heading starts where the file's name starts */
+.zp .zs2-res-group h3,
+.zp .zs2-res-none {
+  padding: 0 2px;
+}
+.zp-action {
+  flex: none;
+  padding: 0 8px 8px;
+}
+.zp-action .zs2-composer {
+  max-width: none;
+}
+.zp-action .zs2-submit {
+  padding-top: 0;
+}
+/* the build number has its own line at the foot of the window, under whatever is last */
+.zp-action:has(+ .zp-stamp),
+.zp-body:has(+ .zp-stamp) {
+  padding-bottom: 22px;
+}
+.zp-stamp {
+  position: absolute;
+  left: 12px;
+  bottom: 3px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+  color: var(--z-tx-3);
+  pointer-events: none;
+}
+
+/* ---------- the slots, compact: b36's task rows and checks ---------- */
+
+.zp-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.zp-step {
+  display: flex;
+  flex-direction: column;
+  border-radius: 11px;
+  transition: background-color 0.14s;
+}
+/* the step you are on is grouped in an outline. The panel is the one filled surface */
+.zp-step[data-state='now'] {
+  box-shadow: inset 0 0 0 1px var(--z-line-2);
+  padding-bottom: 10px;
+}
+.zp-step-head {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  font-size: 13px;
+  line-height: 18px;
+}
+.zp-step-mark {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--z-tx-3);
+}
+.zp-step[data-state='now'] .zp-step-mark {
+  box-shadow: inset 0 0 0 1.5px var(--zp-ring);
+  color: var(--z-tx);
+}
+/* done: a bare tick, no disc, the same as the stage's checklist */
+.zp-step[data-state='done'] .zp-step-mark {
+  color: var(--z-tx-2);
+}
+.zp-step[data-state='next'] .zp-step-mark {
+  box-shadow: inset 0 0 0 1.5px var(--zp-pip);
+}
+.zp-step-word[data-hidden] {
+  filter: blur(4px);
+  color: var(--z-tx-3);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.zp-step-word {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--z-tx-2);
+}
+.zp-step[data-state='now'] .zp-step-word {
+  color: var(--z-tx);
+  font-weight: 500;
+}
+.zp-step[data-state='done'] .zp-step-word {
+  color: var(--z-tx-3);
+}
+.zp-step-count {
+  flex: none;
+  font-size: 12px;
+  color: var(--z-tx-3);
+}
+.zp-step-cells {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 10px 0 38px;
+}
+.zp-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.zp-cell {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--zp-ring);
+  color: #111;
+  transition: background-color 0.18s, box-shadow 0.18s;
+}
+/* done is a bare tick. Grey when she told you, green ink only when you found it yourself: green means verified */
+.zp-cell[data-filled] {
+  box-shadow: none;
+  color: var(--z-tx-2);
+}
+.zp-cell[data-verified] {
+  color: var(--g-ink);
+}
+.zp-cell:focus-visible {
+  outline: 1.5px solid var(--z-tx-2);
+  outline-offset: 2px;
+}
+.zp-line {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px 0 10px;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px var(--z-line);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--z-tx);
+}
+.zp-line:not([data-filled]) {
+  color: var(--z-tx-3);
+}
+.zp-line[data-filled] {
+  box-shadow: inset 0 0 0 1px var(--z-line-2);
+}
+.zp-line-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2 .zp-line-copy {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  color: var(--z-tx-3);
+  transition: background-color 0.14s, color 0.14s, transform 0.12s var(--zp-ease);
+}
+.zs2 .zp-line-copy:hover {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2 .zp-line-copy:active {
+  transform: scale(0.9);
+}
+.zp-line-tick {
+  flex: none;
+  margin-right: 5px;
+  color: var(--z-tx-2);
+}
+.zp-line-tick[data-verified] {
+  color: var(--g-ink);
+}
+
+/* ---------- the quiet lines above her answers ---------- */
+
+.zp-seen-host {
+  display: block;
+  max-width: 100%;
+}
+.zp-seen {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+}
+.zp-seen-item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.zs2 button.zp-seen-item {
+  margin: -2px -6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--z-tx-3);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.zs2 button.zp-seen-item:hover,
+.zs2 button.zp-seen-item:focus-visible {
+  background: var(--z-raise);
+  color: var(--z-tx-2);
+}
+.zp-seen-sep {
+  flex: none;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---------- tips and frames ---------- */
+
+.zp-pop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+/* b36's note: 26 high, black, one hairline */
+.zp-tip {
+  height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 12px);
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--zp-tip);
+  box-shadow: 0 0 0 1px var(--zp-tip-line);
+  color: var(--zp-tip-tx);
+  font-size: 12px;
+  line-height: 26px;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.zp-tip:has(.zp-tip-keys) {
+  padding-right: 4px;
+}
+.zp-tip-label {
+  flex: none;
+}
+/* her name card: name, then Manager under it, like .b-who. Only where the window has the height for it */
+.zp-tip[data-stack] {
+  height: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 5px 10px;
+}
+.zp-tip[data-stack] .zp-tip-label {
+  font-size: 13px;
+  line-height: 18px;
+}
+.zp-tip[data-stack] .zp-tip-sub {
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, 0.38);
+}
+.zp-tip-sub {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 400;
+  color: var(--zp-tip-tx-2);
+}
+.zp-tip-keys {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  margin-left: 2px;
+}
+.zp-tip-keys kbd {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--zp-tip-key);
+  box-shadow: inset 0 0 0 1px var(--zp-tip-line);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--zp-tip-tx);
+}
+/* the frame she saw: a slab with a notch, the picture inset concentric */
+.zp-frame {
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--z-raise);
+  box-shadow: 0 0 0 1px var(--b-edge, #000), inset 0 0 0 1px var(--z-line);
+}
+.zp-frame img {
+  display: block;
+  border-radius: 7px;
+  object-fit: cover;
+  object-position: top left;
+  background: var(--z-raise-2);
+}
+.zp-notch {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  background: var(--z-raise);
+  transform: rotate(45deg);
+}
+.zp-frame[data-side='below'] .zp-notch {
+  top: -5px;
+  box-shadow: -1px -1px 0 0 var(--b-edge, #000), inset 1px 1px 0 0 var(--z-line);
+}
+.zp-frame[data-side='above'] .zp-notch {
+  bottom: -5px;
+  box-shadow: 1px 1px 0 0 var(--b-edge, #000), inset -1px -1px 0 0 var(--z-line);
+}
+
+/* ---------- parts from the stage, inside the window ---------- */
+
+/* the drop owns the whole window: the zone is the target, the link is the action area */
+.zp .zs2-submit {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zp .zs2-drop {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 8px 8px;
+  gap: 8px;
+  background: none;
+  border-radius: 0;
+}
+.zp .zs2-drop-zone {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+
+/* the film fills the window under the bar, with the margin everything else has */
+.zp .zs2-film {
+  flex: 1;
+  min-height: 0;
+  width: auto;
+  margin: 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+}
+.zp .zs2-film-frame {
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+.zp-body:has(+ .zp-stamp) .zs2-film,
+.zp-body:has(+ .zp-stamp) .zs2-preview {
+  margin-bottom: 0;
+}
+
+/* ---------- the POU, same exchange as the big screen ---------- */
+
+.zp-pou {
+  flex: 1;
+  min-height: 0;
+  padding: 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.zp-body:has(+ .zp-stamp) .zp-pou {
+  padding-bottom: 0;
+}
+/* her note holds one place: your line above it, the dots under it. What arrives never moves what is there. */
+.zp-pou-mid {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 4px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr minmax(82px, auto) 1fr;
+  row-gap: 16px;
+}
+.zp-pou-mid::-webkit-scrollbar {
+  display: none;
+}
+.zp-pou-note {
+  grid-row: 2;
+  align-self: center;
+  min-width: 0;
+}
+.zp-pou-mid .zs2-typing {
+  grid-row: 3;
+  align-self: start;
+  margin-top: 0;
+}
+.zp-pou-mid .zs2-typing[data-alone] {
+  grid-row: 2;
+  align-self: center;
+}
+.zp-pou-mine {
+  grid-row: 1;
+  align-self: end;
+  justify-self: end;
+  max-width: 85%;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+  color: var(--z-tx-2);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.zs2 .zp-hold {
+  flex: none;
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  background: var(--z-raise);
+  box-shadow: 0 0 0 1px var(--b-edge, #000), inset 0 0 0 1px var(--z-line);
+  color: var(--z-tx);
+  font-size: 14px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: background-color 160ms ease, transform 100ms ease;
+}
+.zs2 .zp-hold svg {
+  flex: none;
+}
+.zs2 .zp-hold:hover {
+  background: var(--z-raise-2);
+}
+.zs2 .zp-hold:active {
+  transform: scale(0.97);
+}
+.zs2 .zp-hold[data-rec] {
+  background: var(--z-raise-2);
+  box-shadow: 0 0 0 1px var(--b-edge, #000), inset 0 0 0 1px var(--z-line-2);
+  gap: 12px;
+}
+.zs2 .zp-hold[data-rec]:active {
+  transform: none;
+}
+.zs2 .zp-hold[data-rec] .zp-hold-heard {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--z-tx);
+}
+.zs2 .zp-hold[data-rec] .zs2-micbars {
+  flex: none;
+  width: 52px;
+  height: 14px;
+}
+.zs2 .zp-hold[data-off] {
+  color: var(--z-tx-3);
+  pointer-events: none;
+}
+
+/* ---------- the dock, when there is no real window ---------- */
+
+.zp-dim {
+  position: fixed;
+  inset: 0;
+  z-index: 7999;
+  background: rgba(11, 11, 12, 0.32);
+  pointer-events: none;
+  animation: zp-dim-in 320ms ease both;
+}
+@keyframes zp-dim-in {
+  from {
+    background: rgba(11, 11, 12, 0);
+  }
+}
+.zp-dock {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 8000;
+}
+/* the dock is a b36 slab: 14 round, a black edge outside, a white .09 hairline inside */
+.zp-dock-in {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--b-r, 14px);
+  box-shadow: 0 0 0 1px var(--b-edge, #000);
+}
+/* the free corner: a 16px hit square, a hairline quarter round that shows on hover and while sizing */
+.zp-grip {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  z-index: 2;
+  touch-action: none;
+}
+.zp-grip::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid transparent;
+  transition: border-color 160ms ease;
+}
+.zp-grip[data-at='tl'] {
+  left: -4px;
+  top: -4px;
+  cursor: nwse-resize;
+}
+.zp-grip[data-at='br'] {
+  right: -4px;
+  bottom: -4px;
+  cursor: nwse-resize;
+}
+.zp-grip[data-at='tr'] {
+  right: -4px;
+  top: -4px;
+  cursor: nesw-resize;
+}
+.zp-grip[data-at='bl'] {
+  left: -4px;
+  bottom: -4px;
+  cursor: nesw-resize;
+}
+.zp-grip[data-at='tl']::before {
+  left: 4px;
+  top: 4px;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 10px;
+}
+.zp-grip[data-at='br']::before {
+  right: 4px;
+  bottom: 4px;
+  border-left: 0;
+  border-top: 0;
+  border-bottom-right-radius: 10px;
+}
+.zp-grip[data-at='tr']::before {
+  right: 4px;
+  top: 4px;
+  border-left: 0;
+  border-bottom: 0;
+  border-top-right-radius: 10px;
+}
+.zp-grip[data-at='bl']::before {
+  left: 4px;
+  bottom: 4px;
+  border-right: 0;
+  border-top: 0;
+  border-bottom-left-radius: 10px;
+}
+.zp-grip:hover::before,
+.zp-dock[data-sizing] .zp-grip::before {
+  border-color: var(--z-tx-3);
+}
+.zp-dock-in::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--z-line);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zp-dim,
+  .zp-dock-in,
+  .zp-key,
+  .zp-cell {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ===== b10: one row. Seven circles of 36, one 18 icon in each, one 4 gap between, 8 all round.
+   The window is the row: 292 by 52, which is also Chrome's floor, so nothing is left under or beside it ===== */
+.zs2.zp .zp-bar {
+  height: var(--zp-bar-h, 52px);
+  padding: 0 8px;
+  gap: 0;
+}
+.zp-bar > .zp-keys {
+  gap: var(--zp-gap, 4px);
+}
+/* a film or a file widens the window: the way back keeps the right edge, the rest keeps its place. At 292 nothing moves */
+.zp-bar > .zp-keys {
+  flex: 1;
+  min-width: 0;
+}
+.zp-bar > .zp-keys > :last-child {
+  margin-left: auto;
+}
+.zs2 .zp-bar .zp-face,
+.zs2 .zp-bar .zp-key {
+  width: var(--zp-key, 36px);
+  height: var(--zp-key, 36px);
+}
+/* the kit draws every lucide at 16. The bar's are 18 */
+.zs2 .zp-bar .zp-key svg.lucide {
+  width: var(--zp-icon, 18px);
+  height: var(--zp-icon, 18px);
+}
+/* ten findings sit on one line in a 292 window, none left alone on a second */
+.zs2.zp .zp-cells {
+  gap: 4px;
+}
+.zs2.zp .zp-cell {
+  width: 18px;
+  height: 18px;
+}
+.zs2 .zp-bar .zp-dot {
+  top: 7px;
+  right: 7px;
+}
+/* the middle: the four keys, or the moment in their exact room */
+.zs2 .zp-bar .zp-zone {
+  flex: none;
+  width: 156px;
+  height: 36px;
+}
+.zp-bar .zp-zone .zp-swap-cur {
+  gap: 4px;
+}
+.zp-bar .zp-zone[data-kind='tools'] .zp-swap-cur {
+  justify-content: flex-start;
+}
+.zp-bar .zp-zone .zp-swap-ghost {
+  position: absolute;
+  inset: 0;
+}
+.zp-bar .zp-zone .zp-listen {
+  height: 36px;
+  padding: 0 8px;
+}
+/* b14: while you talk, your words as she hears them on top, your voice and the time under them */
+.zp-bar .zp-zone .zp-listen[data-heard] {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 6px;
+}
+.zp-listen .zp-heard {
+  height: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx);
+}
+.zp-listen-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 14px;
+  min-width: 0;
+}
+.zp-listen-row .zs2-micbars {
+  flex: 1;
+  min-width: 0;
+  height: 12px;
+  justify-content: space-between;
+}
+.zp-listen-row .zs2-heldclock {
+  line-height: 14px;
+}
+/* the chat is open and your words are in its box: the bar is your voice and the time, one row, a little taller */
+.zp-listen:not([data-heard]) .zp-listen-row {
+  flex: 1;
+  height: 16px;
+  gap: 10px;
+}
+.zp-listen:not([data-heard]) .zp-listen-row .zs2-micbars {
+  height: 16px;
+}
+/* the frame she took, as a status line */
+.zp-look {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 6px;
+}
+.zp-look-frame {
+  flex: none;
+  height: 22px;
+  max-width: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+  outline: 1px solid var(--b-hl2);
+  outline-offset: -1px;
+}
+.zp-look-tx {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+  white-space: nowrap;
+}
+/* her answer as she says it, while the chat is closed. A press opens the chat on it */
+.zs2 .zp-bar .zp-say {
+  width: 100%;
+  height: 36px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: none;
+  color: var(--z-tx);
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+  transition: background-color 140ms var(--b-ease, ease);
+}
+.zs2 .zp-bar .zp-say:hover {
+  background: var(--b-slab3);
+}
+.zs2 .zp-bar .zp-say:active {
+  transform: translateY(1px);
+}
+.zp-say .zp-saytail {
+  flex: 1;
+}
+
+/* the POU keeps one key in the middle, the room follows it */
+.zs2 .zp-bar .zp-zone[data-pou] {
+  width: auto;
+  min-width: 36px;
+}
+.zp-bar .zp-zone[data-pou] .zp-swap,
+.zp-bar .zp-zone[data-pou] .zp-swap-cur {
+  position: relative;
+  width: auto;
+}
+
+/* resources in the small window: one row per file, its app, its name, View. No preview in here */
+.zs2-res.zs2-res-rows {
+  gap: 0;
+  padding: 4px 4px 8px;
+}
+.zs2-resrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 4px 0 6px;
+  border-radius: var(--b-r-sm, 10px);
+  transition: background-color 120ms var(--zp-ease);
+}
+.zs2-resrow:hover {
+  background: var(--z-raise);
+}
+.zs2-resrow-ico {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: var(--z-tx-3);
+}
+.zs2-resrow-ico img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.zs2-resrow-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--z-tx);
+}
+.zs2-resrow-view {
+  flex: none;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 13px;
+  box-shadow: inset 0 0 0 1px var(--z-line-2, var(--z-line));
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+  transition: color 120ms var(--zp-ease), box-shadow 120ms var(--zp-ease), transform 120ms var(--zp-ease);
+}
+.zs2-resrow-view:hover {
+  color: var(--z-tx);
+  box-shadow: inset 0 0 0 1px var(--z-tx-3);
+}
+.zs2-resrow-view:active {
+  transform: translateY(1px);
+}
+.zs2-resrow-view:focus-visible {
+  outline: 1.5px solid var(--z-tx-2);
+  outline-offset: 1px;
+}
+
+/* a tool in its own window: the whole window is the slab, as tall as what it holds */
+html:has(> body > .zp-tool),
+body:has(> .zp-tool) {
+  margin: 0;
+  height: 100%;
+  background: var(--z-panel, #161618);
+}
+.zs2.zp.zp-tool {
+  position: relative;
+  min-height: 100%;
+  height: auto;
+}
+.zp-tool-in {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.zp-tool[data-tool='todos'] .zp-scroll {
+  flex: none;
+  overflow: visible;
+  padding-top: 8px;
+}
+.zp-tool .zs2-side {
+  min-height: 0;
+}
+.zp-tool .zs2-res.zs2-res-rows {
+  flex: none;
+  overflow: visible;
+}
+.zp-tool-x {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+/* the PIP composer is the big one scaled down: the words on their own line, then plus, your screen and I'm stuck,
+   then the mic and send. Big is 10 / 14 / 32 / 28, here 8 / 13 / 28 / 26 */
+.zp .zs2-composer[data-surface='pip'] .zs2-composer-box {
+  display: grid;
+  align-items: stretch;
+  gap: 2px;
+  padding: 8px 8px 6px;
+  border-radius: var(--b-r);
+}
+.zp .zs2-composer[data-surface='pip'] .zs2-input {
+  min-height: 28px;
+  padding: 4px 6px;
+  font-size: 13px;
+  line-height: 20px;
+}
+.zp .zs2-composer[data-surface='pip'] .zs2-ghost,
+.zp .zs2-composer[data-surface='pip'] .zs2-send {
+  width: 28px;
+  height: 28px;
+}
+.zp .zs2-composer[data-surface='pip'] .zs2-stuckpill {
+  height: 26px;
+  margin-left: 4px;
+  padding: 0 10px;
+}
+
+/* b14 (his note: remove the question mark key). Six circles now, 12 between every one, so the row has no hole where it was.
+   The window stays 292, Chrome's floor and every body's width */
+.zp-bar > .zp-keys {
+  gap: 12px;
+}
+.zs2 .zp-bar .zp-zone {
+  width: 132px;
+}
+.zp-bar .zp-zone[data-kind='tools'] .zp-swap-cur {
+  gap: 12px;
+}
+
+/* b16 (his note, 3 Nov: "I need a whole list there ... not grayed out, like a hidden version ... we are calling it slots"):
+   the Slots window is the whole list. Every step by name, each slot its own row: found is a bare tick and its name, the rest
+   a ring and a hidden line. A step still ahead keeps its rows hidden and a touch quieter */
+.zp-step {
+  padding-bottom: 8px;
+}
+.zp-step-cells {
+  gap: 2px;
+  padding: 0 10px 0 36px;
+}
+.zp-srow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 26px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+}
+.zp-srow .zp-cell {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.zp-srow[data-filled] .zp-cell {
+  box-shadow: none;
+}
+.zp-srow[data-verified] .zp-cell {
+  color: var(--g-ink);
+}
+.zp-srow-t {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zp-hide {
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  gap: 5px;
+  filter: blur(1.2px);
+  pointer-events: none;
+}
+.zp-hide i {
+  flex: none;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--z-tx) 13%, transparent);
+}
+.zp-step-cells[data-quiet] {
+  opacity: 0.7;
+}
+
+/* ===== b16 (his note: "a user can go to any side ... and make it resizable"): every free side is a pull strip, 8 wide,
+   clear of the corners. No mark on it, only the cursor says so ===== */
+.zp-edge {
+  position: absolute;
+  z-index: 2;
+  touch-action: none;
+}
+.zp-edge[data-e='n'],
+.zp-edge[data-e='s'] {
+  left: 14px;
+  right: 14px;
+  height: 8px;
+  cursor: ns-resize;
+}
+.zp-edge[data-e='n'] {
+  top: -4px;
+}
+.zp-edge[data-e='s'] {
+  bottom: -4px;
+}
+.zp-edge[data-e='e'],
+.zp-edge[data-e='w'] {
+  top: 14px;
+  bottom: 14px;
+  width: 8px;
+  cursor: ew-resize;
+}
+.zp-edge[data-e='e'] {
+  right: -4px;
+}
+.zp-edge[data-e='w'] {
+  left: -4px;
+}
+
+/* b16 (his note: "when I don't hover over anything, it has to be a little smaller ... When we hover, it can be a little bigger"):
+   the folded bar rests at 90 percent, held to the corner it sits in, and comes up to full size under the pointer */
+.zp-dock-in {
+  transition: scale 320ms var(--b-soft, cubic-bezier(0.16, 1, 0.3, 1));
+  transform-origin: right bottom;
+}
+.zp-dock[data-bar] .zp-dock-in {
+  scale: 0.9;
+}
+.zp-dock[data-bar]:hover .zp-dock-in,
+.zp-dock[data-bar][data-dragging] .zp-dock-in,
+.zp-dock[data-bar]:focus-within .zp-dock-in {
+  scale: 1;
+}
+.zp-dock[data-slot='bl'] .zp-dock-in {
+  transform-origin: left bottom;
+}
+.zp-dock[data-slot='tr'] .zp-dock-in {
+  transform-origin: right top;
+}
+.zp-dock[data-slot='tl'] .zp-dock-in {
+  transform-origin: left top;
+}
+.zp-dock[data-slot='tc'] .zp-dock-in {
+  transform-origin: center top;
+}
+.zp-dock[data-slot='bc'] .zp-dock-in {
+  transform-origin: center bottom;
+}
+.zp-dock[data-slot='ml'] .zp-dock-in {
+  transform-origin: left center;
+}
+.zp-dock[data-slot='mr'] .zp-dock-in {
+  transform-origin: right center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zp-dock-in {
+    transition: none;
+  }
+}
+
+/* b16: a bar key's tip drawn above the PiP, outside it, so it carries its own tokens */
+.zp-pop-out {
+  --zp-tip: var(--b-ground, #0b0b0c);
+  --zp-tip-tx: #fff;
+  --zp-tip-tx-2: rgba(255, 255, 255, 0.62);
+  --zp-tip-key: var(--b-slab3, #2c2c30);
+  --zp-tip-line: rgba(255, 255, 255, 0.14);
+  max-width: none;
+  font-family: inherit;
+}
+
+/* b23 (his note: "in the pip mode I need the font to be 12 px and line height 8px, and add the surface 2 to the chat bar so
+   it's clear, or outline"): chat at 12 with a line gap of 8 (20 high lines), and the box on surface 2 with its hairline */
+.zs2.zp {
+  --zs2-chat-fs: 12px;
+  --zs2-chat-lg: 8px;
+}
+.zp .zs2-composer[data-surface='pip'] .zs2-composer-box {
+  background: var(--b-slab2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zp .zs2-composer[data-surface='pip'] .zs2-composer-box:focus-within {
+  box-shadow: inset 0 0 0 1px var(--b-t3);
+}
+.zp .zs2-composer[data-surface='pip'] .zs2-input {
+  font-size: 12px;
+  line-height: 20px;
+}

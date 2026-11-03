@@ -1,0 +1,85 @@
+{
+  "n": 1,
+  "badge": "b1",
+  "startsAtXp": 0,
+  "rolesAtLevel": 10,
+  "rolesOpenByNow": 10,
+  "rolesDeltaVsPrev": null,
+  "pay": { "est": "$58k", "deltaYear": null },
+  "scenariosToUnlock": 0,
+  "scenario": { "name": "Inbound lead router", "company": "HubSpot", "domain": "hubspot.com" },
+  "work": "Book meetings for a sales team: calls, emails, follow ups",
+  "wantToSee": "Clear messages and quick follow ups",
+  "demonstrated": [
+    "Routed live inbound leads in HubSpot",
+    "Sent updates your manager could forward",
+    "Wrote a plan with the problem, the cause and the fix"
+  ],
+  "companies": {
+    "stage": "Mostly public companies and late stage private companies",
+    "size": "Most have 1,300 to 4,100 people",
+    "remote": "Hybrid for 4 of 10 roles, US and Canada",
+    "line": "Big sales floors that train new reps from day one"
+  },
+  "roles": [
+    {
+      "title": "Analytics Engineer Intern",
+      "company": "Coinbase",
+      "domain": "coinbase.com",
+      "pay": "Pay not posted",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Sales Development Representative (NY)",
+      "company": "LangChain",
+      "domain": "langchain.com",
+      "pay": "Pay not posted",
+      "mode": "On site"
+    },
+    {
+      "title": "Business Development Representative",
+      "company": "Apollo.io",
+      "domain": "apollo.io",
+      "pay": "Pay not posted",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Business Development Representative (Austin)",
+      "company": "Fivetran",
+      "domain": "fivetran.com",
+      "pay": "Pay not posted",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Sales Development Representative",
+      "company": "Gong",
+      "domain": "gong.io",
+      "pay": "Pay not posted",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Account Development Representative - Canada",
+      "company": "Samsara",
+      "domain": "samsara.com",
+      "pay": "Pay not posted",
+      "mode": "Remote"
+    },
+    {
+      "title": "Data Analyst, Intern",
+      "company": "Stripe",
+      "domain": "stripe.com",
+      "pay": "Pay not posted",
+      "mode": "On site"
+    },
+    {
+      "title": "Data Intern - Product Analytics - Winter 2027",
+      "company": "1Password",
+      "domain": "1password.com",
+      "pay": "Pay not posted",
+      "mode": "Remote"
+    }
+  ],
+  "moreRoles": 2,
+  "moreRolesBeyondRow": 7,
+  "logos": ["coinbase.com", "langchain.com", "apollo.io", "fivetran.com", "gong.io", "samsara.com"]
+}

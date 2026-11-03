@@ -1,0 +1,1114 @@
+{
+ "id": "9a3e7d14-6f02-4b7e-8a11-5d0c2f4e8b21",
+ "scenario_id": "7c1f0a52-3b1e-4d8a-9c55-1e2f6a7b9d10",
+ "run_id": "7c1f0a52-3b1e-4d8a-9c55-1e2f6a7b9d10_19xbf77_medium_20261101_000000",
+ "duration_preset": "medium",
+ "script_status": "ready",
+ "audio_status": "ready",
+ "total_duration_sec": 124.096,
+ "combined_audio_url": null,
+ "output_raw_url": "Hey, good to meet you. I'm Eryn, I'll be your manager on this one.\nSo I wanna jump right in, 'cause we've got a big call to make here at Spotify, and right now nobody can make it.\nYou good to follow along while I walk you through it?\nAlright, so think of a price like a volume knob.\nYou turn it up a little and nobody notices, but you turn it too far and people walk out of the room.\nSo here's what's going on. Spotify raised Premium prices in six markets last year.\nSo that means we turned six knobs.\nA couple of them didn't care. A couple lost a lot of people.\nNow leadership wants to know where we raise next, and by how much.\nSo which knob do we touch, and how far do we turn it?\nAnd right now, nobody can answer that, 'cause the data's a mess.\nWe pulled the raw export, and there are ten things wrong with it, so basically we'd be turning knobs in the dark.\nOkay, so what does good look like here?\nYou come back with one clear recommendation.\nNot a list of options, not a maybe, just one call that answers two things.\nFirst, where do we raise next?\nAnd second, by how much?\nSo when leadership asks why that knob and why that far, you've got the numbers right there, market by market.\nMake sense?\nCool, so here's how you're gonna get there.\nI've split it into five stages, and each one ends in something real you hand me.\nFirst, you clean the dataset, and that's about fifteen minutes.\nYou find what's wrong with the export, you get Claude to fix it, and you send me back a clean CSV.\nSecond, you build the revenue model, market by market, and that's the big one, about twenty-five minutes, 'cause that's where you find out how far each knob can really go.\nThird, you make the recommendation, so that's about fifteen minutes to make the call.\nFourth, you write the pricing memo, another fifteen.\nAnd last, you present it, and that's about twelve.\nI'm right there with you the whole way, so if you get stuck, you just ask me.\nSound like a plan?\nOkay cool, glad the plan's clear.\nI know it sounds like a lot, but honestly you're just finding out which knob and how far.\nAlright, that's the whole thing. Let me make sure we're on the same page.\nI've got a few quick questions. You ready?",
+ "cast": [
+  {
+   "lane": "facilitator",
+   "name": "Eryn Mitchell",
+   "person_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33"
+  }
+ ],
+ "context_points": [
+  {
+   "id": "six_markets",
+   "term": "Six markets",
+   "bucket": "Problem",
+   "description": "Spotify raised Premium prices in six markets last year."
+  },
+  {
+   "id": "mixed_reaction",
+   "term": "Mixed reaction",
+   "bucket": "Problem",
+   "description": "A couple of markets didn't care, a couple lost a lot of people."
+  },
+  {
+   "id": "where_next",
+   "term": "The question",
+   "bucket": "Problem",
+   "description": "Leadership wants to know where to raise next, and by how much."
+  },
+  {
+   "id": "messy_data",
+   "term": "The data",
+   "bucket": "Problem",
+   "description": "Nobody can answer that yet, because the data's a mess."
+  },
+  {
+   "id": "ten_issues",
+   "term": "Ten issues",
+   "bucket": "Problem",
+   "description": "The raw export has ten things wrong with it."
+  },
+  {
+   "id": "one_recommendation",
+   "term": "One recommendation",
+   "bucket": "Goal",
+   "description": "You come back with one clear recommendation."
+  },
+  {
+   "id": "back_it_up",
+   "term": "Market by market",
+   "bucket": "Goal",
+   "description": "The call is backed by numbers, market by market."
+  },
+  {
+   "id": "clean_dataset",
+   "term": "Clean the dataset",
+   "bucket": "Project Context",
+   "description": "Stage one cleans the raw export into a clean .csv."
+  },
+  {
+   "id": "revenue_model",
+   "term": "Revenue model",
+   "bucket": "Project Context",
+   "description": "Stage two builds the revenue model, market by market."
+  },
+  {
+   "id": "make_recommendation",
+   "term": "Make the recommendation",
+   "bucket": "Project Context",
+   "description": "Stage three makes the recommendation."
+  },
+  {
+   "id": "pricing_memo",
+   "term": "Pricing memo",
+   "bucket": "Deliverable",
+   "description": "Stage four writes it up in a pricing memo."
+  },
+  {
+   "id": "present_it",
+   "term": "Present it",
+   "bucket": "Deliverable",
+   "description": "Stage five presents it."
+  }
+ ],
+ "lines": {
+  "cast": [
+   {
+    "lane": "facilitator",
+    "name": "Eryn Mitchell",
+    "person_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33"
+   }
+  ],
+  "version": "v2",
+  "segments": [
+   {
+    "id": "intro",
+    "seq": 0,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b1-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_intro",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "pill-cover"
+      },
+      "action": "show",
+      "anchor": "b1_big_call",
+      "time_sec": 6.54
+     }
+    ],
+    "file": null,
+    "label": "Intro",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Hey, good to meet you. I'm Eryn, I'll be your manager on this one.",
+      "slide": null,
+      "end_sec": 3.797,
+      "line_id": "intro_line_0",
+      "audio_url": "static/kickoff/spotify/intro.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "So I wanna jump right in, 'cause we've got a big call to make here at Spotify, and right now nobody can make it.",
+      "slide": null,
+      "end_sec": 10.645,
+      "line_id": "intro_line_1",
+      "audio_url": "static/kickoff/spotify/intro.mp3",
+      "highlight": null,
+      "start_sec": 3.797,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 2,
+      "text": "You good to follow along while I walk you through it?",
+      "slide": null,
+      "end_sec": 13.312,
+      "line_id": "intro_line_2",
+      "audio_url": "static/kickoff/spotify/intro.mp3",
+      "highlight": null,
+      "start_sec": 10.645,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 13.312,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/spotify/intro.mp3"
+   },
+   {
+    "id": "problem",
+    "seq": 1,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b2-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_problem",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "st-knob"
+      },
+      "action": "show",
+      "anchor": "b2_like_a_volume",
+      "time_sec": 1.63
+     },
+     {
+      "args": {
+       "id": "p-b2-2"
+      },
+      "action": "set_panel",
+      "anchor": "b2_p_b2_2",
+      "time_sec": 2.859
+     },
+     {
+      "args": {
+       "id": "st-far"
+      },
+      "action": "show",
+      "anchor": "b2_too_far",
+      "time_sec": 6.66
+     },
+     {
+      "args": {
+       "id": "p-b2-3"
+      },
+      "action": "set_panel",
+      "anchor": "b2_spotify_raised",
+      "time_sec": 10.47
+     },
+     {
+      "args": {
+       "id": "num-six"
+      },
+      "action": "show",
+      "anchor": "b2_six_markets",
+      "time_sec": 12.61
+     },
+     {
+      "args": {
+       "id": "lbl-six"
+      },
+      "action": "show",
+      "anchor": "b2_markets_last",
+      "time_sec": 12.84
+     },
+     {
+      "args": {
+       "id": "p-b2-4"
+      },
+      "action": "set_panel",
+      "anchor": "b2_p_b2_4",
+      "time_sec": 16.043
+     },
+     {
+      "args": {
+       "id": "cc-held"
+      },
+      "action": "show",
+      "anchor": "b2_didn_t_care",
+      "time_sec": 16.98
+     },
+     {
+      "args": {
+       "id": "cc-lost"
+      },
+      "action": "show",
+      "anchor": "b2_lost_a_lot",
+      "time_sec": 18.27
+     },
+     {
+      "args": {
+       "id": "p-b2-5"
+      },
+      "action": "set_panel",
+      "anchor": "b2_where_we_raise",
+      "time_sec": 20.92
+     },
+     {
+      "args": {
+       "id": "st-much"
+      },
+      "action": "show",
+      "anchor": "b2_by_how_much",
+      "time_sec": 22.43
+     },
+     {
+      "args": {
+       "id": "p-b2-6"
+      },
+      "action": "set_panel",
+      "anchor": "b2_nobody_can",
+      "time_sec": 27.1
+     },
+     {
+      "args": {
+       "id": "st-mess"
+      },
+      "action": "show",
+      "anchor": "b2_the_data_s",
+      "time_sec": 28.86
+     },
+     {
+      "args": {
+       "id": "p-b2-7"
+      },
+      "action": "set_panel",
+      "anchor": "b2_raw_export",
+      "time_sec": 30.87
+     },
+     {
+      "args": {
+       "id": "num-ten"
+      },
+      "action": "show",
+      "anchor": "b2_ten_things",
+      "time_sec": 32.065
+     },
+     {
+      "args": {
+       "id": "lbl-ten"
+      },
+      "action": "show",
+      "anchor": "b2_things_wrong",
+      "time_sec": 32.54
+     }
+    ],
+    "file": null,
+    "label": "Problem",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Alright, so think of a price like a volume knob.",
+      "slide": null,
+      "end_sec": 2.859,
+      "line_id": "problem_line_0",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "You turn it up a little and nobody notices, but you turn it too far and people walk out of the room.",
+      "slide": null,
+      "end_sec": 8.597,
+      "line_id": "problem_line_1",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 2.859,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 2,
+      "text": "So here's what's going on. Spotify raised Premium prices in six markets last year.",
+      "slide": null,
+      "end_sec": 14.037,
+      "line_id": "problem_line_2",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 8.597,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "six_markets"
+     },
+     {
+      "seq": 3,
+      "text": "So that means we turned six knobs.",
+      "slide": null,
+      "end_sec": 16.043,
+      "line_id": "problem_line_3",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 14.037,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 4,
+      "text": "A couple of them didn't care. A couple lost a lot of people.",
+      "slide": null,
+      "end_sec": 19.456,
+      "line_id": "problem_line_4",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 16.043,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "mixed_reaction"
+     },
+     {
+      "seq": 5,
+      "text": "Now leadership wants to know where we raise next, and by how much.",
+      "slide": null,
+      "end_sec": 23.275,
+      "line_id": "problem_line_5",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 19.456,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "where_next"
+     },
+     {
+      "seq": 6,
+      "text": "So which knob do we touch, and how far do we turn it?",
+      "slide": null,
+      "end_sec": 26.197,
+      "line_id": "problem_line_6",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 23.275,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 7,
+      "text": "And right now, nobody can answer that, 'cause the data's a mess.",
+      "slide": null,
+      "end_sec": 29.952,
+      "line_id": "problem_line_7",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 26.197,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "messy_data"
+     },
+     {
+      "seq": 8,
+      "text": "We pulled the raw export, and there are ten things wrong with it, so basically we'd be turning knobs in the dark.",
+      "slide": null,
+      "end_sec": 36.075,
+      "line_id": "problem_line_8",
+      "audio_url": "static/kickoff/spotify/problem.mp3",
+      "highlight": null,
+      "start_sec": 29.952,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "ten_issues"
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 36.075,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/spotify/problem.mp3"
+   },
+   {
+    "id": "outcome",
+    "seq": 2,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b3-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_outcome",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "p-b3-2"
+      },
+      "action": "set_panel",
+      "anchor": "b3_one_clear",
+      "time_sec": 3.17
+     },
+     {
+      "args": {
+       "id": "p-b3-3"
+      },
+      "action": "set_panel",
+      "anchor": "b3_one_call",
+      "time_sec": 7.46
+     },
+     {
+      "args": {
+       "id": "cc-where"
+      },
+      "action": "show",
+      "anchor": "b3_where_do",
+      "time_sec": 9.63
+     },
+     {
+      "args": {
+       "id": "cc-much"
+      },
+      "action": "show",
+      "anchor": "b3_by_how",
+      "time_sec": 11.85
+     },
+     {
+      "args": {
+       "id": "p-b3-4"
+      },
+      "action": "set_panel",
+      "anchor": "b3_why_that_knob",
+      "time_sec": 14.2
+     },
+     {
+      "args": {
+       "id": "st-numbers"
+      },
+      "action": "show",
+      "anchor": "b3_the_numbers",
+      "time_sec": 16.63
+     }
+    ],
+    "file": null,
+    "label": "Outcome",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Okay, so what does good look like here?",
+      "slide": null,
+      "end_sec": 2.133,
+      "line_id": "outcome_line_0",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "You come back with one clear recommendation.",
+      "slide": null,
+      "end_sec": 4.544,
+      "line_id": "outcome_line_1",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 2.133,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "one_recommendation"
+     },
+     {
+      "seq": 2,
+      "text": "Not a list of options, not a maybe, just one call that answers two things.",
+      "slide": null,
+      "end_sec": 9.131,
+      "line_id": "outcome_line_2",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 4.544,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 3,
+      "text": "First, where do we raise next?",
+      "slide": null,
+      "end_sec": 10.944,
+      "line_id": "outcome_line_3",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 9.131,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 4,
+      "text": "And second, by how much?",
+      "slide": null,
+      "end_sec": 12.565,
+      "line_id": "outcome_line_4",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 10.944,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 5,
+      "text": "So when leadership asks why that knob and why that far, you've got the numbers right there, market by market.",
+      "slide": null,
+      "end_sec": 18.965,
+      "line_id": "outcome_line_5",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 12.565,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "back_it_up"
+     },
+     {
+      "seq": 6,
+      "text": "Make sense?",
+      "slide": null,
+      "end_sec": 19.925,
+      "line_id": "outcome_line_6",
+      "audio_url": "static/kickoff/spotify/outcome.mp3",
+      "highlight": null,
+      "start_sec": 18.965,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 19.925,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/spotify/outcome.mp3"
+   },
+   {
+    "id": "process",
+    "seq": 3,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b4-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_process",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "st-five"
+      },
+      "action": "show",
+      "anchor": "b4_five_stages",
+      "time_sec": 3.34
+     },
+     {
+      "args": {
+       "id": "p-b4-2"
+      },
+      "action": "set_panel",
+      "anchor": "b4_p_b4_2",
+      "time_sec": 6.592
+     },
+     {
+      "args": {
+       "id": "tl-1"
+      },
+      "action": "show",
+      "anchor": "b4_clean_the",
+      "time_sec": 7.33
+     },
+     {
+      "args": {
+       "id": "tl-2"
+      },
+      "action": "show",
+      "anchor": "b4_build_the",
+      "time_sec": 16.53
+     },
+     {
+      "args": {
+       "id": "tl-3"
+      },
+      "action": "show",
+      "anchor": "b4_make_the_recommendation",
+      "time_sec": 26.51
+     },
+     {
+      "args": {
+       "id": "tl-4"
+      },
+      "action": "show",
+      "anchor": "b4_write_the",
+      "time_sec": 31.07
+     },
+     {
+      "args": {
+       "id": "tl-5"
+      },
+      "action": "show",
+      "anchor": "b4_present_it",
+      "time_sec": 34.23
+     },
+     {
+      "args": {
+       "id": "p-b4-3"
+      },
+      "action": "set_panel",
+      "anchor": "b4_get_stuck",
+      "time_sec": 38.7
+     }
+    ],
+    "file": null,
+    "label": "Process",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Cool, so here's how you're gonna get there.",
+      "slide": null,
+      "end_sec": 2.091,
+      "line_id": "process_line_0",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "I've split it into five stages, and each one ends in something real you hand me.",
+      "slide": null,
+      "end_sec": 6.592,
+      "line_id": "process_line_1",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 2.091,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 2,
+      "text": "First, you clean the dataset, and that's about fifteen minutes.",
+      "slide": null,
+      "end_sec": 10.005,
+      "line_id": "process_line_2",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 6.592,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "clean_dataset"
+     },
+     {
+      "seq": 3,
+      "text": "You find what's wrong with the export, you get Claude to fix it, and you send me back a clean CSV.",
+      "slide": null,
+      "end_sec": 15.829,
+      "line_id": "process_line_3",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 10.005,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 4,
+      "text": "Second, you build the revenue model, market by market, and that's the big one, about twenty-five minutes, 'cause that's where you find out how far each knob can really go.",
+      "slide": null,
+      "end_sec": 25.792,
+      "line_id": "process_line_4",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 15.829,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "revenue_model"
+     },
+     {
+      "seq": 5,
+      "text": "Third, you make the recommendation, so that's about fifteen minutes to make the call.",
+      "slide": null,
+      "end_sec": 30.357,
+      "line_id": "process_line_5",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 25.792,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "make_recommendation"
+     },
+     {
+      "seq": 6,
+      "text": "Fourth, you write the pricing memo, another fifteen.",
+      "slide": null,
+      "end_sec": 33.408,
+      "line_id": "process_line_6",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 30.357,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "pricing_memo"
+     },
+     {
+      "seq": 7,
+      "text": "And last, you present it, and that's about twelve.",
+      "slide": null,
+      "end_sec": 36.096,
+      "line_id": "process_line_7",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 33.408,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": "present_it"
+     },
+     {
+      "seq": 8,
+      "text": "I'm right there with you the whole way, so if you get stuck, you just ask me.",
+      "slide": null,
+      "end_sec": 40.32,
+      "line_id": "process_line_8",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 36.096,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 9,
+      "text": "Sound like a plan?",
+      "slide": null,
+      "end_sec": 41.515,
+      "line_id": "process_line_9",
+      "audio_url": "static/kickoff/spotify/process.mp3",
+      "highlight": null,
+      "start_sec": 40.32,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 41.515,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/spotify/process.mp3"
+   },
+   {
+    "id": "outro",
+    "seq": 4,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b5-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_outro",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "p-b5-2"
+      },
+      "action": "set_panel",
+      "anchor": "b5_p_b5_2",
+      "time_sec": 10.752
+     }
+    ],
+    "file": null,
+    "label": "Outro",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Okay cool, glad the plan's clear.",
+      "slide": null,
+      "end_sec": 2.24,
+      "line_id": "outro_line_0",
+      "audio_url": "static/kickoff/spotify/outro.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "I know it sounds like a lot, but honestly you're just finding out which knob and how far.",
+      "slide": null,
+      "end_sec": 7.04,
+      "line_id": "outro_line_1",
+      "audio_url": "static/kickoff/spotify/outro.mp3",
+      "highlight": null,
+      "start_sec": 2.24,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 2,
+      "text": "Alright, that's the whole thing. Let me make sure we're on the same page.",
+      "slide": null,
+      "end_sec": 10.752,
+      "line_id": "outro_line_2",
+      "audio_url": "static/kickoff/spotify/outro.mp3",
+      "highlight": null,
+      "start_sec": 7.04,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 3,
+      "text": "I've got a few quick questions. You ready?",
+      "slide": null,
+      "end_sec": 13.269,
+      "line_id": "outro_line_3",
+      "audio_url": "static/kickoff/spotify/outro.mp3",
+      "highlight": null,
+      "start_sec": 10.752,
+      "speaker_id": "3f8a1c6e-52d7-4e0b-b6a4-0c9d7e2f1a33",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 13.269,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/spotify/outro.mp3"
+   }
+  ],
+  "html_visual": {
+   "template_url": "static/kickoff/spotify/visual.html"
+  },
+  "render_mode": "html_video_v1",
+  "slide_theme": {
+   "color": "spotify",
+   "primary_hex": "#1ED760",
+   "secondary_hex": "#17B24F"
+  },
+  "visual_mode": "html",
+  "context_points": [
+   {
+    "id": "six_markets",
+    "term": "Six markets",
+    "bucket": "Problem",
+    "description": "Spotify raised Premium prices in six markets last year."
+   },
+   {
+    "id": "mixed_reaction",
+    "term": "Mixed reaction",
+    "bucket": "Problem",
+    "description": "A couple of markets didn't care, a couple lost a lot of people."
+   },
+   {
+    "id": "where_next",
+    "term": "The question",
+    "bucket": "Problem",
+    "description": "Leadership wants to know where to raise next, and by how much."
+   },
+   {
+    "id": "messy_data",
+    "term": "The data",
+    "bucket": "Problem",
+    "description": "Nobody can answer that yet, because the data's a mess."
+   },
+   {
+    "id": "ten_issues",
+    "term": "Ten issues",
+    "bucket": "Problem",
+    "description": "The raw export has ten things wrong with it."
+   },
+   {
+    "id": "one_recommendation",
+    "term": "One recommendation",
+    "bucket": "Goal",
+    "description": "You come back with one clear recommendation."
+   },
+   {
+    "id": "back_it_up",
+    "term": "Market by market",
+    "bucket": "Goal",
+    "description": "The call is backed by numbers, market by market."
+   },
+   {
+    "id": "clean_dataset",
+    "term": "Clean the dataset",
+    "bucket": "Project Context",
+    "description": "Stage one cleans the raw export into a clean .csv."
+   },
+   {
+    "id": "revenue_model",
+    "term": "Revenue model",
+    "bucket": "Project Context",
+    "description": "Stage two builds the revenue model, market by market."
+   },
+   {
+    "id": "make_recommendation",
+    "term": "Make the recommendation",
+    "bucket": "Project Context",
+    "description": "Stage three makes the recommendation."
+   },
+   {
+    "id": "pricing_memo",
+    "term": "Pricing memo",
+    "bucket": "Deliverable",
+    "description": "Stage four writes it up in a pricing memo."
+   },
+   {
+    "id": "present_it",
+    "term": "Present it",
+    "bucket": "Deliverable",
+    "description": "Stage five presents it."
+   }
+  ]
+ },
+ "error_code": null,
+ "error_message": null,
+ "generated_at": "2026-11-01T00:00:00+00:00",
+ "updated_at": "2026-11-01T00:00:00+00:00",
+ "metadata": {
+  "pacing": {
+   "duration_preset": "medium",
+   "total_lines_target": 33,
+   "target_duration_sec": 124
+  },
+  "last_error": null,
+  "scene_plan": [
+   {
+    "beat": 1,
+    "name": "intro",
+    "segment": "intro",
+    "panels": [
+     {
+      "id": "p-b1-1"
+     }
+    ]
+   },
+   {
+    "beat": 2,
+    "name": "problem",
+    "segment": "problem",
+    "panels": [
+     {
+      "id": "p-b2-1"
+     },
+     {
+      "id": "p-b2-2"
+     },
+     {
+      "id": "p-b2-3"
+     },
+     {
+      "id": "p-b2-4"
+     },
+     {
+      "id": "p-b2-5"
+     },
+     {
+      "id": "p-b2-6"
+     },
+     {
+      "id": "p-b2-7"
+     }
+    ]
+   },
+   {
+    "beat": 3,
+    "name": "outcome",
+    "segment": "outcome",
+    "panels": [
+     {
+      "id": "p-b3-1"
+     },
+     {
+      "id": "p-b3-2"
+     },
+     {
+      "id": "p-b3-3"
+     },
+     {
+      "id": "p-b3-4"
+     }
+    ]
+   },
+   {
+    "beat": 4,
+    "name": "process",
+    "segment": "process",
+    "panels": [
+     {
+      "id": "p-b4-1"
+     },
+     {
+      "id": "p-b4-2"
+     },
+     {
+      "id": "p-b4-3"
+     }
+    ]
+   },
+   {
+    "beat": 5,
+    "name": "outro",
+    "segment": "outro",
+    "panels": [
+     {
+      "id": "p-b5-1"
+     },
+     {
+      "id": "p-b5-2"
+     }
+    ]
+   }
+  ],
+  "output_mode": "html",
+  "company_name": "Spotify",
+  "speaker_name": "Eryn Mitchell",
+  "speaker_role": "Manager",
+  "scenario_title": "Find Where Spotify Can Raise Prices Next",
+  "avatar_initials": "EM"
+ }
+}

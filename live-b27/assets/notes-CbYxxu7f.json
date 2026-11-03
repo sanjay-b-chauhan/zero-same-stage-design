@@ -1,0 +1,59 @@
+{
+  "id": "notes",
+  "kind": "fix",
+  "title": "Notes",
+  "hook": "Hold on",
+  "notices": [
+    "Three parts of the kickoff go by and every note was auto-written.",
+    "He comes in on his own, without going into the detail."
+  ],
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "notes.r1",
+        "text": "Hold on. Those notes were auto-written, not by you.",
+        "after": null
+      },
+      { "lineId": "notes.r2", "text": "I want you to write this one.", "after": null },
+      { "lineId": "notes.r3", "text": "Writing it yourself is how you learn it.", "after": null }
+    ],
+    "new": [
+      { "lineId": "notes.n1", "text": "Hold on. Zero wrote those notes, not you.", "after": null },
+      {
+        "lineId": "notes.n2",
+        "text": "Tomorrow, which of those numbers will you still remember?",
+        "after": null
+      },
+      { "lineId": "notes.n3", "text": "Write this one yourself.", "after": null }
+    ]
+  },
+  "stake": { "points": 100, "label": "+100 if you write it" },
+  "why": {
+    "lines": [
+      {
+        "lineId": "notes.w1",
+        "text": "The check right after the kickoff asks about these numbers,"
+      },
+      { "lineId": "notes.w2", "text": "and your whole plan is built on them." },
+      { "lineId": "notes.w3", "text": "Notes are the easiest points you'll ever get." }
+    ],
+    "good": {
+      "kind": "note",
+      "question": null,
+      "file": null,
+      "lines": ["About $2.4M of pipeline lost a quarter"]
+    }
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "got_it", "label": "Got it", "primary": true }
+  ],
+  "feedback": null,
+  "then": [
+    "Got it.",
+    "He goes, the app comes back, and the note is written.",
+    "He does not check it after."
+  ],
+  "points": { "n": 100, "label": "+100 Notes, from the kickoff grade" }
+}

@@ -1,0 +1,558 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Zero Jobs design system, v1
+   Reverse engineered from the ZERO Job Portal v82 (computed values at 1512x860).
+   Every number here was measured on the live build, not chosen.
+   Use: <link rel="stylesheet" href="zero-jobs.css"> and <body class="zj">.
+   Every class starts with zj- so it never collides with a host app.
+   ══════════════════════════════════════════════════════════════════════════ */
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url('./fonts/inter-latin-opsz-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url('./fonts/inter-latin-ext-opsz-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0305-0307,U+0309-0328,U+032A-036F,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+/* ── 1. Tokens ─────────────────────────────────────────────────────────── */
+:root{
+  /* surfaces */
+  --zj-canvas:#F3F3F5;   /* the page behind the sheet */
+  --zj-sheet:#FFFFFF;    /* the product sits on this */
+  --zj-well:#F6F6F8;     /* quiet fills: hover, bubbles, tab tracks */
+  --zj-well2:#EDEDF0;    /* selected rows, mode track, avatar fill */
+  --zj-line:#E7E7EB;     /* hairlines inside a surface */
+  --zj-line2:#D4D5DA;    /* hairlines around a card or control */
+  /* ink, darkest to lightest */
+  --zj-ink:#131417;      /* titles, values, anything you read first */
+  --zj-ink2:#4E525C;     /* body text */
+  --zj-ink3:#6A6F7A;     /* meta, labels, quiet buttons */
+  --zj-ink4:#A6A9B2;     /* timestamps, small icons, day labels */
+  /* meaning */
+  --zj-good:#12733F;  --zj-goodbg:#E7F6ED;   /* verified, sent, wants to meet. Green means verified only */
+  --zj-warn:#8A5306;  --zj-warnbg:#FCF1DC;   /* action needed */
+  --zj-due:#C4271B;   --zj-due-soon:#B42318; /* deadlines, louder at two days or less */
+  --zj-lime:#B7F06A;                         /* the "now" accent: live dot, tracker now, selection */
+  --zj-live:#1FB45A;                         /* a task is running */
+  --zj-unread:#2DB869;                       /* unread thread */
+  --zj-like:#E5484D;                         /* a liked heart */
+  --zj-select:#D2F59B;                       /* text selection */
+  /* why it fits */
+  --zj-fit-st-bg:linear-gradient(90deg,#E8F8EF,#E3F6F5); --zj-fit-st-tx:#0F7A47; --zj-fit-st-ic:#12A05C;
+  --zj-fit-gd-bg:linear-gradient(90deg,#EAF3FF,#EEECFF); --zj-fit-gd-tx:#2851C8; --zj-fit-gd-ic:#3E7BF5;
+  --zj-pop-st-tint:#E9F7EE; --zj-pop-st-tx:#13804A;
+  --zj-pop-gd-tint:#EEF3FD; --zj-pop-gd-tx:#2457C5;
+  --zj-pop-gap:#B54708;
+  /* the black key */
+  --zj-key-bg:linear-gradient(#313337,#17181B);
+  --zj-key-edge:#0F1012;
+  --zj-sec-bg:linear-gradient(#FFFFFF,#F3F4F6);
+  --zj-sec-bg-hover:linear-gradient(#FFFFFF,#EEEFF2);
+  /* type */
+  --zj-font:'Inter',-apple-system,'SF Pro Text','Helvetica Neue',system-ui,sans-serif;
+  --zj-display:'Inter',-apple-system,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;
+  /* radius, one scale */
+  --zj-r-pill:99px;   /* pills, tabs, nav, avatars, toasts */
+  --zj-r-sheet:28px;  /* the product sheet */
+  --zj-r-card:20px;   /* cards, panels, the table */
+  --zj-r-dialog:16px; /* dialogs */
+  --zj-r-row:14px;    /* rows, bubbles, notes, popovers, drop zones */
+  --zj-r-tile:13px;   /* 44px logo tile */
+  --zj-r-ctl:10px;    /* buttons, icon buttons, inputs, 32px logo tile */
+  --zj-r-sm:8px;      /* small buttons, sort buttons */
+  --zj-r-check:6px;   /* checkbox */
+  --zj-r-img:5px;     /* a logo inside its tile */
+  /* elevation */
+  --zj-sh-sheet:0 0 0 1px rgba(19,20,23,.05),0 1px 2px rgba(19,20,23,.04),0 40px 70px -50px rgba(19,20,23,.35);
+  --zj-sh-hair:inset 0 0 0 1px var(--zj-line);
+  --zj-sh-ring:0 0 0 1px var(--zj-line2);
+  --zj-sh-ctl:inset 0 0 0 1px var(--zj-line2);
+  --zj-sh-key:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -2px 0 rgba(0,0,0,.45),0 0 0 1px var(--zj-key-edge),0 12px 22px -14px rgba(19,20,23,.6);
+  --zj-sh-key-down:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px var(--zj-key-edge);
+  --zj-sh-sec:inset 0 0 0 1px rgba(19,20,23,.14),inset 0 -2px 0 rgba(19,20,23,.05),0 1px 2px rgba(19,20,23,.07);
+  --zj-sh-on:0 0 0 1px var(--zj-line),0 6px 12px -10px rgba(19,20,23,.5);
+  --zj-sh-panel:inset 0 0 0 1px var(--zj-line),0 24px 40px -32px rgba(19,20,23,.4);
+  --zj-sh-pop:0 0 0 1px rgba(19,20,23,.08),0 2px 4px rgba(19,20,23,.05),0 28px 56px -18px rgba(19,20,23,.42);
+  --zj-sh-toast:0 0 0 1px var(--zj-line2),0 16px 32px -18px rgba(19,20,23,.28);
+  --zj-sh-dialog:0 30px 70px -30px rgba(19,20,23,.5);
+  --zj-sh-float:0 0 0 1px var(--zj-line),0 6px 14px -8px rgba(19,20,23,.3);
+  /* motion */
+  --zj-e:cubic-bezier(.2,0,0,1);      /* every hover and press, 120ms */
+  --zj-out:cubic-bezier(.16,1,.3,1);  /* arrivals: cards, eyes, chevrons */
+  --zj-spring:cubic-bezier(.2,.9,.3,1);
+}
+
+/* ── 2. Base ───────────────────────────────────────────────────────────── */
+.zj,.zj :where(*){box-sizing:border-box;margin:0;padding:0}
+.zj{background:var(--zj-canvas);color:var(--zj-ink2);font:400 14px/20px var(--zj-font);font-feature-settings:'cv11','ss01';letter-spacing:-.006em;-webkit-font-smoothing:antialiased;font-synthesis:none}
+/* base rules sit inside :where() so any zj- class beats them */
+.zj :where(button,input,textarea){font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;outline:0}
+.zj :where(button){cursor:pointer;text-align:left}
+.zj :where(ul,ol){list-style:none}
+.zj :where(a){color:inherit;text-decoration:none}
+.zj :where(h1,h2,h3,h4){font-size:inherit;font-weight:400}
+.zj :where(b,strong){font-weight:500;color:var(--zj-ink)}
+.zj [hidden]{display:none!important}
+.zj :where(svg){display:block;flex-shrink:0}
+.zj :where([data-lucide],svg.lucide){width:16px;height:16px;stroke-width:1.75}
+.zj :where(:focus-visible){outline:2px solid var(--zj-ink);outline-offset:2px}
+.zj ::selection{background:var(--zj-select);color:#111}
+.zj :where(*){scrollbar-width:thin;scrollbar-color:var(--zj-line2) transparent}
+.zj :where(input){caret-color:var(--zj-ink)}
+.zj :where(input)::placeholder{color:var(--zj-ink3)}
+
+/* ── 3. Type. Three sizes do the work: 12, 14, 16. One weight for reading (400), one for names and titles (500). ── */
+.zj-t12{font-size:12px;line-height:16px}
+.zj-t14{font-size:14px;line-height:20px}
+.zj-t16{font-size:16px;line-height:24px}
+.zj-t24{font:400 24px/30px var(--zj-display);letter-spacing:-.01em;color:var(--zj-ink);text-wrap:balance}  /* a role title in its panel */
+.zj-t28{font:400 28px/34px var(--zj-display);letter-spacing:-.022em;color:var(--zj-ink);text-wrap:balance} /* a page title, rare */
+.zj-w5{font-weight:500}
+.zj-ink{color:var(--zj-ink)} .zj-ink2{color:var(--zj-ink2)} .zj-ink3{color:var(--zj-ink3)} .zj-ink4{color:var(--zj-ink4)}
+.zj-m{font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.zj-num{font-variant-numeric:tabular-nums}
+
+/* ── 4. Layout helpers ─────────────────────────────────────────────────── */
+.zj-row{display:flex;align-items:center;gap:12px}
+.zj-grow{flex:1;min-width:0}
+.zj-clip{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zj-hide{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* ── 5. Shell: canvas, prototype strip, the sheet, the top bar ─────────── */
+.zj-app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+.zj-strip{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px;flex-shrink:0;height:52px;padding:0 22px}
+.zj-strip-l{display:flex;align-items:center;gap:10px;min-width:0}
+.zj-strip-r{display:flex;align-items:center;justify-content:flex-end;gap:6px;grid-column:3}
+.zj-strip .zj-ghost{height:36px}
+.zj-strip .zj-ghost.zj-sq{width:36px;padding:0 10px}
+.zj-tool{display:grid;place-items:center;width:36px;height:36px;border-radius:var(--zj-r-ctl);background:#fff;color:var(--zj-ink2);box-shadow:var(--zj-sh-ctl)}
+.zj-tool:hover{color:var(--zj-ink);box-shadow:inset 0 0 0 1px var(--zj-ink3)}
+.zj-stage{flex:1;min-width:0;min-height:0;padding:0 14px 14px}
+.zj-sheet{position:relative;display:flex;flex-direction:column;height:100%;background:var(--zj-sheet);border-radius:var(--zj-r-sheet);box-shadow:var(--zj-sh-sheet);overflow:hidden}
+.zj-top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:20px;flex-shrink:0;height:60px;padding:0 24px}
+.zj-top-l{display:flex;align-items:center;gap:12px;min-width:0}
+.zj-top-r{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+.zj-top-l .zj-mode{margin-left:8px}
+.zj-logo{display:block;width:52px;height:auto;color:var(--zj-ink)}
+.zj-logo path{fill:currentColor}
+.zj-body{flex:1;min-height:0;overflow-y:auto;padding:8px 32px 112px}
+.zj-page{max-width:1200px;margin:0 auto;padding:0 0 40px}
+.zj-page.zj-in{animation:zj-page-in .28s var(--zj-e) both}
+.zj-col{position:relative;display:flex;flex-direction:column;gap:28px;max-width:688px;margin:0 auto;padding:32px 24px 80px}
+
+/* who you are, top right */
+.zj-who{display:flex;align-items:center;gap:10px;height:38px;padding:0 3px 0 12px;border-radius:var(--zj-r-pill);color:var(--zj-ink2);transition:background-color .12s var(--zj-e),box-shadow .12s var(--zj-e)}
+.zj-who:hover{background:var(--zj-well)}
+.zj-who>span:not(.zj-av){color:var(--zj-ink)}
+.zj-level{display:flex;align-items:center;gap:8px;height:32px;padding:0 10px;border-radius:var(--zj-r-pill);font-variant-numeric:tabular-nums;transition:background-color .12s var(--zj-e)}
+.zj-level:hover{background:var(--zj-well)}
+.zj-level-t{display:flex;align-items:center;gap:6px;color:var(--zj-ink)}
+.zj-level-t svg{width:15px;height:15px;color:var(--zj-ink3)}
+.zj-level-bar{position:relative;display:block;width:34px;height:4px;border-radius:var(--zj-r-pill);background:var(--zj-line2);overflow:hidden}
+.zj-level-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:var(--zj-r-pill);background:var(--zj-ink)}
+
+/* ── 6. Navigation: four segmented controls, each with one job ─────────── */
+/* the product's main nav, centred in the top bar */
+.zj-tabs{display:flex;gap:2px;padding:3px;border-radius:var(--zj-r-pill);background:var(--zj-well)}
+.zj-tabs button{position:relative;display:flex;align-items:center;gap:6px;height:32px;padding:0 13px;border-radius:var(--zj-r-pill);color:var(--zj-ink3);white-space:nowrap;transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-tabs button:hover{color:var(--zj-ink)}
+.zj-tabs button.zj-on{background:#fff;color:var(--zj-ink);box-shadow:var(--zj-sh-on)}
+/* a two-way mode switch (Learn or Jobs), small type on a deeper track */
+.zj-mode{display:flex;padding:3px;border-radius:var(--zj-r-pill);background:var(--zj-well2)}
+.zj-mode button{display:flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:var(--zj-r-pill);font-size:12px;line-height:16px;color:var(--zj-ink2);transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-mode button.zj-on{background:#fff;color:var(--zj-ink);box-shadow:0 0 0 1px var(--zj-line)}
+/* filters above a list, square-ish, no track */
+.zj-filter{display:flex;max-width:100%;overflow:auto;border-radius:var(--zj-r-pill)}
+.zj-filter button{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:var(--zj-r-ctl);font-size:12px;line-height:16px;color:var(--zj-ink3);white-space:nowrap;transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-filter button:hover{color:var(--zj-ink)}
+.zj-filter button.zj-on{background:var(--zj-well2);color:var(--zj-ink)}
+.zj-filter .zj-n{margin-left:6px;color:var(--zj-ink3)}
+.zj-filter button.zj-on .zj-n{color:var(--zj-ink2)}
+/* two views of one thing (Application tracker or Role), big and roomy */
+.zj-seg{display:flex;gap:4px;width:fit-content;padding:4px;border-radius:var(--zj-r-pill);background:var(--zj-well)}
+.zj-seg button{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 16px 0 12px;border-radius:var(--zj-r-pill);color:var(--zj-ink2);transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-seg button svg{width:15px;height:15px;color:var(--zj-ink3)}
+.zj-seg button.zj-on{background:#fff;color:var(--zj-ink);box-shadow:0 0 0 1px var(--zj-line),0 1px 2px rgba(19,20,23,.05)}
+/* a count on a tab, and the lime dot that says something new arrived */
+.zj-tabs .zj-count{margin-left:6px}
+.zj-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:var(--zj-r-pill);background:var(--zj-ink);color:#fff;font-size:12px;line-height:16px;letter-spacing:normal}
+.zj-new{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:var(--zj-r-pill);background:var(--zj-lime);box-shadow:0 0 0 2px #fff,inset 0 0 0 1px rgba(19,20,23,.3)}
+
+/* ── 7. Buttons ────────────────────────────────────────────────────────── */
+/* the key: one per view, the thing you came to do */
+.zj-key,.zj-sec{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--zj-r-ctl);white-space:nowrap;flex-shrink:0;transition:transform .12s var(--zj-e),filter .12s var(--zj-e),background-color .12s var(--zj-e),box-shadow .12s var(--zj-e)}
+.zj-key{color:#fff;background:var(--zj-key-bg);box-shadow:var(--zj-sh-key)}
+.zj-key:hover{filter:brightness(1.14)}
+.zj-key:active{transform:translateY(1px);box-shadow:var(--zj-sh-key-down)}
+/* the second choice, white with a machined edge */
+.zj-sec{color:var(--zj-ink);background:var(--zj-sec-bg);box-shadow:var(--zj-sh-sec)}
+.zj-sec:hover{background:var(--zj-sec-bg-hover)}
+.zj-sec:active{transform:translateY(1px);box-shadow:inset 0 0 0 1px var(--zj-line2)}
+.zj-key:disabled,.zj-sec:disabled,.zj-key.zj-off,.zj-sec.zj-off{opacity:.4;pointer-events:none}
+.zj-key.zj-sm,.zj-sec.zj-sm{height:30px;padding:0 10px;border-radius:var(--zj-r-sm)}
+/* in a card footer the key is a step bigger and set in 500 */
+.zj-card-foot .zj-key{height:38px;padding:0 16px;gap:6px;font-weight:500}
+/* the ghost: a third choice with no box until you point at it */
+.zj-ghost{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:var(--zj-r-ctl);color:var(--zj-ink2);white-space:nowrap;transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-ghost:hover{background:var(--zj-well);color:var(--zj-ink)}
+.zj-ghost.zj-sm{height:32px;padding:0 10px;border-radius:var(--zj-r-sm)}
+/* the quiet link: Later, Add a link instead. Grey, rounded, 32px */
+.zj-quiet{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:var(--zj-r-pill);color:var(--zj-ink3);transition:background .15s,color .15s}
+.zj-quiet:hover{background:var(--zj-well);color:var(--zj-ink)}
+.zj-quiet svg{width:14px;height:14px}
+/* the pill link: Open the role. Outlined, rounded, a chevron */
+.zj-pillbtn{display:inline-flex;align-items:center;gap:6px;height:38px;max-width:340px;padding:0 10px 0 12px;border-radius:var(--zj-r-pill);background:#fff;color:var(--zj-ink);box-shadow:var(--zj-sh-ctl);transition:box-shadow .12s var(--zj-e)}
+.zj-pillbtn:hover{box-shadow:inset 0 0 0 1.5px var(--zj-ink)}
+.zj-pillbtn svg{width:14px;height:14px;flex-shrink:0;color:var(--zj-ink3)}
+/* icon buttons */
+.zj-ib{display:inline-flex;align-items:center;justify-content:center;gap:2px;height:34px;min-width:36px;padding:0 9px;border-radius:var(--zj-r-ctl);background:#fff;color:var(--zj-ink2);box-shadow:var(--zj-sh-ctl)}
+.zj-ib:hover{background:var(--zj-well);color:var(--zj-ink)}
+.zj-round{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--zj-r-pill);color:var(--zj-ink3);transition:background .15s,color .15s}
+.zj-round:hover{background:var(--zj-well);color:var(--zj-ink)}
+.zj-arrow{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--zj-r-pill);color:var(--zj-ink3);transition:background .15s,color .15s}
+.zj-arrow:hover{background:var(--zj-well);color:var(--zj-ink)}
+.zj-arrow:active{transform:scale(.92)}
+.zj-arrow:disabled{opacity:.3;pointer-events:none}
+.zj-arrow svg{width:15px;height:15px}
+/* close a panel: a small white button that floats */
+.zj-close{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:36px;height:32px;padding:0 10px;border-radius:var(--zj-r-sm);background:#fff;color:var(--zj-ink2);box-shadow:var(--zj-sh-float);transition:background-color .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-close:hover{background:var(--zj-well);color:var(--zj-ink)}
+/* cancel one running task. The x turns red on hover */
+.zj-cancel{display:inline-grid;place-items:center;width:28px;height:28px;flex-shrink:0;border-radius:var(--zj-r-sm);color:var(--zj-ink2);background:var(--zj-sec-bg);box-shadow:inset 0 0 0 1px rgba(19,20,23,.14),0 1px 2px rgba(19,20,23,.06);transition:color .15s,background .15s}
+.zj-cancel svg{width:14px;height:14px}
+.zj-cancel:hover{color:var(--zj-due-soon);background:linear-gradient(#FFFFFF,#FDF1F0)}
+.zj-cancel.zj-big{width:38px;height:38px;border-radius:var(--zj-r-ctl)}
+.zj-cancel.zj-big svg{width:16px;height:16px}
+/* like */
+.zj-like{color:var(--zj-ink3)}
+.zj-like.zj-on{color:var(--zj-like)}
+.zj-like.zj-on svg{fill:currentColor}
+/* the rounded option: every button goes full round */
+.zj-rounded .zj-key,.zj-rounded .zj-sec,.zj-rounded .zj-ghost,.zj-rounded .zj-ib,.zj-rounded .zj-close,.zj-rounded .zj-cancel,.zj-rounded .zj-tool{border-radius:999px}
+
+/* ── 8. Pills, dots and the deadline ───────────────────────────────────── */
+/* why it fits. Words, never a percentage */
+.zj-fit{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px 0 8px;border-radius:var(--zj-r-pill);font-size:12px;line-height:16px;white-space:nowrap}
+.zj-fit svg{width:13px;height:13px}
+.zj-fit.zj-strong{background:var(--zj-fit-st-bg);color:var(--zj-fit-st-tx)}
+.zj-fit.zj-strong svg{color:var(--zj-fit-st-ic);fill:currentColor}
+.zj-fit.zj-good{background:var(--zj-fit-gd-bg);color:var(--zj-fit-gd-tx)}
+.zj-fit.zj-good svg{color:var(--zj-fit-gd-ic)}
+.zj-fit.zj-low{background:var(--zj-well2);color:var(--zj-ink3)}
+.zj-fit[tabindex]{cursor:help}
+.zj-fit.zj-big{height:38px;padding:0 14px 0 12px;gap:8px;font-size:14px;line-height:20px}
+.zj-fit.zj-big svg{width:15px;height:15px}
+/* where an application stands */
+.zj-status{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:var(--zj-r-pill);background:var(--zj-well);color:var(--zj-ink3);font-size:12px;line-height:16px;white-space:nowrap}
+.zj-status.zj-ok{background:var(--zj-goodbg);color:var(--zj-good)}
+.zj-status.zj-warn{background:var(--zj-warnbg);color:var(--zj-warn)}
+/* a role that opens at a later level */
+.zj-status.zj-lock svg{width:12px;height:12px}
+/* a done count: 2 sent */
+.zj-sent{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:var(--zj-r-pill);background:var(--zj-goodbg);color:var(--zj-good);font-size:12px;line-height:22px;white-space:nowrap}
+.zj-sent svg{width:12px;height:12px}
+/* the deadline: red text and a stopwatch. No box, never bold */
+.zj-due{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;font-size:12px;line-height:16px;font-weight:400;color:var(--zj-due);white-space:nowrap}
+.zj-due.zj-soon{color:var(--zj-due-soon)}
+.zj-due svg{width:14px;height:14px}
+/* dots */
+.zj-dot{display:inline-block;width:8px;height:8px;flex-shrink:0;border-radius:var(--zj-r-pill);background:var(--zj-ink4)}
+.zj-dot.zj-go{background:var(--zj-good);animation:zj-pulse 1.2s ease-in-out infinite}
+.zj-unread{display:inline-block;width:9px;height:9px;flex-shrink:0;border-radius:var(--zj-r-pill);background:var(--zj-unread)}
+/* a task running: a green dot that breathes, text with a moving sheen */
+.zj-run{display:inline-flex;align-items:center;gap:8px;max-width:60%;font:500 12px/16px var(--zj-font);color:var(--zj-ink3);border-radius:var(--zj-r-pill);animation:zj-rise .25s var(--zj-spring) both}
+.zj-run:hover{color:var(--zj-ink2)}
+.zj-run-dot{position:relative;width:8px;height:8px;flex-shrink:0;border-radius:var(--zj-r-pill);background:var(--zj-live)}
+.zj-run-dot::after{content:"";position:absolute;inset:-4px;border-radius:var(--zj-r-pill);background:var(--zj-live);animation:zj-ring 1.6s ease-out infinite}
+/* the running words carry a slow sheen, left to right */
+.zj-run-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) 35%,#000 50%,rgba(0,0,0,.5) 65%,rgba(0,0,0,.5) 100%);mask-image:linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.5) 35%,#000 50%,rgba(0,0,0,.5) 65%,rgba(0,0,0,.5) 100%);-webkit-mask-size:220% 100%;mask-size:220% 100%;animation:zj-sheen 1.8s linear infinite}
+.zj-spin{width:11px;height:11px;border-radius:50%;border:1.5px solid rgba(19,20,23,.18);border-top-color:var(--zj-ink2);animation:zj-rot .8s linear infinite}
+
+/* ── 9. People and companies. A face beside every person, a logo beside every company ── */
+/* a company: its real logo in a white tile. src = https://www.google.com/s2/favicons?sz=128&domain=<domain> */
+.zj-lg{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;border-radius:var(--zj-r-ctl);background:#fff;box-shadow:var(--zj-sh-hair)}
+.zj-lg img{display:block;width:18px;height:18px;border-radius:var(--zj-r-img)}
+.zj-lg.zj-l{width:44px;height:44px;border-radius:var(--zj-r-tile)}
+.zj-lg.zj-l img{width:24px;height:24px}
+.zj-lg.zj-xs{width:24px;height:24px;border-radius:var(--zj-r-pill)}
+.zj-lg.zj-xs img{width:14px;height:14px;border-radius:3px}
+.zj-lg.zj-xxs{width:20px;height:20px;border-radius:var(--zj-r-pill)}
+.zj-lg.zj-xxs img{width:12px;height:12px;border-radius:3px}
+.zj-lgs{display:flex;align-items:center}
+.zj-lgs .zj-lg{box-shadow:0 0 0 2px var(--zj-canvas),inset 0 0 0 1px var(--zj-line)}
+.zj-lgs .zj-lg+.zj-lg{margin-left:-7px}
+/* a person: a generated face in a circle, never initials when a face exists */
+.zj-av{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;border-radius:var(--zj-r-pill);background:var(--zj-well2);color:var(--zj-ink);font-size:12px;line-height:16px;letter-spacing:normal;overflow:hidden}
+.zj-av img{display:block;width:100%;height:100%;object-fit:cover}
+.zj-av.zj-sm{width:28px;height:28px}
+/* a person at a company: face with the logo badge at the bottom right */
+.zj-face{position:relative;display:inline-flex;flex-shrink:0}
+.zj-face .zj-av{width:28px;height:28px}
+.zj-face .zj-lg{position:absolute;left:17px;top:17px;width:14px;height:14px;border-radius:6px;box-shadow:0 0 0 2px #fff,inset 0 0 0 1px var(--zj-line)}
+.zj-face .zj-lg img{width:14px;height:14px;border-radius:3px}
+
+/* ── 10. Zero, the AI. A green orb with two white eyes. Body still, only the eyes move ── */
+.zj-orb{--s:34px;--gx:0;--gy:0;position:relative;display:inline-block;width:var(--s);height:var(--s);flex-shrink:0;isolation:isolate;vertical-align:middle}
+.zj-orb-b{position:absolute;inset:0;border-radius:50%;overflow:hidden;transform:translateZ(0);background:radial-gradient(120% 120% at 30% 22%,#5FDB96 0,#3CC878 46%,#2DB869 100%);box-shadow:inset 0 0 calc(var(--s)*.2) rgba(255,255,255,.55),inset 0 0 0 1px rgba(255,255,255,.18)}
+.zj-orb-e{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(rgba(0,84,46,.3) 0 .5px .6px)}
+.zj-orb-eg{transform-box:view-box;transform-origin:50% 44%;transform:translate(calc(var(--gx)*15px),calc(var(--gy)*10px)) rotate(calc(var(--gx)*9deg));transition:transform .45s var(--zj-out)}
+.zj-orb-e path{fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;transition:transform .45s var(--zj-out);animation:zj-blink 5.2s ease-in-out infinite}
+.zj-orb-e .l{transform:scale(calc(1 - max(0,-1*var(--gx))*.26))}
+.zj-orb-e .r{transform:scale(calc(1 - max(0,var(--gx))*.26))}
+.zj-orb.zj-still .zj-orb-e path{animation:none}
+.zj-orb.zj-s24{--s:24px}.zj-orb.zj-s26{--s:26px}.zj-orb.zj-s28{--s:28px}.zj-orb.zj-s34{--s:34px}.zj-orb.zj-s36{--s:36px}.zj-orb.zj-s44{--s:44px}.zj-orb.zj-s60{--s:60px}
+.zj-orb.zj-s24 .zj-orb-e path,.zj-orb.zj-s26 .zj-orb-e path,.zj-orb.zj-s28 .zj-orb-e path,.zj-orb.zj-s34 .zj-orb-e path{stroke-width:13px}
+.zj-orb[data-m="think"] .zj-orb-eg{animation:zj-ponder 3.2s ease-in-out infinite}
+.zj-orb[data-m="work"] .zj-orb-eg{animation:zj-scan 3.2s ease-in-out infinite}
+.zj-orb[data-m="work"] .zj-orb-e path{animation:none}
+
+/* Zero speaks: the orb, then one or two lines at 16. Names in 500 ink */
+.zj-say{display:flex;align-items:flex-start;gap:12px}
+.zj-say>.zj-orb{margin-top:-6px}
+.zj-say p{max-width:540px;font-size:16px;line-height:24px;color:var(--zj-ink2);text-wrap:pretty}
+.zj-say p b{font-weight:500;color:var(--zj-ink)}
+/* Zero's note inside a card: a grey well, the orb at 26 */
+.zj-note{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-height:52px;padding:8px 8px 8px 12px;border-radius:var(--zj-r-row);background:var(--zj-well)}
+.zj-note p{flex:1;min-width:0;font-size:14px;line-height:20px;color:var(--zj-ink)}
+.zj-note p .zj-m{color:var(--zj-ink3)}
+.zj-note.zj-warn{background:var(--zj-warnbg)}
+.zj-note-acts{display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;flex-shrink:0}
+.zj-note-acts svg{width:14px;height:14px}
+.zj-note-acts .zj-key,.zj-note-acts .zj-sec{gap:6px}
+
+/* ── 11. Cards and sections ────────────────────────────────────────────── */
+.zj-panel{background:#fff;border-radius:var(--zj-r-card);box-shadow:var(--zj-sh-hair);overflow:hidden}
+.zj-card{position:relative;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-ring);animation:zj-card-in .4s var(--zj-out) both}
+.zj-card-title{display:flex;align-items:center;gap:10px;min-height:28px;padding:0 4px;font-size:16px;line-height:24px;font-weight:500;color:var(--zj-ink)}
+.zj-card-body{display:flex;flex-direction:column;gap:10px}
+.zj-card-q{padding:0 4px;font-weight:500;color:var(--zj-ink)}
+.zj-card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 4px}
+.zj-card .zj-quiet:first-child{margin-left:-6px}
+/* the to-do stack: the next two cards peek under the front one */
+.zj-stack{position:relative;z-index:0;display:grid;margin-bottom:15px}
+.zj-stack>*{grid-area:1/1}
+.zj-stack>.zj-card{z-index:2}
+.zj-stack-bk{align-self:stretch;padding:16px;border-radius:var(--zj-r-card);background:#fff;transform-origin:50% 100%;pointer-events:none;overflow:hidden;z-index:1;transform:translateY(8px) scale(.965);box-shadow:0 0 0 1px var(--zj-line2),0 8px 18px -12px rgba(19,20,23,.18)}
+.zj-stack-bk.zj-b2{z-index:0;transform:translateY(15px) scale(.93);box-shadow:0 0 0 1px var(--zj-line),0 8px 18px -14px rgba(19,20,23,.14)}
+/* a section head: title in 500, a count or pager on the right */
+.zj-sh{display:flex;align-items:center;gap:8px;min-height:28px;margin:0 0 10px;padding:0 4px}
+.zj-sh-t{font-weight:500;color:var(--zj-ink)}
+.zj-pager{display:inline-flex;align-items:center;gap:2px;margin-left:auto}
+.zj-pager span{min-width:40px;text-align:center;font-size:12px;line-height:16px;color:var(--zj-ink3);font-variant-numeric:tabular-nums}
+/* drop a file here */
+.zj-drop{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:72px;border-radius:var(--zj-r-row);background:var(--zj-well);color:var(--zj-ink2);box-shadow:inset 0 0 0 1px var(--zj-line2);transition:background .15s,color .15s}
+.zj-drop:hover{background:var(--zj-line);color:var(--zj-ink)}
+.zj-drop:active{transform:scale(.995)}
+
+/* ── 12. Activity: what Zero did, newest first ─────────────────────────── */
+.zj-act-head{display:flex;align-items:center;gap:10px}
+.zj-act-btn{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;height:32px;margin-left:-6px;padding:0 6px;border-radius:var(--zj-r-ctl)}
+.zj-act-btn:hover{background:var(--zj-well)}
+.zj-act-btn .zj-chev{display:flex;color:var(--zj-ink3);transition:transform .2s var(--zj-out)}
+.zj-act-btn[aria-expanded="true"] .zj-chev{transform:rotate(180deg)}
+.zj-tl{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.zj-day{display:flex;flex-direction:column}
+.zj-day>p{margin:10px 0 2px;font-size:12px;line-height:16px;color:var(--zj-ink4)}
+.zj-ev{position:relative;display:flex;flex-direction:column}
+.zj-day>.zj-ev::before{content:"";position:absolute;left:17px;top:0;bottom:0;width:1px;background:var(--zj-line)}
+.zj-day>.zj-ev:first-of-type::before{top:22px}
+.zj-day>.zj-ev:last-of-type::before{bottom:auto;height:22px}
+.zj-day>.zj-ev:only-of-type::before{display:none}
+.zj-ev-h{position:relative;display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:6px 8px 6px 0;border-radius:12px;color:var(--zj-ink2);text-align:left}
+button.zj-ev-h:hover{background:var(--zj-well)}
+.zj-ev-h b{font-weight:500;color:var(--zj-ink)}
+.zj-ev-i{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:36px;flex-shrink:0}
+.zj-ev-i>*{box-shadow:0 0 0 3px #fff;border-radius:99px}
+.zj-ev-i .zj-lg.zj-xs{box-shadow:0 0 0 3px #fff}
+.zj-ev-ic{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:var(--zj-r-pill);background:var(--zj-well);color:var(--zj-ink3)}
+.zj-ev-ic svg{width:12px;height:12px}
+.zj-ev-ic.zj-l{width:28px;height:28px}
+.zj-ev-ic.zj-l svg{width:14px;height:14px}
+.zj-ev-t{font-size:12px;line-height:16px;color:var(--zj-ink4);white-space:nowrap;font-variant-numeric:tabular-nums}
+.zj-ev-s{display:flex;align-items:center;gap:6px;max-width:50%;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+
+/* ── 13. The table ─────────────────────────────────────────────────────── */
+/* a page that holds a table: 4px down from the top bar */
+.zj-tbw{display:flex;flex-direction:column;gap:14px;padding:4px 0 24px}
+.zj-tablewrap{padding:6px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-hair);container-type:inline-size}
+.zj-toolbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px;height:52px;margin:-6px -6px 0;padding:0 10px;border-radius:var(--zj-r-card) var(--zj-r-card) 0 0;background:#fff;box-shadow:0 -14px 0 #fff,inset 0 1px 0 var(--zj-line),inset 1px 0 0 var(--zj-line),inset -1px 0 0 var(--zj-line),inset 0 -1px 0 var(--zj-line)}
+.zj-toolbar .zj-filter{flex-shrink:0}
+.zj-ib svg{width:16px;height:16px}
+.zj-table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+.zj-table th{position:sticky;top:52px;z-index:3;height:46px;padding:10px 12px;background:#fff;box-shadow:0 -10px 0 #fff;font-size:12px;line-height:16px;font-weight:400;color:var(--zj-ink3);text-align:left;white-space:nowrap}
+.zj-table td{padding:10px 12px;white-space:nowrap;vertical-align:middle}
+.zj-table th.zj-like-col,.zj-table td.zj-like-col{width:44px;padding-left:4px;padding-right:8px}
+.zj-table tbody tr{cursor:pointer}
+.zj-table tbody tr>td:first-child{border-radius:var(--zj-r-row) 0 0 var(--zj-r-row)}
+.zj-table tbody tr>td:last-child{border-radius:0 var(--zj-r-row) var(--zj-r-row) 0}
+.zj-table tbody tr:hover>td{background:var(--zj-well)}
+.zj-table tbody tr.zj-on>td{background:var(--zj-well2)}
+.zj-table tbody tr.zj-locked>td:not(.zj-like-col){opacity:.55}
+.zj-table td.zj-m{font-size:12px;line-height:16px;color:var(--zj-ink3);font-variant-numeric:tabular-nums}
+.zj-table td.zj-place{font-size:14px;line-height:20px;color:var(--zj-ink2)}
+.zj-table td.zj-place .zj-clip{max-width:200px}
+.zj-table td.zj-place .zj-m{display:block}
+.zj-table .zj-sec.zj-sm:hover{box-shadow:inset 0 0 0 1.5px var(--zj-ink)}
+.zj-thsel{display:inline-flex;align-items:center;gap:12px}
+/* the roles table: Role, Location, What we think, Pay, Posted, Action, Like */
+.zj-roles th:nth-child(2){width:170px}.zj-roles th:nth-child(3){width:160px}.zj-roles th:nth-child(4){width:110px}.zj-roles th:nth-child(5){width:150px}.zj-roles th:nth-child(6){width:176px}.zj-roles th:nth-child(7){width:44px}
+@media (max-width:600px){.zj-roles th:nth-child(2),.zj-roles td:nth-child(2){display:none}}
+.zj-sort{display:inline-flex;align-items:center;gap:4px;height:24px;margin:-4px -6px;padding:0 6px;border-radius:var(--zj-r-sm);font-size:12px;line-height:16px;color:var(--zj-ink3);white-space:nowrap}
+.zj-sort:hover{background:var(--zj-well);color:var(--zj-ink2)}
+.zj-sort.zj-on{color:var(--zj-ink)}
+.zj-sort svg{width:12px;height:12px}
+.zj-sort svg:first-child{width:13px;height:13px;margin-right:2px;color:var(--zj-ink4)}
+.zj-check{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex-shrink:0;margin-right:2px;border-radius:var(--zj-r-check);font-size:12px;line-height:16px;background:#fff;color:transparent;box-shadow:inset 0 0 0 1.5px var(--zj-line2);transition:background-color .12s var(--zj-e),box-shadow .12s var(--zj-e),color .12s var(--zj-e)}
+.zj-check svg{width:13px;height:13px}
+button.zj-check:hover{box-shadow:inset 0 0 0 1.5px var(--zj-ink)}
+.zj-check.zj-on{background:var(--zj-ink);color:#fff;box-shadow:none}
+.zj-check.zj-off{background:none;box-shadow:none;border:1.5px dashed var(--zj-line2);font-size:inherit;line-height:inherit;cursor:default}
+/* a role in one cell: logo, title, company line */
+.zj-role{display:flex;align-items:center;gap:12px;min-width:0;white-space:nowrap}
+.zj-role-t{display:block;color:var(--zj-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zj-meta{display:flex;flex-wrap:nowrap;align-items:center;column-gap:12px;row-gap:2px;min-width:0;font-size:12px;line-height:16px;color:var(--zj-ink3);white-space:nowrap;overflow:hidden}
+.zj-mi{display:inline-flex;align-items:center;gap:5px;min-width:0;white-space:nowrap}
+.zj-mi:first-child{flex-shrink:0}
+.zj-mi svg{width:13px;height:13px;flex-shrink:0;color:var(--zj-ink4)}
+.zj-mi:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+/* ── 14. Inbox ─────────────────────────────────────────────────────────── */
+/* a page that fills the sheet: the list and the thread scroll inside */
+.zj-body.zj-fill{overflow:hidden;padding:4px 32px 24px}
+.zj-body.zj-fill>.zj-page{height:100%}
+.zj-inbox{display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px;height:100%}
+.zj-list{display:flex;flex-direction:column;min-height:0;background:#fff;border-radius:var(--zj-r-card);box-shadow:var(--zj-sh-hair);overflow:hidden}
+.zj-list-top{display:flex;align-items:baseline;gap:8px;padding:20px 20px 12px;color:var(--zj-ink)}
+.zj-list-body{display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;padding:0 8px 8px;overflow-y:auto}
+.zj-thread{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border-radius:var(--zj-r-row);text-align:left;transition:background-color .12s var(--zj-e)}
+.zj-thread:hover{background:var(--zj-well)}
+.zj-thread.zj-on{background:var(--zj-well2)}
+.zj-thread>.zj-grow{display:flex;flex-direction:column;gap:1px}
+.zj-thread-t{display:flex;align-items:center;gap:6px}
+.zj-thread-t .zj-clip{font-weight:500;color:var(--zj-ink)}
+.zj-thread-p{display:block;font-size:12px;line-height:16px;color:var(--zj-ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zj-thread-p.zj-un{color:var(--zj-ink)}
+.zj-thread>.zj-unread{margin-top:6px}
+.zj-chat{display:flex;flex-direction:column;min-height:0;background:#fff;border-radius:var(--zj-r-card);box-shadow:var(--zj-sh-hair);overflow:hidden}
+.zj-chat-h{display:flex;align-items:center;gap:12px;padding:16px 20px;box-shadow:inset 0 -1px 0 var(--zj-line)}
+.zj-chat-h .zj-ct{color:var(--zj-ink)}
+.zj-msgs{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;padding:12px 20px 16px;overflow-y:auto}
+.zj-msg{display:flex;gap:10px;max-width:min(520px,86%)}
+.zj-msg>.zj-orb{align-self:flex-end}
+.zj-msg>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.zj-msg>div>p{padding:8px 12px;border-radius:var(--zj-r-row);background:var(--zj-well);color:var(--zj-ink)}
+.zj-msg.zj-me{align-self:flex-end}
+.zj-msg.zj-me>div>p{background:var(--zj-ink);color:#fff}
+/* a card Zero hands you inside the thread, under its message */
+.zj-msg-card{display:flex;gap:10px;margin:2px 0 6px 44px}
+.zj-msg-card>.zj-card{gap:4px;width:100%;max-width:520px}
+.zj-card .zj-key:disabled{opacity:.3}
+
+/* ── 15. A role, opened beside the list ────────────────────────────────── */
+.zj-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,640px);gap:16px;align-items:start;width:100%;max-width:1200px;margin:0 auto}
+.zj-hscroll{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+/* the roles table beside an open role: it scrolls sideways, the role and the heart stay put, the place moves under the company */
+.zj-roles.zj-narrow{min-width:940px}
+.zj-roles.zj-narrow th:nth-child(1){width:336px}.zj-roles.zj-narrow th:nth-child(2){width:150px}.zj-roles.zj-narrow th:nth-child(3){width:130px}.zj-roles.zj-narrow th:nth-child(4){width:96px}.zj-roles.zj-narrow th:nth-child(5){width:150px}.zj-roles.zj-narrow th:nth-child(6){width:44px}
+.zj-roles.zj-narrow thead th{position:static;top:auto}
+.zj-roles.zj-narrow th:first-child,.zj-roles.zj-narrow tbody td:first-child{position:sticky;left:0;z-index:2;background:#fff}
+.zj-roles.zj-narrow th:last-child,.zj-roles.zj-narrow tbody td:last-child{position:sticky;right:0;z-index:2;background:#fff}
+.zj-roles.zj-narrow tbody td:first-child{max-width:260px;box-shadow:6px 0 10px -10px rgba(19,20,23,.35)}
+.zj-roles.zj-narrow tbody td:last-child{box-shadow:-6px 0 10px -10px rgba(19,20,23,.35)}
+.zj-roles.zj-narrow tbody tr:hover>td:first-child,.zj-roles.zj-narrow tbody tr:hover>td:last-child{background:var(--zj-well)}
+.zj-roles.zj-narrow tbody tr.zj-on>td:first-child,.zj-roles.zj-narrow tbody tr.zj-on>td:last-child{background:var(--zj-well2)}
+.zj-detail{position:sticky;top:0;max-height:calc(100dvh - 176px);padding:24px 28px 96px;border-radius:var(--zj-r-card);background:#fff;box-shadow:var(--zj-sh-panel);overflow-y:auto}
+.zj-detail-x{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;height:0}
+.zj-detail-x .zj-close{margin:-4px -8px 0 0}
+.zj-rhead{display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding-right:48px}
+.zj-rhead .zj-t24{margin-bottom:8px}
+.zj-rhead .zj-meta{flex-wrap:wrap;column-gap:14px;overflow:visible;color:var(--zj-ink3)}
+.zj-rfit{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+.zj-detail .zj-seg{margin-top:20px}
+.zj-lane{display:flex;flex-direction:column;gap:20px;margin-top:20px;padding:20px;border-radius:var(--zj-r-card);background:#fff;box-shadow:0 0 0 1px var(--zj-line)}
+/* the tracker: five stops, done in ink, now in lime, next in hairline */
+.zj-track{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.zj-track li{position:relative;display:flex;flex-direction:column;gap:10px;font-size:12px;line-height:16px;color:var(--zj-ink3)}
+.zj-track li::before{content:"";position:relative;z-index:1;width:14px;height:14px;border-radius:var(--zj-r-pill);background:#fff;box-shadow:inset 0 0 0 2px var(--zj-line2)}
+.zj-track li::after{content:"";position:absolute;top:6px;left:14px;right:0;height:2px;background:var(--zj-line)}
+.zj-track li:last-child::after{display:none}
+.zj-track li.zj-done,.zj-track li.zj-now{color:var(--zj-ink)}
+.zj-track li.zj-done::before{background:var(--zj-ink);box-shadow:none}
+.zj-track li.zj-done::after{background:var(--zj-ink)}
+.zj-track li.zj-now::before{background:var(--zj-lime);box-shadow:inset 0 0 0 2px var(--zj-ink),0 0 0 5px rgba(183,240,106,.4)}
+
+/* ── 16. Files Zero sent, as a tree ────────────────────────────────────── */
+.zj-tree{position:relative;margin:6px 0 2px 18px}
+.zj-tn{position:relative;display:flex;align-items:center;gap:8px;min-height:36px;padding-left:20px}
+.zj-tn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--zj-line2)}
+.zj-tn:last-child::before{bottom:50%}
+.zj-tn::after{content:"";position:absolute;left:0;top:50%;width:12px;height:1px;background:var(--zj-line2)}
+.zj-tn-i{display:inline-flex;color:var(--zj-ink3)}
+.zj-tn-t{min-width:0;font-size:14px;line-height:20px;color:var(--zj-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zj-tn-k{font-size:12px;line-height:16px;color:var(--zj-ink3);white-space:nowrap}
+.zj-tn-b{display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;border-radius:var(--zj-r-sm);color:var(--zj-ink2)}
+.zj-tn-b:hover{background:var(--zj-well);color:var(--zj-ink)}
+
+/* ── 17. Over the page: popover, toast, dialog, input ──────────────────── */
+/* why it fits, on hover. A tinted head, short bullets, a gap in amber */
+.zj-pop{--tint:var(--zj-pop-gd-tint);--tx:var(--zj-pop-gd-tx);position:relative;width:300px;padding:0 14px 10px;border-radius:var(--zj-r-row);background:#fff;color:var(--zj-ink);box-shadow:var(--zj-sh-pop);animation:zj-drop-in .14s ease-out both}
+.zj-pop.zj-strong{--tint:var(--zj-pop-st-tint);--tx:var(--zj-pop-st-tx)}
+.zj-pop::before{content:"";position:absolute;left:var(--ax,20px);top:-5px;width:10px;height:10px;background:var(--tint);transform:rotate(45deg);box-shadow:-1px -1px 0 rgba(19,20,23,.06)}
+.zj-pop-h{position:relative;display:flex;align-items:center;gap:6px;margin:0 -14px 8px;padding:10px 14px;border-radius:var(--zj-r-row) var(--zj-r-row) 0 0;background:var(--tint);font-size:12px;line-height:16px;font-weight:500;color:var(--tx)}
+.zj-pop-h svg{width:14px;height:14px}
+.zj-pop li{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:4px 0;font-size:14px;line-height:20px}
+.zj-pop li .zj-k{font-size:12px;line-height:20px;color:var(--zj-ink3)}
+.zj-pop li.zj-gap{margin-top:4px;padding-top:8px;border-top:1px solid rgba(19,20,23,.07)}
+.zj-pop li.zj-gap .zj-k{color:var(--zj-pop-gap)}
+/* toast: white, one line, one action. Rises, holds 4 seconds, leaves */
+.zj-toast{display:flex;align-items:center;gap:10px;width:max-content;max-width:min(560px,calc(100vw - 48px));height:44px;padding:0 6px 0 12px;border-radius:var(--zj-r-pill);background:#fff;color:var(--zj-ink);font-size:14px;line-height:20px;box-shadow:var(--zj-sh-toast);animation:zj-toast 4.2s var(--zj-e) both}
+.zj-ti{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex-shrink:0;border-radius:var(--zj-r-pill);background:var(--zj-goodbg);color:var(--zj-good)}
+.zj-ti svg{width:13px;height:13px;fill:none}
+.zj-ti.zj-heart{background:#FDECEC;color:var(--zj-like)}
+.zj-ti.zj-heart svg{fill:currentColor}
+.zj-toast button{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;height:32px;padding:0 12px;border-radius:var(--zj-r-sm);background:var(--zj-well);color:var(--zj-ink);font-weight:500}
+.zj-toast button:hover{background:var(--zj-line)}
+.zj-toast button svg{width:14px;height:14px}
+.zj-toast.zj-hold{animation:none}
+/* dialog: one question, the rows it needs, two actions on the right */
+.zj-scrim{position:fixed;inset:0;z-index:420;display:grid;place-items:center;padding:16px;background:rgba(19,20,23,.32);animation:zj-fade .16s ease-out both}
+.zj-dialog{width:min(440px,100%);padding:20px;border-radius:var(--zj-r-dialog);background:#fff;box-shadow:var(--zj-sh-dialog)}
+.zj-dialog h2{margin:0 0 14px;font-size:16px;line-height:24px;font-weight:500;color:var(--zj-ink)}
+.zj-dialog-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid rgba(19,20,23,.06)}
+.zj-dialog-i{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:var(--zj-r-ctl);background:var(--zj-well);color:var(--zj-ink2)}
+.zj-dialog-i svg{width:18px;height:18px}
+.zj-dialog-m{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.zj-dialog-l{font-size:14px;line-height:20px;color:var(--zj-ink)}
+.zj-dialog-v{font-size:12px;line-height:16px;color:var(--zj-ink2)}
+.zj-dialog-f{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.zj-input{height:36px;width:100%;padding:0 12px;border-radius:var(--zj-r-ctl);background:#fff;color:var(--zj-ink);box-shadow:inset 0 0 0 1px rgba(19,20,23,.16)}
+.zj-input:focus-visible{outline:2px solid var(--zj-ink);outline-offset:1px}
+
+/* ── 18. Motion. Hover and press 120ms on --zj-e. Arrivals rise 8px. Nothing bounces ── */
+@keyframes zj-page-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes zj-card-in{from{opacity:0;transform:translateY(8px)}}
+@keyframes zj-rise{from{transform:translateY(4px);opacity:0}}
+@keyframes zj-drop-in{from{opacity:0;transform:translateY(-4px)}}
+@keyframes zj-fade{from{opacity:0}}
+@keyframes zj-toast{0%{opacity:0;transform:translateY(10px)}6%,92%{opacity:1;transform:none}100%{opacity:0;transform:translateY(6px)}}
+@keyframes zj-pulse{50%{opacity:.3}}
+@keyframes zj-ring{0%{transform:scale(.4);opacity:.5}100%{transform:scale(1.4);opacity:0}}
+@keyframes zj-rot{to{transform:rotate(360deg)}}
+@keyframes zj-sheen{0%{-webkit-mask-position:110% 0;mask-position:110% 0}100%{-webkit-mask-position:-110% 0;mask-position:-110% 0}}
+@keyframes zj-blink{0%,42%,46%,70%,74%,100%{scale:1}44%,72%{scale:1.1 .1}}
+@keyframes zj-ponder{0%,100%{translate:6px -1px}50%{translate:-7px -2px}}
+@keyframes zj-scan{0%{translate:-9px}78%{translate:9px}100%{translate:-9px}}
+@keyframes zj-flash{0%,30%{outline:3px solid var(--zj-lime);outline-offset:3px}100%{outline:3px solid rgba(183,240,106,0);outline-offset:3px}}
+.zj-flash{animation:zj-flash 2s var(--zj-e)}
+@media (prefers-reduced-motion:reduce){.zj *,.zj *::before,.zj *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ── 19. Smaller screens (the product's own breakpoints) ───────────────── */
+@media (max-width:1100px){.zj-split{grid-template-columns:minmax(0,1fr)}.zj-split>.zj-detail{display:none}}
+@media (max-width:1024px){
+  .zj-app{height:auto;min-height:100dvh;overflow:visible}
+  .zj-strip{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'m m' 'l r';height:auto;padding:10px 12px 6px;gap:6px 8px}
+  .zj-strip-l{grid-area:l}
+  .zj-strip-r{grid-area:r;grid-column:auto}
+  .zj-stage{padding:0 8px 8px}
+  .zj-sheet{height:auto;min-height:80dvh;border-radius:24px}
+  .zj-top{grid-template-columns:minmax(0,1fr) auto;height:auto;min-height:60px;padding:10px 16px;gap:8px 12px}
+  .zj-tabs{grid-column:1/-1;grid-row:2;justify-self:center;max-width:100%;overflow-x:auto}
+  .zj-body{overflow:visible;padding:4px 16px 120px}
+  .zj-inbox{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){.zj-toolbar .zj-filter{order:3;width:100%}.zj-toolbar{flex-wrap:wrap;height:auto;padding:8px 10px}}
+@media (max-width:600px){.zj-level{display:none}.zj-top-l .zj-mode{margin-left:0}.zj-col{padding:20px 16px 56px}.zj-tablewrap{overflow-x:auto}}

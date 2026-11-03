@@ -1,0 +1,85 @@
+{
+  "panel": {
+    "yourLevel": "Your level",
+    "levelName": "Level {n}",
+    "badgeAlt": "Level {n} badge",
+    "xpOfLevel": "{into} / {total} XP",
+    "next": "Next",
+    "xpToGo": "{n} XP to go",
+    "rolesOpenAtLevel": "{n} roles open at this level",
+    "estSalary": "Est. salary",
+    "roles": "Roles",
+    "seeMoreDetails": "See more details",
+    "allLevels": "All levels",
+    "moreRolesInRow": "+{n}",
+    "topLevel": "Every role in the portal is open to you.",
+    "avgPay": "Average pay",
+    "payAmount": "{pay}",
+    "noRoles": "No matching roles yet"
+  },
+  "details": {
+    "back": "All levels",
+    "previousLevel": "Previous level",
+    "nextLevel": "Next level",
+    "scenarioToUnlock": "1 scenario to unlock",
+    "scenariosToUnlock": "{n} scenarios to unlock",
+    "yourLevel": "Your level",
+    "unlocked": "Unlocked",
+    "xpToGo": "{n} XP to go",
+    "estPay": "Est. pay",
+    "paySameAsNow": "Same as now",
+    "roleTypes": "Role types",
+    "rolesOpen": "Roles open",
+    "rolesDeltaVsNow": "+{n} vs now",
+    "rolesDeltaVsLevel": "+{n} vs Level {prev}",
+    "rolesFirstLevel": "Where everyone starts",
+    "rolesThisLevelOpens": "Roles this level opens",
+    "rolesOpenToYou": "Roles open to you",
+    "roleMeta": "{company} · {mode}",
+    "moreRoles": "{n} more roles",
+    "demonstratedAhead": "What you’ll have demonstrated",
+    "demonstratedDone": "What you’ve demonstrated",
+    "scenarioFor": "{name} for {company}",
+    "different": "What’s different about these jobs",
+    "theWork": "The work",
+    "theyWantToSee": "They want to see",
+    "theCompanies": "The companies",
+    "avgPay": "Average pay",
+    "payAmount": "{pay}",
+    "noRoles": "No matching roles yet",
+    "pointsToUnlock": "{n} XP to unlock"
+  },
+  "levelUp": {
+    "levelName": "Level {n}",
+    "opens": "Opens {n} {roleTypes}",
+    "everyRoleOpen": "Every role is open"
+  },
+  "workModes": {
+    "remote": "Remote",
+    "hybrid": "Hybrid",
+    "onsite": "On-site"
+  },
+  "roleTypes": {
+    "families": {
+      "engineering": "engineering",
+      "data": "data",
+      "it": "IT",
+      "product": "product",
+      "design": "design",
+      "business_analyst": "business analyst",
+      "sales": "sales",
+      "marketing": "marketing",
+      "finance": "finance",
+      "operations": "operations"
+    },
+    "seniorities": {
+      "intern": "intern",
+      "entry": "entry-level",
+      "mid": "mid-level",
+      "senior": "senior",
+      "lead": "lead"
+    },
+    "one": "{a} roles",
+    "two": "{a} and {b} roles"
+  }
+}

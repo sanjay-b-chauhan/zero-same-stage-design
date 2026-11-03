@@ -1,0 +1,109 @@
+/* Live words: yours while you hold to talk, hers in the PiP bar while she answers (Heard.tsx). */
+.zs2-tail {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.zs2-tail[data-over] {
+  justify-content: flex-end;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px);
+  mask-image: linear-gradient(90deg, transparent 0, #000 24px);
+}
+.zs2-tail-in {
+  display: flex;
+  flex: none;
+  gap: 0.28em;
+}
+.zs2-tail[data-wrap] {
+  display: block;
+  white-space: normal;
+}
+.zs2-tail[data-wrap] .zs2-tail-in {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 0;
+}
+/* a word never moves: it comes sharp out of a soft blur where it already sits */
+.zs2-hw {
+  display: inline-block;
+  animation: zs2-hw-in 520ms var(--zj-out, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+/* b15: green while it is soft, its own ink once it is sharp (the green is the energy) */
+@keyframes zs2-hw-in {
+  from {
+    filter: blur(6px);
+    opacity: 0;
+    color: var(--g-hi, #4fdc85);
+  }
+  40% {
+    color: var(--g-hi, #4fdc85);
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2-hw {
+    animation: none;
+  }
+}
+
+/* the composer while you hold: your words on top, the live mic under them, like the box's two rows. The PiP is a size down */
+.zs2-micslab[data-heard] {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+}
+.zs2-micslab[data-heard] .zs2-heard {
+  flex: none;
+  min-width: 0;
+  max-height: 40px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx);
+}
+/* the newest line holds the bottom; older ones slip off the top */
+.zs2-micslab[data-heard] .zs2-heard[data-wrap] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.zs2-micslab-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.zs2-micslab-row svg {
+  flex: none;
+  color: var(--z-tx-2);
+}
+.zs2-micslab-row .zs2-micbars {
+  flex: 1;
+  min-width: 0;
+}
+.zs2-composer[data-surface='pip'] .zs2-micslab[data-heard] {
+  gap: 4px;
+  padding: 6px 12px;
+}
+.zs2-composer[data-surface='pip'] .zs2-micslab[data-heard] .zs2-heard {
+  max-height: 36px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.zs2-composer[data-surface='pip'] .zs2-micslab-row {
+  gap: 10px;
+  height: 16px;
+}
+.zs2-composer[data-surface='pip'] .zs2-micslab-row .zs2-micbars {
+  height: 12px;
+}
+.zs2-composer[data-surface='pip'] .zs2-micslab-row .zs2-heldclock {
+  font-size: 12px;
+  line-height: 16px;
+}

@@ -1,0 +1,76 @@
+/* b4: the stage and PIP tokens, charcoal: neutral greys, never bluish and never warm (his note, 2 Nov 2026). Same names as b2 and b3, so stage.css and pip.css follow without a rewrite.
+   Dark by default, because the stage is dark. .z-light is the one switch for a light stage (Control+D). */
+:root {
+  --z-bg: #141414;
+  --z-panel: #1b1b1b;
+  --z-raise: #242424;
+  --z-raise-2: #2e2e2e;
+  --z-line: rgba(255, 255, 255, 0.08);
+  --z-line-2: rgba(255, 255, 255, 0.14);
+  --z-tx: #f4f4f4;
+  --z-tx-2: #adadad;
+  --z-tx-3: #7a7a7a;
+  --z-key: #f4f4f4;
+  --z-key-tx: #141414;
+  --z-green: #34c759;
+  --z-amber: #e8c23a;
+  --z-red: #e5484d;
+  --z-paper: #f4f4f4;
+  --z-ink: #141414;
+  --z-r-8: 8px;
+  --z-r-10: 10px;
+  --z-r-12: 12px;
+  --z-r-16: 16px;
+  --z-sans: 'Inter', system-ui, sans-serif;
+  --z-mono: var(--z-sans);
+  /* critically damped spring, response .4, sampled over 700 ms. Use with duration 700ms. */
+  --z-spring: linear(0, 0.1057, 0.3008, 0.4909, 0.6452, 0.7601, 0.8412, 0.8967, 0.9336, 0.9578, 0.9734, 0.9833, 0.9896, 0.9936, 0.996, 0.9976, 0.9985, 0.9991, 0.9995, 0.9997, 1);
+  --z-settle: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.z-light {
+  --z-bg: #f3f3f5;
+  --z-panel: #ffffff;
+  --z-raise: #f6f6f8;
+  --z-raise-2: #ededf0;
+  --z-line: #e7e7eb;
+  --z-line-2: #d4d5da;
+  --z-tx: #131417;
+  --z-tx-2: #4e525c;
+  --z-tx-3: #6a6f7a;
+  --z-key: #131417;
+  --z-key-tx: #ffffff;
+  --z-green: #12733f;
+}
+
+.z-root {
+  font-family: var(--z-sans);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+  font-feature-settings: 'cv11', 'ss01';
+  color: var(--z-tx);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+.z-root *,
+.z-root *::before,
+.z-root *::after {
+  box-sizing: border-box;
+}
+.z-num {
+  font-family: var(--z-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.z-stamp {
+  position: fixed;
+  left: 44px;
+  bottom: 14px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zj-ink4);
+  pointer-events: none;
+  z-index: 9000;
+}

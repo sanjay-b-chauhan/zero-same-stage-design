@@ -1,0 +1,69 @@
+{
+  "id": "hold_one_page",
+  "kind": "fix",
+  "title": "Hold: one page",
+  "hook": "Before you submit",
+  "notices": "A one page plan, \"here is the plan\", for a brief that needs three parts.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "hold_one_page.r1",
+        "text": "Before you submit. This is one page.",
+        "after": null
+      },
+      {
+        "lineId": "hold_one_page.r2",
+        "text": "Jay asked for a plan he can take to leadership.",
+        "after": null
+      },
+      {
+        "lineId": "hold_one_page.r3",
+        "text": "Give him three: the problem with the numbers,",
+        "after": null
+      },
+      {
+        "lineId": "hold_one_page.r4",
+        "text": "the cause, and the fix with your test.",
+        "after": null
+      }
+    ],
+    "new": [
+      {
+        "lineId": "hold_one_page.n1",
+        "text": "Before you submit. Jay takes this to leadership.",
+        "after": null
+      },
+      {
+        "lineId": "hold_one_page.n2",
+        "text": "Could they find the problem, the cause, and the fix on one page?",
+        "after": null
+      },
+      { "lineId": "hold_one_page.n3", "text": "Give each one its own.", "after": null }
+    ]
+  },
+  "stake": { "points": 300, "label": "+300 if it has all three parts" },
+  "why": {
+    "lines": [
+      { "lineId": "hold_one_page.w1", "text": "Because Jay takes this to leadership." },
+      {
+        "lineId": "hold_one_page.w2",
+        "text": "They need the problem, the cause, and the fix with proof."
+      },
+      { "lineId": "hold_one_page.w3", "text": "One page can't carry all three." }
+    ],
+    "good": {
+      "kind": "pages",
+      "question": null,
+      "file": null,
+      "lines": ["The wait, and what it costs", "The cause", "The router, and how I will test it"]
+    }
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "fix_it", "label": "Fix it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "He goes, and the plan grows to three pages in the app. He does not check it after.",
+  "points": { "n": 300, "label": "+300 Updates" }
+}

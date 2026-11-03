@@ -1,0 +1,367 @@
+/* The breakdown beat. Light, warm paper, continuous with the real POU before it.
+   Every spot is held from the first frame, so nothing moves when something lands. */
+.bd {
+  --bd-ink: #141210;
+  --bd-ink-2: rgba(20, 18, 16, 0.62);
+  --bd-line: rgba(20, 18, 16, 0.14);
+  --bd-paper: #f2f0ed;
+  --bd-voice: #dedad3;
+  --bd-seg: 176px;
+  --bd-dot: 28px;
+  --bd-gap: 72px;
+  --bd-spring: var(--z-spring);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bd-paper);
+  color: var(--bd-ink);
+}
+@media (min-width: 1800px) {
+  .bd {
+    --bd-seg: 232px;
+    --bd-gap: 104px;
+  }
+}
+@media (max-width: 1180px) {
+  .bd {
+    --bd-seg: 132px;
+  }
+}
+
+/* her, in the middle */
+.bd-face {
+  position: relative;
+  flex: none;
+  width: 96px;
+  height: 96px;
+  animation: bd-arrive 700ms var(--bd-spring) both;
+}
+.bd-voice {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--bd-voice);
+  transform: scale(1);
+  will-change: transform;
+}
+.bd-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+@keyframes bd-arrive {
+  from {
+    transform: translateY(20px) scale(0.72);
+    filter: blur(14px);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* the problem */
+.bd-title {
+  flex: none;
+  margin: 44px 0 0;
+  height: 24px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: center;
+  white-space: nowrap;
+  visibility: hidden;
+}
+.bd-title.is-in {
+  visibility: visible;
+  animation: bd-land 700ms var(--bd-spring) both;
+}
+@keyframes bd-land {
+  from {
+    transform: translateY(12px);
+    filter: blur(6px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* the path: one straight line, five stops, then what you'll have */
+.bd-path {
+  flex: none;
+  margin-top: var(--bd-gap);
+  display: grid;
+  grid-template-columns: repeat(var(--bd-n), var(--bd-seg)) auto;
+  transition:
+    transform 240ms var(--z-settle),
+    filter 240ms var(--z-settle),
+    opacity 240ms var(--z-settle);
+}
+.bd-path.is-clearing {
+  transform: translateY(8px);
+  filter: blur(8px);
+  opacity: 0;
+}
+.bd-stop {
+  position: relative;
+  min-width: 0;
+  height: 82px;
+}
+.bd-seg {
+  position: absolute;
+  top: calc(var(--bd-dot) / 2);
+  left: var(--bd-dot);
+  width: calc(var(--bd-seg) - var(--bd-dot));
+  height: 1px;
+  background: var(--bd-line);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 520ms var(--z-settle);
+}
+.bd-seg.is-in {
+  transform: none;
+}
+
+.bd-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--bd-dot);
+  height: var(--bd-dot);
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+}
+.is-in > .bd-dot {
+  visibility: visible;
+}
+.bd-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.bd-ring circle {
+  fill: transparent;
+  stroke: var(--bd-ink);
+  stroke-opacity: 0.32;
+  stroke-width: 1;
+  stroke-dasharray: 85;
+  stroke-dashoffset: 85;
+  transition:
+    fill 240ms var(--z-settle),
+    stroke-opacity 240ms var(--z-settle);
+}
+.is-in > .bd-dot .bd-ring circle {
+  stroke-dashoffset: 0;
+  transition:
+    stroke-dashoffset 420ms var(--z-settle),
+    fill 240ms var(--z-settle),
+    stroke-opacity 240ms var(--z-settle);
+}
+.is-now > .bd-dot .bd-ring circle {
+  fill: var(--bd-ink);
+  stroke-opacity: 1;
+}
+.bd-n {
+  position: relative;
+  font-family: var(--z-mono);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--bd-ink);
+  transition: color 240ms var(--z-settle);
+}
+.is-now > .bd-dot .bd-n {
+  color: var(--bd-paper);
+}
+
+.bd-label {
+  position: absolute;
+  left: 0;
+  top: calc(var(--bd-dot) + 14px);
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  visibility: hidden;
+}
+.is-in > .bd-label {
+  visibility: visible;
+  animation: bd-land 700ms var(--bd-spring) both;
+}
+.bd-name {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--bd-ink);
+}
+.bd-min {
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0;
+  color: var(--bd-ink-2);
+}
+
+/* the end of the line is a different thing: where you land */
+.bd-end {
+  align-self: start;
+  margin-top: calc((var(--bd-dot) - 36px) / 2);
+  height: 36px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px;
+  background: var(--bd-ink);
+  color: var(--bd-paper);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  visibility: hidden;
+  transform-origin: 0 50%;
+}
+.bd-end.is-in {
+  visibility: visible;
+  animation: bd-end 700ms var(--bd-spring) both;
+}
+@keyframes bd-end {
+  from {
+    transform: scale(0.86);
+    filter: blur(8px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* two answers, nothing else */
+.bd-keys {
+  flex: none;
+  margin-top: calc(var(--bd-gap) - 16px);
+  display: flex;
+  gap: 8px;
+  visibility: hidden;
+}
+.bd-keys.is-in {
+  visibility: visible;
+  animation: bd-land 700ms var(--bd-spring) both;
+}
+.bd-key {
+  height: 40px;
+  padding: 0 16px;
+  min-width: 88px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  outline: none;
+  transition:
+    transform 100ms ease-out,
+    background-color 140ms ease-out,
+    border-color 140ms ease-out;
+}
+.bd-key:active {
+  transform: scale(0.97);
+}
+.bd-key:focus-visible {
+  outline: 2px solid var(--bd-ink);
+  outline-offset: 2px;
+}
+.bd-key.main {
+  background: var(--bd-ink);
+  color: var(--bd-paper);
+}
+.bd-key.main:hover {
+  background: #2b2825;
+}
+.bd-key.plain {
+  background: transparent;
+  color: var(--bd-ink);
+  border-color: var(--bd-line);
+}
+.bd-key.plain:hover {
+  background: rgba(20, 18, 16, 0.05);
+  border-color: rgba(20, 18, 16, 0.24);
+}
+
+/* Got it: the plan wipes up and away, the keys drop. b23 toWork, 620 and 560 ms. */
+.bd-leave {
+  animation: bd-leave 620ms cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+@keyframes bd-leave {
+  from {
+    transform: none;
+    clip-path: inset(-120px -400px -400px -400px);
+  }
+  to {
+    transform: translateY(-36px);
+    clip-path: inset(-120px -400px 100% -400px);
+  }
+}
+.bd-keys.is-leaving {
+  animation: bd-keys-leave 560ms cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+@keyframes bd-keys-leave {
+  to {
+    transform: translateY(140px);
+  }
+}
+.bd-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-face,
+  .bd-title.is-in,
+  .is-in > .bd-label,
+  .bd-end.is-in,
+  .bd-keys.is-in {
+    animation-duration: 1ms;
+  }
+  .bd-seg,
+  .bd-ring circle {
+    transition-duration: 1ms !important;
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "top_role",
+  "kind": "win",
+  "title": "Top role",
+  "hook": "A role for you",
+  "notices": "A Level 2 role opens that fits his work.",
+  "needsRerecord": true,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "top_role.r1",
+        "text": "A Rank 2 role just opened that fits your work: a BDR role at Ramp.",
+        "after": null
+      },
+      { "lineId": "top_role.r2", "text": "Want me to send them your portfolio?", "after": null },
+      { "lineId": "top_role.r3", "text": "Sent. I'll tell you when they reply.", "after": "send" }
+    ],
+    "new": [
+      {
+        "lineId": "top_role.n1",
+        "text": "A Level 2 role just opened that fits your work: a BDR role at Ramp.",
+        "after": null
+      },
+      { "lineId": "top_role.n2", "text": "Want me to send them your portfolio?", "after": null },
+      { "lineId": "top_role.n3", "text": "Sent. I'll tell you when they reply.", "after": "send" }
+    ]
+  },
+  "stake": null,
+  "why": null,
+  "actions": [
+    { "id": "not_now", "label": "Not now", "primary": false },
+    { "id": "send", "label": "Send it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "Send it, and he sends your portfolio. Not now, and he leaves it.",
+  "points": null
+}

@@ -1,0 +1,1136 @@
+/* The opening: world, tag, card, project brief, as b36 ships them (open.html, measured live at 1512x800).
+   The world, its top row, the tag, the note and the card are b36's dark. The brief sheet is light (b-light, his note of
+   2 Nov). Every colour, line and radius is a b36 token from flow/ds/b36.css. Scoped under .zo and the zo- names. */
+
+.zo {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--b-ground);
+  color: var(--b-t2);
+  font-family: var(--zj-font);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+}
+.zo button,
+.zo-sheet button {
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+/* the world: a 16:9 box covering the window, the camera moves it, the drift breathes inside it */
+.zo-cam {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+.zo-enter,
+.zo-drift {
+  position: absolute;
+  inset: 0;
+}
+.zo-enter {
+  opacity: 0;
+}
+.zo-drift {
+  animation: zo-drift 26s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+}
+@keyframes zo-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.025) translate(-0.4%, -0.3%);
+  }
+}
+.zo-world {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* the pin rides the drift with the same curve and time, translated only, so the tag's text stays crisp */
+.zo-pin {
+  position: absolute;
+  width: 0;
+  height: 0;
+  animation: zo-glue 26s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+}
+@keyframes zo-glue {
+  to {
+    transform: translate(var(--gx, 0px), var(--gy, 0px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zo-drift,
+  .zo-pin {
+    animation-name: none !important;
+  }
+}
+
+/* the top row: the zero mark left, you right. b36 .wtop: padding 20 84 20 24 */
+.zo-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 84px 20px 24px;
+  pointer-events: none;
+}
+.zo-zm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--b-t1);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.zo-zm img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+.zo-me-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* the Level pill sits on this box, just left of you (flow/hud/anchor.ts) */
+.zo-anchor {
+  width: 1px;
+  height: 36px;
+}
+.zo-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px 0 4px;
+  border-radius: 99px;
+  background: var(--b-slab);
+  box-shadow: 0 0 0 1px var(--b-edge), inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 16px;
+}
+.zo-me img {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* the note low in the middle. b36 .wnote: bottom 28, padding 8 14, 12 px */
+.zo-note {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  z-index: 2;
+  translate: -50% 0;
+  padding: 8px 14px;
+  border-radius: 99px;
+  background: var(--b-slab);
+  box-shadow: 0 0 0 1px var(--b-edge), inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t2);
+  font-size: 12px;
+  line-height: 19px;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+/* the tag: b36's small dark pill on the building, a stem and a dot on the roof. It grows out of and back into the dot. */
+.zo-tagwrap {
+  position: absolute;
+  left: 0;
+  bottom: -3.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  filter: blur(6px);
+}
+.zo-tag {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px 9px 9px; /* b36's 8 12 8 8 inside a 1 px border */
+  border-radius: 16px;
+  background: var(--b-slab);
+  box-shadow: 0 0 0 1px var(--b-edge), inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t1);
+  text-align: left;
+  white-space: nowrap;
+  transition: transform 220ms var(--b-ease), background-color 200ms var(--b-ease);
+}
+.zo-tag:hover {
+  transform: translateY(-3px);
+  background: var(--b-slab2);
+}
+.zo-tag:active {
+  transform: translateY(-1px);
+}
+.zo-tag-t {
+  display: flex;
+  flex-direction: column;
+}
+.zo-tag-n {
+  font-size: 14px;
+  line-height: 16.8px;
+  font-weight: 500;
+  color: var(--b-t1);
+}
+.zo-tag-l {
+  font-size: 12px;
+  line-height: 19.2px;
+  color: var(--b-t3);
+}
+.zo-tag-face {
+  display: block;
+  width: 26px;
+  height: 26px;
+  margin-left: 6px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.zo-stem {
+  width: 1px;
+  height: 46px;
+  background: var(--b-hl2);
+}
+.zo-dot {
+  width: 7px;
+  height: 7px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--b-t1);
+}
+
+/* logo tiles: real marks on white, the same on dark and on light */
+.zo-lg32,
+.zo-lg24,
+.zo-lg44 {
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--b-paper-key);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+}
+.zo-lg32 {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+}
+.zo-lg32 img {
+  width: 18px;
+  height: 18px;
+}
+.zo-lg44 {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+.zo-lg44 img {
+  width: 24px;
+  height: 24px;
+}
+.zo-lg24 {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+.zo-lg24 img {
+  width: 14px;
+  height: 14px;
+}
+.zo-lg32 img,
+.zo-lg24 img,
+.zo-lg44 img {
+  display: block;
+  object-fit: contain;
+}
+
+/* the card, beside the building: the real ScenarioBriefCard's structure on the tag's dark slab. The title art 8 in
+   from the edge (its corners run with the card's), the company in a pill over it, one title, the stages and minutes
+   or, coming back, the path, and one tactile key */
+.zo-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 340px;
+  box-sizing: border-box;
+  padding: 16px 20px 22px;
+  border-radius: 28px;
+  background: var(--b-slab);
+  box-shadow: 0 0 0 1px var(--b-edge), inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t2);
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(40px) scale(0.98);
+  filter: blur(6px);
+}
+.zo-card-h {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.zo-art2 {
+  width: calc(100% + 24px);
+  margin: -8px -12px 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--b-slab2);
+}
+.zo-art2 img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* with the art, the head sits on it: the pill top left, the close top right, each 8 in from the art's edge */
+.zo-card[data-art] .zo-card-h {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  width: auto;
+  justify-content: flex-start;
+}
+.zo-card[data-art] .zo-round {
+  right: 0;
+  top: 2px;
+  background: var(--b-slab);
+  color: var(--b-t2);
+}
+.zo-card[data-art] .zo-round:hover {
+  background: var(--b-slab2);
+  color: var(--b-t1);
+}
+.zo-copill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 4px;
+  border-radius: 999px;
+  background: var(--b-t1);
+  color: var(--b-slab);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.zo-lg28 {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+}
+.zo-lg28 img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+.zo-round {
+  position: absolute;
+  right: -8px;
+  top: 2px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--b-t3);
+  transition: background-color 150ms var(--b-ease), color 150ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.zo-round:hover {
+  background: var(--b-slab2);
+  color: var(--b-t1);
+}
+.zo-round:active {
+  transform: scale(0.94);
+}
+.zo-card-t {
+  margin: 26px 0 0;
+  font-size: 24px;
+  line-height: 1.16;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--b-t1);
+  text-wrap: balance;
+}
+.zo-card[data-art] .zo-card-t {
+  margin-top: 20px;
+}
+.zo-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t3);
+  font-variant-numeric: tabular-nums;
+}
+.zo-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.zo-meta svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* coming back: where you are on the path, one segment a stage, green only for the ones she approved */
+.zo-prog {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin-top: 18px;
+}
+.zo-prog-l {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+.zo-prog-n {
+  flex: none;
+  color: var(--b-t3);
+  font-variant-numeric: tabular-nums;
+}
+.zo-prog-t {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--b-t1);
+  font-weight: 500;
+}
+.zo-segs {
+  display: flex;
+  gap: 4px;
+}
+.zo-seg {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--b-hl2);
+}
+.zo-seg[data-tone='done'] {
+  background: var(--b-ok);
+}
+.zo-seg[data-tone='now'] {
+  background: var(--b-t1);
+}
+
+/* the key: a solid slab on its own lip. It sinks onto the lip on press, a click or the Enter key, and comes back up */
+.zo-k3 {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 48px;
+  margin-top: 18px;
+  padding: 0 20px;
+  border: 0;
+  text-align: center;
+  border-radius: 14px;
+  background: var(--b-t1);
+  color: var(--b-slab);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--b-t1) 42%, var(--b-slab));
+  transition: transform 90ms var(--b-ease), box-shadow 90ms var(--b-ease), filter 150ms var(--b-ease);
+}
+.zo-k3:hover {
+  filter: brightness(1.06);
+}
+.zo-k3:active,
+.zo-k3[data-down='1'] {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--b-t1) 42%, var(--b-slab));
+}
+.zo-k3:focus-visible {
+  outline: 2px solid var(--b-t2);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zo-k3 {
+    transition-duration: 1ms;
+  }
+}
+
+/* the brief: b36's scrim on the world, the sheet rising. 760 wide, 48 from the top, radius 28. Dark (zd on the sheet). */
+.zo-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: color-mix(in srgb, var(--b-edge) 48%, transparent);
+  opacity: 0;
+  visibility: hidden;
+}
+.zo-sheetwrap {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  pointer-events: none;
+}
+.zo-sheet,
+.zo-sheet.b-light {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  height: min(880px, 100%);
+  border-radius: 28px;
+  background: var(--b-sheet);
+  box-shadow: var(--b-slab-sh);
+  color: var(--b-t1);
+  font-family: var(--zj-font);
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: -0.006em;
+  pointer-events: auto;
+  outline: 0;
+  visibility: hidden;
+}
+
+/* close: 44 round, 16 right of the sheet, level with its top. Inside when the window is too narrow for it. */
+.zo-sheet .zo-x {
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--b-slab);
+  color: var(--b-t1);
+  transition: background-color 150ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.zo-sheet .zo-x:hover {
+  background: var(--b-slab2);
+}
+.zo-sheet .zo-x:active {
+  transform: scale(0.96);
+}
+.zo-sheet .zo-x svg {
+  width: 20px;
+  height: 20px;
+}
+@media (max-width: 899px) {
+  .zo-sheet .zo-x {
+    left: auto;
+    right: 16px;
+    top: 16px;
+    background: var(--b-slab2);
+  }
+  .zo-hd {
+    padding-right: 76px;
+  }
+}
+
+/* the head: art 56, the title on one line, the Start key. b36 .hd: padding 40 40 18, gap 16 */
+.zo-hd {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 40px 18px;
+}
+.zo-art {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--b-paper-key);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zo-art img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+.zo-hd-t {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--b-t1);
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.zo-sheet .zo-start {
+  flex: none;
+  height: 52px;
+  padding: 0 30px 0 22px;
+  gap: 10px;
+  font-size: 16px;
+  line-height: 20px;
+}
+.zo-pl {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--b-slab) 16%, transparent);
+}
+.zo-pl svg {
+  display: block;
+  width: 8px;
+  height: 10px;
+  margin-left: 2px;
+}
+
+/* the brief's content: tabs over one read */
+.zo-brief {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  color: var(--b-t1);
+}
+.zo-tabs {
+  position: relative;
+  flex: none;
+  display: flex;
+  gap: 2px;
+  padding: 4px 40px 8px 28px;
+}
+.zo-brief .zo-tabs button {
+  position: relative;
+  z-index: 1;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 99px;
+  color: var(--b-t2);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  transition: color 140ms var(--b-ease);
+}
+.zo-brief .zo-tabs button:hover,
+.zo-brief .zo-tabs button[aria-selected='true'] {
+  color: var(--b-t1);
+}
+.zo-brief .zo-tabs button[aria-selected='true'] {
+  font-weight: 500;
+}
+.zo-tabpill {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  height: 34px;
+  border-radius: 99px;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  pointer-events: none;
+}
+.zo-tabs[data-ready] .zo-tabpill {
+  transition: transform 450ms var(--b-soft), width 450ms var(--b-soft);
+}
+.zo-read {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 40px 40px;
+  scrollbar-width: thin;
+}
+.zo-sec {
+  padding: 40px 0;
+}
+.zo-sec:first-child {
+  padding-top: 24px;
+}
+.zo-sec + .zo-sec {
+  border-top: 1px solid var(--b-hl);
+}
+.zo-sh {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.zo-sh h3 {
+  margin: 0;
+  color: var(--b-t1);
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+}
+.zo-sh span {
+  color: var(--b-t3);
+  font-size: 12px;
+}
+.zo-p {
+  margin: 0;
+  max-width: 640px;
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 19.2px;
+  text-wrap: pretty;
+}
+.zo-sub {
+  margin: 30px 0 6px;
+  color: var(--b-t3);
+  font-size: 12px;
+  line-height: 16px;
+}
+.zo-sub1 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+/* Company, Manager, Your role: her name card everywhere (b-who), the others in the same shape */
+.zo-facts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 16px;
+  margin-top: 24px;
+}
+.zo-fdv {
+  flex: none;
+  width: 1px;
+  height: 24px;
+  margin: 0 32px;
+  background: var(--b-hl2);
+}
+.zo-facts .b-who {
+  gap: 12px;
+}
+.zo-facts .zo-lg32 {
+  border-radius: 9px;
+}
+.zo-ic32 {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--b-t2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+
+.zo-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zo-tools li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* the lead: the description in .62 with its numbers in full white */
+.zo-desc {
+  color: var(--b-t2);
+  font-size: 14px;
+  line-height: 22px;
+}
+.zo-desc em {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--b-t1);
+}
+
+/* workflows: plain bullets. b47 .bul */
+.zo-bul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zo-bul li {
+  position: relative;
+  padding: 5px 0 5px 18px;
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 18px;
+}
+.zo-bul li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 12px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--b-t3);
+}
+
+/* skills and concepts: one outlined pill each, side by side, wrapping. b47 .pills */
+.zo-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.zo-pills li {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 99px;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* stages: a numbered list with minutes, and the total */
+.zo-tl {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zo-tl li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 38px;
+}
+.zo-node {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t3);
+  font-size: 11px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.zo-tx {
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 16px;
+}
+.zo-tm {
+  color: var(--b-t3);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.zo-tot {
+  display: flex;
+  justify-content: space-between;
+  margin: 14px 0 0 36px;
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* deliverables: a 28 tile, the name, the file type */
+.zo-dels {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zo-dels li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.zo-dic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: var(--b-t2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zo-dic img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+.zo-dt {
+  flex: 1;
+  min-width: 0;
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+/* the still of the world left under the app while the Room grows out of the sheet */
+.zo-ghost {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--b-ground);
+}
+.zo-ghost-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--b-edge) 48%, transparent);
+}
+
+/* b16 (his note: "add this more better card like we have in the zero project brief, super good, and also better CTA"):
+   the project brief b47 card (the app's ScenarioIntroV1). Dark glass, 38 round, the company and close in one row on
+   top, the art, the title at 22, and the app's StartButtonV1: a light key on its own lip with a play glyph */
+.zo-card {
+  width: 424px;
+  gap: 26px;
+  padding: 18px;
+  border-radius: 38px;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  backdrop-filter: blur(16px) saturate(1.1);
+  box-shadow: 0 44px 90px -24px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.zo-card .zo-card-h,
+.zo-card[data-art] .zo-card-h {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.zo-card .zo-copill {
+  height: 42px;
+  padding: 0 18px 0 6px;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 15px;
+  line-height: 1;
+}
+.zo-card .zo-lg28 {
+  width: 30px;
+  height: 30px;
+}
+.zo-card .zo-round,
+.zo-card[data-art] .zo-round {
+  position: static;
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+}
+.zo-card .zo-round:hover,
+.zo-card[data-art] .zo-round:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.zo-card .zo-round svg {
+  width: 20px;
+  height: 20px;
+}
+.zo-card .zo-art2 {
+  width: 100%;
+  margin: 0;
+  border-radius: 24px;
+}
+.zo-card .zo-card-t,
+.zo-card[data-art] .zo-card-t {
+  max-width: 340px;
+  margin: 0;
+  padding: 0 10px;
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.zo-card .zo-prog {
+  margin: 0;
+}
+.zo-card .zo-k3 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 56px;
+  margin: 0;
+  border-radius: 100px;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), linear-gradient(180deg, rgba(229, 229, 229, 0.8), rgb(226, 226, 226));
+  color: #121212;
+  box-shadow: 0 6px 0 #c8c8c8, 0 12px 18px -6px rgba(0, 0, 0, 0.4), 0 0 0 1.33px #e6e6e6, inset 0 1.33px 0 rgba(255, 255, 255, 0.75);
+  transition: transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.zo-card .zo-k3:hover {
+  filter: brightness(1.03);
+}
+.zo-card .zo-k3:active,
+.zo-card .zo-k3[data-down='1'] {
+  transform: translateY(5px) scale(0.985);
+  transition: transform 60ms ease-out, box-shadow 60ms ease-out;
+  box-shadow: 0 1px 0 #c8c8c8, 0 2px 6px -4px rgba(0, 0, 0, 0.4), 0 0 0 1.33px #e6e6e6, inset 0 2px 5px rgba(0, 0, 0, 0.14);
+}
+.zo-card .zo-k3 svg {
+  width: 8px;
+  height: 10px;
+  margin-right: 2px;
+}
+.zo-card .zo-k3 b {
+  font-size: 21px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.48px;
+  background: linear-gradient(100deg, #121212 0%, #121212 34%, #ff5ec0 42%, #8b7bff 50%, #37dcc4 58%, #121212 66%, #121212 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: zo-holo 3s ease-in-out infinite;
+}
+@keyframes zo-holo {
+  0% {
+    background-position: 130% 0;
+  }
+  55%,
+  100% {
+    background-position: -30% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zo-card .zo-k3 b {
+    animation: none;
+  }
+}
+
+/* b16 (his note: "increase this page size by 110% to match our other screen"): the brief sheet at 110%, still inside
+   the window */
+.zo-sheet,
+.zo-sheet.b-light {
+  zoom: 1.1;
+  width: min(760px, calc((100vw - 48px) / 1.1));
+  height: min(880px, calc((100vh - 96px) / 1.1));
+}
+
+/* b17: the game title sits on the glass as it is, whole, no box behind it */
+.zo-card .zo-art2[data-title] {
+  aspect-ratio: 1300 / 1010;
+  margin: -6px 0 -8px;
+  background: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.zo-card .zo-art2[data-title] img {
+  object-fit: contain;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.35));
+}
+/* b17 (his note: "remove the logo from the top left, add some spacing below the image and make it better"): the title
+   carries the company, so the card head is only the close key, floating over the art's corner; the art gets air under it */
+.zo-card[data-title] {
+  padding-top: 26px;
+}
+.zo-card[data-title] .zo-card-h {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  left: auto;
+  width: auto;
+  z-index: 2;
+}
+.zo-card[data-title] .zo-art2[data-title] {
+  width: 92%;
+  margin: 0 auto 14px;
+}
+
+/* b27 (his note, 3 Nov: "the world map should be scrollable ... it has to be really good"): the map moves by hand
+   (pan.ts). An open hand over it, a closed one while it is held. Fingers move the map, never the page. */
+.zo[data-step='world'] {
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.zo[data-grabbing],
+.zo[data-grabbing] button {
+  cursor: grabbing;
+}
+/* held, the tags stay still under the hand */
+.zo[data-grabbing] .zo-tag {
+  transform: none;
+  transition: none;
+}
+/* each tag keeps its size on screen however far in the map is: the camera's scale, undone */
+.zo-pinbody {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  scale: var(--zs, 1);
+  transform-origin: 0 0;
+}

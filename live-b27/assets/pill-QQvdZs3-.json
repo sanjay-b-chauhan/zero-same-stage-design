@@ -1,0 +1,12 @@
+{
+  "tabs": {
+    "level": "Level",
+    "coach": "Coach"
+  },
+  "aria": {
+    "pill": "Level and coach",
+    "tabs": "Level and coach",
+    "panel": "Level and coach panel",
+    "coachFace": "Your coach"
+  }
+}

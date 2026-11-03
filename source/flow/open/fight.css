@@ -1,0 +1,208 @@
+/* b14 the fight poster in the card's art slot. Flat slabs, no glow: the boss half takes the company's own colour on a
+   diagonal, a hairline marks the cut. You slide in from the left, the boss from the right, VS lands hard, the fight's
+   name rises last, and one of the room walks out. Springs, blur to sharp, nothing that only fades. */
+.zo-card[data-fight] .zo-art2 {
+  aspect-ratio: 4 / 3;
+  background: #141416;
+}
+.zo-fight {
+  --fx: #1ed760;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  padding: 0 16px 22px;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: #fff;
+  isolation: isolate;
+}
+.zo-fx-half {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--fx) 20%, #101011);
+  clip-path: polygon(58% 0, 100% 0, 100% 100%, 42% 100%);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.14);
+}
+.zo-fx-half::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 49.85%, color-mix(in srgb, var(--fx) 70%, #fff) 50%, transparent 50.25%);
+  opacity: 0.55;
+}
+.zo-fx-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+}
+.zo-fx-f {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.zo-fx-f b {
+  max-width: 100%;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zo-fx-f[data-side='b'] b {
+  color: color-mix(in srgb, var(--fx) 55%, #fff);
+}
+.zo-fx-pic {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #232326;
+  box-shadow: 0 0 0 2px #fff, 0 10px 24px -10px rgba(0, 0, 0, 0.6);
+}
+.zo-fx-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.zo-fx-pic[data-look] {
+  background: #0b0b0c;
+  box-shadow: 0 0 0 2px var(--fx), 0 10px 24px -10px rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+.zo-fx-pic[data-look='claims'] svg {
+  width: 30px;
+  height: 30px;
+  color: var(--fx);
+}
+.zo-fx-room {
+  display: grid;
+  grid-template-columns: repeat(4, 10px);
+  gap: 2px 3px;
+}
+.zo-fx-room svg {
+  width: 10px;
+  height: 10px;
+  color: rgba(255, 255, 255, 0.86);
+}
+.zo-fx-room svg[data-out] {
+  color: #ff5a4f;
+}
+.zo-fx-vs {
+  padding: 0 6px 24px;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.55);
+}
+.zo-fx-props {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  margin-top: 14px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.zo-fx-props s {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration-thickness: 1.5px;
+}
+.zo-fx-props svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.zo-fx-props em {
+  font-style: normal;
+  color: var(--fx);
+}
+.zo-fx-t {
+  margin-top: 10px;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+/* the entrance, each time the card arrives (Opening sets data-on) */
+.zo-card[data-on] .zo-fx-f[data-side='a'] {
+  animation: zo-fx-l 720ms cubic-bezier(0.2, 1.3, 0.4, 1) 120ms backwards;
+}
+.zo-card[data-on] .zo-fx-f[data-side='b'] {
+  animation: zo-fx-r 720ms cubic-bezier(0.2, 1.3, 0.4, 1) 120ms backwards;
+}
+.zo-card[data-on] .zo-fx-vs {
+  animation: zo-fx-vs 560ms cubic-bezier(0.3, 1.5, 0.5, 1) 420ms backwards;
+}
+.zo-card[data-on] .zo-fx-props {
+  animation: zo-fx-up 620ms cubic-bezier(0.2, 1, 0.3, 1) 560ms backwards;
+}
+.zo-card[data-on] .zo-fx-t {
+  animation: zo-fx-up 680ms cubic-bezier(0.2, 1.2, 0.3, 1) 640ms backwards;
+}
+.zo-card[data-on] .zo-fx-room svg[data-out] {
+  animation: zo-fx-out 900ms cubic-bezier(0.4, 0, 0.2, 1) 1300ms forwards;
+}
+@keyframes zo-fx-l {
+  from {
+    transform: translateX(-44px) scale(0.92);
+    filter: blur(8px);
+    opacity: 0;
+  }
+}
+@keyframes zo-fx-r {
+  from {
+    transform: translateX(44px) scale(0.92);
+    filter: blur(8px);
+    opacity: 0;
+  }
+}
+@keyframes zo-fx-vs {
+  from {
+    transform: scale(2.2) rotate(-8deg);
+    filter: blur(10px);
+    opacity: 0;
+  }
+}
+@keyframes zo-fx-up {
+  from {
+    transform: translateY(14px) scale(0.96);
+    filter: blur(8px);
+    opacity: 0;
+  }
+}
+@keyframes zo-fx-out {
+  to {
+    transform: translateX(14px);
+    opacity: 0.25;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zo-card[data-on] .zo-fight * {
+    animation: none !important;
+  }
+}

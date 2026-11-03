@@ -1,0 +1,822 @@
+/* The objective: the real ObjectiveView's two columns on b36's light page. No outlines: grouping is space and one path
+   line; the stage you are on is the only filled surface. Every colour, line and radius is a b36 token (flow/ds/b36.css).
+   The page is centred on the frame; it reads her seat (.ob-seat) and hands it to the Room, which puts her face there. */
+.ob {
+  --ob-card-bg: var(--b-slab);
+  --ob-stage-ink: var(--b-t1);
+  --ob-later-ink: var(--b-t2);
+  --ob-node-bg: var(--b-t1);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 88px 56px 40px;
+  overflow: hidden;
+  color: var(--b-t1);
+  font-family: var(--zj-font);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+}
+.ob button {
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.ob-grid {
+  position: relative;
+  width: min(1200px, 100%);
+  display: grid;
+  grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+  column-gap: var(--ob-gap, clamp(80px, 9vw, 160px));
+  align-items: start;
+}
+
+/* left: the project, what it takes, her and her company, the brief and the kickoff, the tools, what good looks like */
+.ob-left {
+  display: flex;
+  flex-direction: column;
+}
+.ob-t {
+  margin: 0;
+  color: var(--b-t1);
+  font-size: var(--ob-title-fs, clamp(32px, 2.5vw, 44px));
+  line-height: var(--ob-title-lh, 1.15);
+  font-weight: var(--ob-title-fw, 500);
+  letter-spacing: var(--ob-title-ls, -0.035em);
+  text-wrap: balance;
+}
+/* each word of the title comes in on its own */
+.ob-t .b-w {
+  display: inline-block;
+}
+/* the company's mark over the project, the only line above the title */
+.ob-logo {
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 0 0 20px;
+  object-fit: contain;
+}
+/* her seat: the Room's face and name card sit here, 48 round */
+.ob-seat {
+  height: 48px;
+  margin-top: 32px;
+}
+.ob-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 28px 0 0 -14px;
+}
+.ob .ob-act {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 99px;
+  background: none;
+  color: var(--b-t1);
+  font-size: 15px;
+  font-weight: 500;
+  transition: background-color 150ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.ob .ob-act svg {
+  flex: none;
+  color: var(--b-t2);
+}
+.ob .ob-act:hover {
+  background: var(--b-slab3);
+}
+.ob .ob-act:active {
+  transform: scale(0.97);
+}
+.ob-tools {
+  display: grid;
+  gap: 12px;
+  margin-top: 40px;
+}
+.ob-lab {
+  color: var(--b-t3);
+  font-size: 13px;
+  line-height: 18px;
+}
+.ob-tools ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 2px;
+  margin: 0 0 0 -12px;
+  padding: 0;
+  list-style: none;
+}
+/* a tool is its logo and its name on the page; the pointer gives it a surface and a press, like every link here */
+.ob-tools li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 14px 0 12px;
+  border-radius: 99px;
+  color: var(--b-t1);
+  font-size: 15px;
+  line-height: 20px;
+  transition: background-color 150ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.ob-tools li:hover {
+  background: var(--b-slab3);
+}
+.ob-tools li:active {
+  transform: scale(0.97);
+}
+.ob-tools li img {
+  flex: none;
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+/* what good looks like: one plain link to the deliverable. A surface only under the pointer, where a download key
+   joins it at its end */
+.ob-good {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  margin-top: 28px;
+}
+.ob-gl {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: -14px;
+}
+.ob .ob-gl-a {
+  max-width: 100%;
+}
+.ob .ob-gl-a img {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+.ob .ob-gl-a .ob-type {
+  margin-left: -2px;
+  font-weight: 400;
+}
+.ob-gl-dl {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--b-t2);
+  transform: scale(0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 260ms var(--b-ease), opacity 160ms var(--b-ease), background-color 150ms var(--b-ease), color 150ms var(--b-ease);
+}
+.ob-gl:hover .ob-gl-dl,
+.ob-gl:focus-within .ob-gl-dl {
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+.ob-gl-dl:hover {
+  background: var(--b-slab3);
+  color: var(--b-t1);
+}
+.ob-gl-dl:active {
+  transform: scale(0.94);
+}
+.ob .ob-act:focus-visible,
+.ob-gl-dl:focus-visible {
+  outline: 2px solid var(--b-t1);
+  outline-offset: 2px;
+}
+
+/* right: every stage, a number on one path line, the title and the minutes. Nothing boxed but the one you are on */
+.ob-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ob-row {
+  --nt: calc((var(--ob-row-h, 60px) - var(--ob-node, 30px)) / 2);
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--ob-node, 30px) minmax(0, 1fr);
+  column-gap: var(--ob-node-gap, 16px);
+}
+.ob-row[data-tone='now'] {
+  /* b20: level with the card's middle: 8 margin, its padding, half the 44 key, less half the dot */
+  --nt: calc(8px + var(--ob-card-pad, 20px) + 22px - var(--ob-node, 30px) / 2);
+}
+.ob-node {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: var(--ob-node, 30px);
+  height: var(--ob-node, 30px);
+  margin-top: var(--nt);
+  border-radius: 50%;
+  font-size: var(--ob-node-fs, 13px);
+  line-height: 1;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.ob-node[data-tone='done'] {
+  background: var(--b-ok);
+  color: #fff;
+  transition: background-color 360ms var(--b-ease), margin-top 600ms var(--b-ease);
+}
+.ob-node[data-tone='now'],
+.ob-node[data-tone='was'] {
+  background: var(--ob-node-bg, var(--b-t1));
+  color: var(--b-ground);
+  transition: margin-top 600ms var(--b-ease);
+}
+.ob-node[data-tone='later'] {
+  background: var(--b-ground);
+  color: var(--b-t3);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+/* the path: a line above each number and one below it, 4 clear of the dot, ink where you have been */
+.ob-ln {
+  position: absolute;
+  left: calc(var(--ob-node, 30px) / 2 - 1px);
+  width: 2px;
+  border-radius: 1px;
+  background: var(--b-hl2);
+  transform-origin: 50% 0;
+}
+.ob-ink {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--b-t1);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+}
+.ob-ln[data-on='1'] > .ob-ink {
+  transform: none;
+}
+.ob-ln-a {
+  top: 0;
+  height: calc(var(--nt) - 4px);
+  transition: height 600ms var(--b-ease);
+}
+.ob-ln-b {
+  top: calc(var(--nt) + var(--ob-node, 30px) + 4px);
+  bottom: 0;
+  transition: top 600ms var(--b-ease);
+}
+/* the marker: the dark dot of the stage you are on, on its way from the one you finished to the next */
+.ob .ob-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: var(--ob-node, 30px);
+  height: var(--ob-node, 30px);
+  border-radius: 50%;
+  background: var(--b-t1);
+  visibility: hidden;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+}
+
+.ob-body {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  min-height: var(--ob-row-h, 60px);
+  padding: 0 22px;
+}
+.ob-name {
+  min-width: 0;
+  color: var(--ob-stage-ink, var(--b-t1));
+  font-size: var(--ob-stage-fs, 18px);
+  line-height: 1.34;
+  font-weight: var(--ob-stage-fw, 500);
+  letter-spacing: var(--ob-stage-ls, -0.012em);
+}
+.ob-row[data-tone='later'] .ob-name {
+  color: var(--ob-later-ink, var(--b-t2));
+}
+.ob-row[data-tone='end'] .ob-name {
+  color: var(--b-t3);
+}
+.ob-row[data-tone='end'][data-on='1'] .ob-name {
+  color: var(--b-t1);
+}
+.ob-min {
+  flex: none;
+  color: var(--b-t3);
+  font-size: 15px;
+  line-height: 20px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the stage you are on: the one filled surface, its deliverable and minutes, and the key */
+.ob .ob-card {
+  margin: 8px 0;
+  padding: var(--ob-card-pad, 20px) var(--ob-card-pad, 20px) var(--ob-card-pad, 20px) 22px;
+  border-radius: var(--ob-card-r, 16px);
+  background: var(--ob-card-bg, var(--b-slab));
+  transform-origin: 0 50%;
+}
+.ob-ct {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.ob-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--b-t2);
+  font-size: 15px;
+  line-height: 20px;
+}
+.ob-del {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.ob-dic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--b-slab2);
+  color: var(--b-t2);
+}
+.ob-dic img {
+  display: block;
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+}
+.ob-type {
+  color: var(--b-t3);
+}
+.ob-dot {
+  flex: none;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--b-t3);
+}
+.ob-card .ob-min {
+  color: var(--b-t2);
+}
+.ob .ob-go {
+  flex: none;
+  height: 44px;
+  padding: 0 24px;
+  font-size: var(--ob-key-fs, 15px);
+  line-height: 20px;
+}
+.ob .ob-go[data-wait] {
+  visibility: hidden;
+}
+
+/* the brief over the page: b36's dark sheet on a dimmed page */
+.ob-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: color-mix(in srgb, #0b0b0c 40%, transparent);
+  opacity: 0;
+  visibility: hidden;
+}
+.ob .ob-sheetwrap {
+  z-index: 5;
+}
+
+/* what good looks like, opened: the sample page in a centred preview over the dimmed page, grown out of its link and
+   gone back into it. Its head names it and holds the download; the page sits 8 in, so its corners run with the frame's */
+.ob-pv-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: color-mix(in srgb, #0b0b0c 40%, transparent);
+  opacity: 0;
+  visibility: hidden;
+}
+.ob-pv-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  padding: 72px 24px 32px;
+  pointer-events: none;
+}
+.ob-pv {
+  display: flex;
+  flex-direction: column;
+  width: min(720px, 100%);
+  max-height: 100%;
+  border-radius: 24px;
+  background: var(--b-slab2);
+  color: var(--b-t1);
+  outline: none;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  transform-origin: 50% 50%;
+}
+.ob-pv-h {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 60px;
+  padding: 0 10px 0 20px;
+}
+.ob-pv-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--b-t2);
+}
+.ob-pv-ic img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+.ob-pv-t {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ob-pv-t .ob-type {
+  margin-left: 6px;
+  font-weight: 400;
+}
+.ob .ob-pv-dl,
+.ob .ob-pv-x {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 0;
+  border-radius: 99px;
+  color: var(--b-t1);
+  text-decoration: none;
+  transition: background-color 150ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.ob .ob-pv-dl {
+  gap: 8px;
+  padding: 0 16px 0 14px;
+  background: var(--b-slab);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  font-size: 14px;
+  font-weight: 500;
+}
+.ob .ob-pv-x {
+  width: 40px;
+  background: none;
+  color: var(--b-t2);
+}
+.ob .ob-pv-dl:hover,
+.ob .ob-pv-x:hover {
+  background: var(--b-slab3);
+  color: var(--b-t1);
+}
+.ob .ob-pv-dl:active,
+.ob .ob-pv-x:active {
+  transform: scale(0.96);
+}
+.ob .ob-pv-dl:focus-visible,
+.ob .ob-pv-x:focus-visible {
+  outline: 2px solid var(--b-t1);
+  outline-offset: 2px;
+}
+.ob-pv-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0 8px 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* the sample page itself (GoodDoc.tsx), the same page the .pdf prints */
+.ob-doc {
+  padding: 36px 44px 32px;
+  border-radius: 16px;
+  background: var(--b-slab);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  color: var(--b-t1);
+  font-size: 14px;
+  line-height: 21px;
+}
+.ob-doc-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ob-doc-co {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+.ob-doc-co img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.ob-doc-tag {
+  padding: 2px 10px;
+  border-radius: 99px;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t2);
+  font-size: 12px;
+  line-height: 18px;
+}
+.ob-doc-t {
+  margin: 28px 0 0;
+  font-size: var(--zt-title, 28px);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.ob-doc-lead {
+  margin: 10px 0 0;
+  color: var(--b-t2);
+  font-size: 16px;
+  line-height: 24px;
+  text-wrap: pretty;
+}
+.ob-doc-ans {
+  display: grid;
+  gap: 16px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ob-doc-ans li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 2px;
+}
+.ob-doc-n {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--b-t1);
+  color: var(--b-ground);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.ob-doc-q {
+  padding-top: 3px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+}
+.ob-doc-a {
+  color: var(--b-t2);
+}
+.ob-doc-sec {
+  margin-top: 32px;
+}
+.ob-doc-st {
+  margin: 0;
+  color: var(--b-t3);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+}
+.ob-doc-p {
+  margin: 6px 0 14px;
+  color: var(--b-t2);
+}
+.ob-doc-tb {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.ob-doc-tb th,
+.ob-doc-tb td {
+  padding: 9px 0;
+  text-align: right;
+  font-weight: 400;
+}
+.ob-doc-tb thead th {
+  padding-top: 0;
+  color: var(--b-t3);
+}
+.ob-doc-tb th:first-child {
+  text-align: left;
+}
+.ob-doc-tb tbody th,
+.ob-doc-tb tbody td {
+  box-shadow: inset 0 1px 0 var(--b-hl);
+}
+.ob-doc-tb tbody th {
+  color: var(--b-t1);
+}
+.ob-doc-mk {
+  display: inline-block;
+  width: 30px;
+  color: var(--b-t3);
+  font-weight: 500;
+}
+.ob-doc-cl {
+  display: grid;
+  gap: 4px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ob-doc-cl li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 14px 0 16px;
+  border-radius: 12px;
+  background: var(--b-slab2);
+  font-weight: 500;
+}
+.ob-doc-v {
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--b-t2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.ob-doc-v[data-tone='ok'] {
+  color: var(--b-ok);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--b-ok) 40%, transparent);
+}
+.ob-doc-v[data-tone='no'] {
+  color: var(--b-bad);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--b-bad) 36%, transparent);
+}
+.ob-doc-f {
+  margin-top: 32px;
+  color: var(--b-t3);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+@media (max-width: 899px) {
+  .ob {
+    place-items: start center;
+    overflow-y: auto;
+  }
+  .ob-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 40px;
+    padding-bottom: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob .ob-act,
+  .ob-tools li,
+  .ob-gl-dl,
+  .ob-node,
+  .ob-ln-a,
+  .ob-ln-b,
+  .ob .ob-pv-dl,
+  .ob .ob-pv-x {
+    transition-duration: 1ms;
+  }
+}
+
+/* ---------- b19: the intro. She arrives in the centre, moves to the left column and says one line at a time; each stage
+   lands on the right on her word, in the place it keeps. Got it, her turn line, then her words become the title */
+.ob-say {
+  display: grid;
+  gap: 28px;
+  justify-items: start;
+  margin-top: 28px;
+}
+.ob[data-intro='centre'] .ob-say {
+  visibility: hidden;
+}
+.ob-line {
+  margin: 0;
+  max-width: 460px;
+  color: var(--b-t1);
+  font-size: var(--ob-line-fs, clamp(24px, 1.9vw, 32px));
+  line-height: var(--ob-line-lh, 1.25);
+  font-weight: var(--ob-line-fw, 500);
+  letter-spacing: var(--ob-line-ls, -0.03em);
+  text-wrap: pretty;
+}
+/* her words arrive where they sit: soft and green, then sharp and ink */
+.ob-sw {
+  display: inline-block;
+  animation: ob-sw 640ms var(--b-eo) backwards;
+  animation-delay: calc(var(--i) * 60ms);
+}
+@keyframes ob-sw {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    color: var(--g-hi);
+  }
+  45% {
+    opacity: 1;
+    color: var(--g-hi);
+  }
+}
+.ob[data-intro] .ob-seat {
+  height: 64px;
+  margin-top: 0;
+}
+.ob[data-intro] .ob-row[data-in='0'] {
+  visibility: hidden;
+}
+.ob .ob-logo {
+  width: var(--ob-logo, 28px);
+  height: var(--ob-logo, 28px);
+  margin: 0 0 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ob-sw {
+    animation: none;
+  }
+}
+
+/* the stage she is naming right now: its name takes the ink and the dot takes the line, then lets go as she moves on */
+.ob-row .ob-name,
+.ob-row .ob-node {
+  transition: color 260ms var(--b-ease), box-shadow 260ms var(--b-ease), transform 360ms var(--b-eo);
+}
+.ob-row[data-said='1'] .ob-name {
+  color: var(--b-t1);
+}
+.ob-row[data-said='1'] .ob-node {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 1px var(--b-t1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .obc-w,
+  .obc-m[data-from='me'] {
+    animation: none;
+  }
+}
+
+/* b19: the page holds one top for the intro and after it, so the list never moves when stage 1 grows into its card */
+.ob {
+  place-items: start center;
+}
+.ob-grid {
+  margin-top: max(0px, calc(50vh - 288px));
+}
+
+/* b20 (his note: "if i want to make the stage part more bigger"): developer mode scales the whole stage list */
+.ob-right {
+  zoom: var(--ob-stages-k, 1);
+}
+
+/* b21: the job hook sits under the finish line, lined up with the stage names */
+.ob-hook {
+  padding-left: var(--ob-hook-x, 56px);
+  max-width: 520px;
+}

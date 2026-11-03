@@ -1,0 +1,304 @@
+{
+ "segments": [
+  {
+   "id": "room",
+   "seq": 1,
+   "label": "The question",
+   "cues": [],
+   "lines": [
+    {
+     "line_id": "v4-2",
+     "text": "Quick question before we start.",
+     "start_sec": 0.14,
+     "end_sec": 2.017,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-3",
+     "text": "If Spotify charged you one more dollar a month, would you cancel?",
+     "start_sec": 2.297,
+     "end_sec": 6.052,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-4",
+     "text": "Most people wouldn't. Some would.",
+     "start_sec": 6.332,
+     "end_sec": 8.359,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-5",
+     "text": "And that gap is the whole project.",
+     "start_sec": 8.639,
+     "end_sec": 10.687,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-6",
+     "text": "Picture a room with a hundred people in it, all paying eleven ninety-nine.",
+     "start_sec": 11.487,
+     "end_sec": 15.753,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-7",
+     "text": "We raise it to twelve ninety-nine.",
+     "start_sec": 16.033,
+     "end_sec": 18.017,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-8",
+     "text": "If ninety-five people stay, we make more money.",
+     "start_sec": 18.297,
+     "end_sec": 21.156,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-9",
+     "text": "But if ninety-two stay, we actually make less.",
+     "start_sec": 21.436,
+     "end_sec": 24.273,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-10",
+     "text": "So a dollar's only worth it when fewer than eight people walk out of the room.",
+     "start_sec": 24.553,
+     "end_sec": 28.841,
+     "context_point_id": null
+    }
+   ],
+   "audio_duration_sec": 29.241,
+   "segment_combined_audio_url": "static/kickoff/spotify-v4/room.mp3",
+   "film_at": 3.084
+  },
+  {
+   "id": "problem",
+   "seq": 2,
+   "label": "Problem",
+   "cues": [],
+   "lines": [
+    {
+     "line_id": "v4-11",
+     "text": "Now, last year Spotify raised Premium in six markets.",
+     "start_sec": 0.4,
+     "end_sec": 4.07,
+     "context_point_id": "six_markets"
+    },
+    {
+     "line_id": "v4-12",
+     "text": "The US, Mexico, Brazil, the UK, Germany, and India.",
+     "start_sec": 4.35,
+     "end_sec": 8.104,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-13",
+     "text": "Six rooms.",
+     "start_sec": 8.384,
+     "end_sec": 9.43,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-14",
+     "text": "In some, almost nobody left. In others, people walked.",
+     "start_sec": 9.71,
+     "end_sec": 13.464,
+     "context_point_id": "mixed_reaction"
+    },
+    {
+     "line_id": "v4-15",
+     "text": "And leadership wants to know which room we raise next, and by how much.",
+     "start_sec": 13.744,
+     "end_sec": 17.776,
+     "context_point_id": "where_next"
+    },
+    {
+     "line_id": "v4-16",
+     "text": "Here's the catch. Nobody can answer that yet, 'cause the data's a mess.",
+     "start_sec": 18.576,
+     "end_sec": 22.864,
+     "context_point_id": "messy_data"
+    },
+    {
+     "line_id": "v4-17",
+     "text": "We pulled the raw export, and there are ten things wrong with it.",
+     "start_sec": 23.144,
+     "end_sec": 26.43,
+     "context_point_id": "ten_issues"
+    },
+    {
+     "line_id": "v4-18",
+     "text": "Negative prices.",
+     "start_sec": 26.71,
+     "end_sec": 28.075,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-19",
+     "text": "Test accounts mixed in with real people.",
+     "start_sec": 28.355,
+     "end_sec": 30.808,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-20",
+     "text": "Dates written three different ways.",
+     "start_sec": 31.088,
+     "end_sec": 33.051,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-21",
+     "text": "Count people from a broken list, and you're counting the wrong room.",
+     "start_sec": 33.331,
+     "end_sec": 36.851,
+     "context_point_id": null
+    }
+   ],
+   "audio_duration_sec": 37.251,
+   "segment_combined_audio_url": "static/kickoff/spotify-v4/problem.mp3",
+   "film_at": 32.325
+  },
+  {
+   "id": "outcome",
+   "seq": 3,
+   "label": "Outcome",
+   "cues": [],
+   "lines": [
+    {
+     "line_id": "v4-22",
+     "text": "So what does good look like?",
+     "start_sec": 0.4,
+     "end_sec": 2.043,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-23",
+     "text": "One recommendation.",
+     "start_sec": 2.323,
+     "end_sec": 3.709,
+     "context_point_id": "one_recommendation"
+    },
+    {
+     "line_id": "v4-24",
+     "text": "Not three options, and not a maybe.",
+     "start_sec": 3.989,
+     "end_sec": 6.208,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-25",
+     "text": "One market, one new price, and the numbers that prove it's worth the people you lose.",
+     "start_sec": 6.488,
+     "end_sec": 11.288,
+     "context_point_id": "back_it_up"
+    },
+    {
+     "line_id": "v4-26",
+     "text": "A call you'd defend in front of leadership.",
+     "start_sec": 11.568,
+     "end_sec": 13.936,
+     "context_point_id": null
+    }
+   ],
+   "audio_duration_sec": 14.336,
+   "segment_combined_audio_url": "static/kickoff/spotify-v4/outcome.mp3",
+   "film_at": 69.576
+  },
+  {
+   "id": "process",
+   "seq": 4,
+   "label": "Process",
+   "cues": [],
+   "lines": [
+    {
+     "line_id": "v4-27",
+     "text": "You'll get there in five stages.",
+     "start_sec": 0.4,
+     "end_sec": 2.235,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-28",
+     "text": "First, you clean the data. That's about fifteen minutes, and once you've found the problems, Claude does the heavy lifting.",
+     "start_sec": 2.515,
+     "end_sec": 9.32,
+     "context_point_id": "clean_dataset"
+    },
+    {
+     "line_id": "v4-29",
+     "text": "Second, the revenue model. Twenty-five minutes. That's the big one, where you count every room.",
+     "start_sec": 9.6,
+     "end_sec": 15.125,
+     "context_point_id": "revenue_model"
+    },
+    {
+     "line_id": "v4-30",
+     "text": "Third, you make the call.",
+     "start_sec": 15.405,
+     "end_sec": 16.835,
+     "context_point_id": "make_recommendation"
+    },
+    {
+     "line_id": "v4-31",
+     "text": "Fourth, you write the memo.",
+     "start_sec": 17.115,
+     "end_sec": 18.715,
+     "context_point_id": "pricing_memo"
+    },
+    {
+     "line_id": "v4-32",
+     "text": "And last, you present it.",
+     "start_sec": 18.995,
+     "end_sec": 20.659,
+     "context_point_id": "present_it"
+    },
+    {
+     "line_id": "v4-33",
+     "text": "About eighty minutes, start to finish.",
+     "start_sec": 20.939,
+     "end_sec": 23.029,
+     "context_point_id": null
+    }
+   ],
+   "audio_duration_sec": 23.429,
+   "segment_combined_audio_url": "static/kickoff/spotify-v4/process.mp3",
+   "film_at": 83.912
+  },
+  {
+   "id": "outro",
+   "seq": 5,
+   "label": "Outro",
+   "cues": [],
+   "lines": [
+    {
+     "line_id": "v4-34",
+     "text": "And you're not doing this alone. I'm right here the whole way, so if you get stuck, just ask me.",
+     "start_sec": 0.4,
+     "end_sec": 5.968,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-35",
+     "text": "Alright. Let's go find the room where nobody leaves.",
+     "start_sec": 6.248,
+     "end_sec": 9.15,
+     "context_point_id": null
+    },
+    {
+     "line_id": "v4-36",
+     "text": "Open the export, and tell me the first thing that looks wrong.",
+     "start_sec": 9.43,
+     "end_sec": 12.779,
+     "context_point_id": null
+    }
+   ],
+   "audio_duration_sec": 12.779,
+   "segment_combined_audio_url": "static/kickoff/spotify-v4/outro.mp3",
+   "film_at": 107.341
+  }
+ ]
+}

@@ -1,0 +1,628 @@
+{
+ "id": "c4f2a860-1d9b-47e3-95c6-8b3e0d7a2f64",
+ "scenario_id": "2d6b9e41-8a37-4c15-b2f0-7e1a4c3d6f52",
+ "run_id": "2d6b9e41-8a37-4c15-b2f0-7e1a4c3d6f52_1v5uzaj_medium_20261101_000000",
+ "duration_preset": "medium",
+ "script_status": "ready",
+ "audio_status": "ready",
+ "total_duration_sec": 63.275,
+ "combined_audio_url": null,
+ "output_raw_url": "Hey, I'm Aaron. I'll be your manager on this one.\nYou good to follow along for a minute?\nSo here's the problem. Amazon puts out announcements all the time, and a lot of the claims in them are hard to check.\nSo think about the fact checker at a newspaper, nothing runs until every claim's been checked.\nWe're building an app that reads an announcement and checks every claim, with sources.\nSo that's our fact checker, and every claim comes back verified, unverified, or unsupported, with the source right next to it.\nBut first things first, you're setting up the project, so we've got something real to build on.\nFirst, you set up the environment, so that's a GitHub repo, your API keys kept private, and a first front-end, about twenty-five minutes.\nSecond, you connect the model, and that's another twenty-five.\nThird, you trace and test it, about twenty.\nAnd last, you ship it, about fifteen.\nSound good?\nAlright. Let me make sure we're on the same page.\nYou ready?",
+ "cast": [
+  {
+   "lane": "facilitator",
+   "name": "Aaron Lee",
+   "person_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95"
+  }
+ ],
+ "context_points": [
+  {
+   "id": "hard_to_check",
+   "term": "The problem",
+   "bucket": "Problem",
+   "description": "Amazon puts out announcements all the time, and a lot of the claims in them are hard to check."
+  },
+  {
+   "id": "fact_check_app",
+   "term": "The app",
+   "bucket": "Goal",
+   "description": "We're building an app that reads an announcement and checks every claim."
+  },
+  {
+   "id": "three_results",
+   "term": "Results",
+   "bucket": "Goal",
+   "description": "Every claim comes back verified, unverified, or unsupported, with its source."
+  },
+  {
+   "id": "set_up_first",
+   "term": "First stage",
+   "bucket": "Project Context",
+   "description": "First you set up the project: the GitHub repo, the private keys, the first front-end."
+  },
+  {
+   "id": "connect_model",
+   "term": "Connect the model",
+   "bucket": "Project Context",
+   "description": "Second you connect the model."
+  },
+  {
+   "id": "trace_test",
+   "term": "Trace and test",
+   "bucket": "Project Context",
+   "description": "Third you trace and test it."
+  },
+  {
+   "id": "ship_it",
+   "term": "Ship it",
+   "bucket": "Deliverable",
+   "description": "Last you ship it."
+  }
+ ],
+ "lines": {
+  "cast": [
+   {
+    "lane": "facilitator",
+    "name": "Aaron Lee",
+    "person_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95"
+   }
+  ],
+  "version": "v2",
+  "segments": [
+   {
+    "id": "intro",
+    "seq": 0,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b1-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_intro",
+      "time_sec": 0
+     }
+    ],
+    "file": null,
+    "label": "Intro",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Hey, I'm Aaron. I'll be your manager on this one.",
+      "slide": null,
+      "end_sec": 3.392,
+      "line_id": "intro_line_0",
+      "audio_url": "static/kickoff/amazon/intro.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "You good to follow along for a minute?",
+      "slide": null,
+      "end_sec": 5.419,
+      "line_id": "intro_line_1",
+      "audio_url": "static/kickoff/amazon/intro.mp3",
+      "highlight": null,
+      "start_sec": 3.392,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 5.419,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/amazon/intro.mp3"
+   },
+   {
+    "id": "problem",
+    "seq": 1,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b2-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_problem",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "st-hard"
+      },
+      "action": "show",
+      "anchor": "b2_a_lot_of",
+      "time_sec": 5.11
+     },
+     {
+      "args": {
+       "id": "p-b2-2"
+      },
+      "action": "set_panel",
+      "anchor": "b2_fact_checker",
+      "time_sec": 8.86
+     },
+     {
+      "args": {
+       "id": "st-runs"
+      },
+      "action": "show",
+      "anchor": "b2_nothing_runs",
+      "time_sec": 10.92
+     }
+    ],
+    "file": null,
+    "label": "Problem",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "So here's the problem. Amazon puts out announcements all the time, and a lot of the claims in them are hard to check.",
+      "slide": null,
+      "end_sec": 7.723,
+      "line_id": "problem_line_0",
+      "audio_url": "static/kickoff/amazon/problem.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "hard_to_check"
+     },
+     {
+      "seq": 1,
+      "text": "So think about the fact checker at a newspaper, nothing runs until every claim's been checked.",
+      "slide": null,
+      "end_sec": 13.739,
+      "line_id": "problem_line_1",
+      "audio_url": "static/kickoff/amazon/problem.mp3",
+      "highlight": null,
+      "start_sec": 7.723,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 13.739,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/amazon/problem.mp3"
+   },
+   {
+    "id": "outcome",
+    "seq": 2,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b3-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_outcome",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "p-b3-2"
+      },
+      "action": "set_panel",
+      "anchor": "b3_every_claim",
+      "time_sec": 7.62
+     },
+     {
+      "args": {
+       "id": "cc-v"
+      },
+      "action": "show",
+      "anchor": "b3_verified_unverified",
+      "time_sec": 9.06
+     },
+     {
+      "args": {
+       "id": "cc-u"
+      },
+      "action": "show",
+      "anchor": "b3_unverified_or",
+      "time_sec": 9.99
+     },
+     {
+      "args": {
+       "id": "cc-s"
+      },
+      "action": "show",
+      "anchor": "b3_unsupported",
+      "time_sec": 11.2
+     }
+    ],
+    "file": null,
+    "label": "Outcome",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "We're building an app that reads an announcement and checks every claim, with sources.",
+      "slide": null,
+      "end_sec": 5.419,
+      "line_id": "outcome_line_0",
+      "audio_url": "static/kickoff/amazon/outcome.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "fact_check_app"
+     },
+     {
+      "seq": 1,
+      "text": "So that's our fact checker, and every claim comes back verified, unverified, or unsupported, with the source right next to it.",
+      "slide": null,
+      "end_sec": 14.165,
+      "line_id": "outcome_line_1",
+      "audio_url": "static/kickoff/amazon/outcome.mp3",
+      "highlight": null,
+      "start_sec": 5.419,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "three_results"
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 14.165,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/amazon/outcome.mp3"
+   },
+   {
+    "id": "process",
+    "seq": 3,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b4-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_process",
+      "time_sec": 0
+     },
+     {
+      "args": {
+       "id": "st-setup"
+      },
+      "action": "show",
+      "anchor": "b4_something_real",
+      "time_sec": 4.06
+     },
+     {
+      "args": {
+       "id": "p-b4-2"
+      },
+      "action": "set_panel",
+      "anchor": "b4_p_b4_2",
+      "time_sec": 5.845
+     },
+     {
+      "args": {
+       "id": "tl-1"
+      },
+      "action": "show",
+      "anchor": "b4_set_up_the",
+      "time_sec": 6.5
+     },
+     {
+      "args": {
+       "id": "tl-2"
+      },
+      "action": "show",
+      "anchor": "b4_connect_the",
+      "time_sec": 16.38
+     },
+     {
+      "args": {
+       "id": "tl-3"
+      },
+      "action": "show",
+      "anchor": "b4_trace_and",
+      "time_sec": 20.18
+     },
+     {
+      "args": {
+       "id": "tl-4"
+      },
+      "action": "show",
+      "anchor": "b4_ship_it",
+      "time_sec": 23.46
+     }
+    ],
+    "file": null,
+    "label": "Process",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "But first things first, you're setting up the project, so we've got something real to build on.",
+      "slide": null,
+      "end_sec": 5.845,
+      "line_id": "process_line_0",
+      "audio_url": "static/kickoff/amazon/process.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "set_up_first"
+     },
+     {
+      "seq": 1,
+      "text": "First, you set up the environment, so that's a GitHub repo, your API keys kept private, and a first front-end, about twenty-five minutes.",
+      "slide": null,
+      "end_sec": 15.637,
+      "line_id": "process_line_1",
+      "audio_url": "static/kickoff/amazon/process.mp3",
+      "highlight": null,
+      "start_sec": 5.845,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 2,
+      "text": "Second, you connect the model, and that's another twenty-five.",
+      "slide": null,
+      "end_sec": 19.413,
+      "line_id": "process_line_2",
+      "audio_url": "static/kickoff/amazon/process.mp3",
+      "highlight": null,
+      "start_sec": 15.637,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "connect_model"
+     },
+     {
+      "seq": 3,
+      "text": "Third, you trace and test it, about twenty.",
+      "slide": null,
+      "end_sec": 22.443,
+      "line_id": "process_line_3",
+      "audio_url": "static/kickoff/amazon/process.mp3",
+      "highlight": null,
+      "start_sec": 19.413,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "trace_test"
+     },
+     {
+      "seq": 4,
+      "text": "And last, you ship it, about fifteen.",
+      "slide": null,
+      "end_sec": 24.981,
+      "line_id": "process_line_4",
+      "audio_url": "static/kickoff/amazon/process.mp3",
+      "highlight": null,
+      "start_sec": 22.443,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": "ship_it"
+     },
+     {
+      "seq": 5,
+      "text": "Sound good?",
+      "slide": null,
+      "end_sec": 26.069,
+      "line_id": "process_line_5",
+      "audio_url": "static/kickoff/amazon/process.mp3",
+      "highlight": null,
+      "start_sec": 24.981,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 26.069,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/amazon/process.mp3"
+   },
+   {
+    "id": "outro",
+    "seq": 4,
+    "cues": [
+     {
+      "args": {
+       "id": "p-b5-1"
+      },
+      "action": "set_panel",
+      "anchor": "_synthetic_open_outro",
+      "time_sec": 0
+     }
+    ],
+    "file": null,
+    "label": "Outro",
+    "lines": [
+     {
+      "seq": 0,
+      "text": "Alright. Let me make sure we're on the same page.",
+      "slide": null,
+      "end_sec": 2.944,
+      "line_id": "outro_line_0",
+      "audio_url": "static/kickoff/amazon/outro.mp3",
+      "highlight": null,
+      "start_sec": 0,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     },
+     {
+      "seq": 1,
+      "text": "You ready?",
+      "slide": null,
+      "end_sec": 3.883,
+      "line_id": "outro_line_1",
+      "audio_url": "static/kickoff/amazon/outro.mp3",
+      "highlight": null,
+      "start_sec": 2.944,
+      "speaker_id": "8b2e5d17-94c3-4a6f-a1d8-2f7c6b0e3d95",
+      "audio_status": "segment_level",
+      "context_point_id": null
+     }
+    ],
+    "video": null,
+    "avatar_cues": null,
+    "render_mode": null,
+    "audio_status": "segment_level",
+    "segment_type": null,
+    "intro_video_url": null,
+    "audio_duration_sec": 3.883,
+    "completion_acknowledgement": null,
+    "segment_combined_audio_url": "static/kickoff/amazon/outro.mp3"
+   }
+  ],
+  "html_visual": {
+   "template_url": "static/kickoff/amazon/visual.html"
+  },
+  "render_mode": "html_video_v1",
+  "slide_theme": {
+   "color": "amazon",
+   "primary_hex": "#FF9900",
+   "secondary_hex": "#E08700"
+  },
+  "visual_mode": "html",
+  "context_points": [
+   {
+    "id": "hard_to_check",
+    "term": "The problem",
+    "bucket": "Problem",
+    "description": "Amazon puts out announcements all the time, and a lot of the claims in them are hard to check."
+   },
+   {
+    "id": "fact_check_app",
+    "term": "The app",
+    "bucket": "Goal",
+    "description": "We're building an app that reads an announcement and checks every claim."
+   },
+   {
+    "id": "three_results",
+    "term": "Results",
+    "bucket": "Goal",
+    "description": "Every claim comes back verified, unverified, or unsupported, with its source."
+   },
+   {
+    "id": "set_up_first",
+    "term": "First stage",
+    "bucket": "Project Context",
+    "description": "First you set up the project: the GitHub repo, the private keys, the first front-end."
+   },
+   {
+    "id": "connect_model",
+    "term": "Connect the model",
+    "bucket": "Project Context",
+    "description": "Second you connect the model."
+   },
+   {
+    "id": "trace_test",
+    "term": "Trace and test",
+    "bucket": "Project Context",
+    "description": "Third you trace and test it."
+   },
+   {
+    "id": "ship_it",
+    "term": "Ship it",
+    "bucket": "Deliverable",
+    "description": "Last you ship it."
+   }
+  ]
+ },
+ "error_code": null,
+ "error_message": null,
+ "generated_at": "2026-11-01T00:00:00+00:00",
+ "updated_at": "2026-11-01T00:00:00+00:00",
+ "metadata": {
+  "pacing": {
+   "duration_preset": "medium",
+   "total_lines_target": 14,
+   "target_duration_sec": 63
+  },
+  "last_error": null,
+  "scene_plan": [
+   {
+    "beat": 1,
+    "name": "intro",
+    "segment": "intro",
+    "panels": [
+     {
+      "id": "p-b1-1"
+     }
+    ]
+   },
+   {
+    "beat": 2,
+    "name": "problem",
+    "segment": "problem",
+    "panels": [
+     {
+      "id": "p-b2-1"
+     },
+     {
+      "id": "p-b2-2"
+     }
+    ]
+   },
+   {
+    "beat": 3,
+    "name": "outcome",
+    "segment": "outcome",
+    "panels": [
+     {
+      "id": "p-b3-1"
+     },
+     {
+      "id": "p-b3-2"
+     }
+    ]
+   },
+   {
+    "beat": 4,
+    "name": "process",
+    "segment": "process",
+    "panels": [
+     {
+      "id": "p-b4-1"
+     },
+     {
+      "id": "p-b4-2"
+     }
+    ]
+   },
+   {
+    "beat": 5,
+    "name": "outro",
+    "segment": "outro",
+    "panels": [
+     {
+      "id": "p-b5-1"
+     }
+    ]
+   }
+  ],
+  "output_mode": "html",
+  "company_name": "Amazon",
+  "speaker_name": "Aaron Lee",
+  "speaker_role": "Manager",
+  "scenario_title": "Build an App That Fact-Checks Amazon Announcements",
+  "avatar_initials": "AL"
+ }
+}

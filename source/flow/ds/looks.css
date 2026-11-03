@@ -1,0 +1,250 @@
+/* The look switches (flow/looks.ts) and the pieces every screen shares: the three light styles, the three surfaces,
+   the greens and the tactile key. Loaded after b36.css, so it wins on the same names. */
+
+/* ---------- the light pages: style 2, white with neutral greys (his words: "fully white ... grey tone, not on the blue tone").
+   b13 (his note: "the background will be white, and everything on the top will be a little grayish ... subtly"): the
+   ground stays white, every surface on it is a quiet grey, so the current stage card and every panel still reads */
+:root[data-look-style='2'] .b-light,
+:root[data-look-style='2'] .rm,
+:root[data-look-style='2'] .plan,
+:root[data-look-style='2'] .ob {
+  --b-paper: #ffffff;
+  --b-paper-ink: #111113;
+  --b-paper-line: rgba(17, 17, 19, 0.08);
+  --b-paper-key2: #f4f4f5;
+  --b-ground: #ffffff;
+  --b-slab: #f5f5f6;
+  --b-slab2: #ededef;
+  --b-slab3: #e4e4e7;
+  --b-hl: rgba(17, 17, 19, 0.07);
+  --b-hl2: rgba(17, 17, 19, 0.12);
+  --b-t1: #111113;
+  --b-t2: rgba(17, 17, 19, 0.6);
+  --b-t3: rgba(17, 17, 19, 0.4);
+  --zj-ink4: rgba(17, 17, 19, 0.24);
+  --pv-me: #f0f0f1;
+}
+
+/* b13 (his note: "when you're switching the theme ... change all those things"): the light stage takes the same style as
+   the light pages, so one switch changes every screen. Style 2 here: white ground, the same quiet greys on top */
+:root[data-look-style='2'] .zs2.z-light {
+  --b-ground: #ffffff;
+  --b-slab: #f5f5f6;
+  --b-slab2: #ededef;
+  --b-slab3: #e4e4e7;
+  --b-sheet: #f5f5f6;
+  --zs2-quiet-bg: #f5f5f6;
+  --zs2-quiet-lip: #d6d6da;
+}
+:root[data-look-style='2'] .z-light {
+  --s3: #ffffff;
+  --s2: #f5f5f6;
+  --s1: #ededef;
+}
+
+/* ---------- style 3: a soft grey ground, white surfaces standing on it */
+:root[data-look-style='3'] .b-light,
+:root[data-look-style='3'] .rm,
+:root[data-look-style='3'] .plan,
+:root[data-look-style='3'] .ob {
+  --b-paper: #f2f2f4;
+  --b-paper-ink: #0e0e10;
+  --b-paper-line: rgba(14, 14, 16, 0.08);
+  --b-paper-key2: #fafafa;
+  --b-ground: #f2f2f4;
+  --b-slab: #ffffff;
+  --b-slab2: #fafafb;
+  --b-slab3: #e6e6ea;
+  --b-hl: rgba(14, 14, 16, 0.07);
+  --b-hl2: rgba(14, 14, 16, 0.11);
+  --b-t1: #0e0e10;
+  --b-t2: rgba(14, 14, 16, 0.6);
+  --b-t3: rgba(14, 14, 16, 0.4);
+  --zj-ink4: rgba(14, 14, 16, 0.24);
+  --pv-me: #e7e7ea;
+}
+/* the light stage in style 3 already is this look (grey ground, white slabs); only its ground takes the same grey */
+:root[data-look-style='3'] .zs2.z-light {
+  --b-ground: #f2f2f4;
+}
+
+/* ---------- three surfaces, his scale: 3 is the very bottom, 2 sits one step up, 1 is the most highlighted */
+:root,
+.zd {
+  --s3: var(--b-ground);
+  --s2: #19191b;
+  --s1: #252528;
+}
+.z-light {
+  --s3: #f4f4f5;
+  --s2: #ffffff;
+  --s1: #ffffff;
+}
+.b-light {
+  --s3: var(--b-ground);
+  --s2: var(--b-slab2);
+  --s1: var(--b-slab);
+}
+
+/* ---------- greens: one family. A fill with a little light on top, a deeper ink for words on light ground */
+:root,
+.zd {
+  --g-hi: #4fdc85;
+  --g-fill: #2cc765;
+  --g-deep: #1c9a4b;
+  --g-ink: #4fdc85;
+  --g-soft: rgba(44, 199, 101, 0.14);
+  --g-grad: linear-gradient(180deg, var(--g-hi), var(--g-fill));
+  --b-ok: #2cc765;
+}
+.b-light,
+.z-light {
+  --g-hi: #39cc72;
+  --g-fill: #1fae58;
+  --g-deep: #168545;
+  --g-ink: #13843f;
+  --g-soft: rgba(31, 174, 88, 0.12);
+  --g-grad: linear-gradient(180deg, var(--g-hi), var(--g-fill));
+  --b-ok: #1fae58;
+}
+
+/* ---------- b12 (his note: "Charcoal CTA please"): the ink key on a light page is charcoal, never the paper's navy.
+   b13: its words are always white, even where a dark film inside the light page turns --b-slab dark (Okay and Yes went
+   charcoal on charcoal) */
+.b-light,
+.z-light {
+  --zk-ink: #1f1f21;
+  --zk-ink-tx: #fff;
+}
+
+/* ---------- the tactile key. A solid key standing on its own lip, a touch of light on its top edge. It lifts a pixel
+   under the pointer, sinks onto the lip on press and comes back up. Tones: ink (default), go (the one green commit on
+   a screen), light (white on the dark stage). */
+.zk3 {
+  --k-bg: var(--zk-ink, var(--b-t1));
+  --k-tx: var(--zk-ink-tx, var(--b-slab));
+  --k-lip: color-mix(in srgb, var(--k-bg) 55%, #000);
+  --k-sheen: rgba(255, 255, 255, 0.16);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--k-bg) 88%, #fff), var(--k-bg));
+  background-color: var(--k-bg);
+  color: var(--k-tx);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 var(--k-sheen), 0 4px 0 var(--k-lip), 0 10px 18px -8px color-mix(in srgb, var(--k-bg) 45%, transparent);
+  transform: translateY(0);
+  transition: transform 120ms var(--b-ease), box-shadow 120ms var(--b-ease), filter 160ms var(--b-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.zk3 svg {
+  flex: none;
+}
+.zk3:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 var(--k-sheen), 0 5px 0 var(--k-lip), 0 14px 22px -8px color-mix(in srgb, var(--k-bg) 50%, transparent);
+  filter: brightness(1.05);
+}
+.zk3:active:not(:disabled),
+.zk3[data-down='1'] {
+  transform: translateY(4px);
+  box-shadow: inset 0 1px 0 var(--k-sheen), 0 0 0 var(--k-lip), 0 2px 4px -2px color-mix(in srgb, var(--k-bg) 40%, transparent);
+  transition-duration: 60ms;
+}
+.zk3:disabled {
+  cursor: default;
+  filter: saturate(0.4);
+  opacity: 0.5;
+}
+.zk3:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--k-bg) 50%, transparent);
+  outline-offset: 4px;
+}
+.zk3[data-tone='go'] {
+  --k-bg: var(--g-fill);
+  --k-tx: #fff;
+  --k-lip: var(--g-deep);
+  --k-sheen: rgba(255, 255, 255, 0.28);
+  background: var(--g-grad);
+  background-color: var(--g-fill);
+}
+/* a quiet key beside a loud one (Again): the page's white standing on a grey lip */
+.zk3[data-tone='line'] {
+  --k-bg: var(--b-slab);
+  --k-tx: var(--b-t1);
+  --k-lip: var(--b-slab3);
+  --k-sheen: rgba(255, 255, 255, 0.9);
+  background: var(--b-slab);
+  box-shadow: inset 0 0 0 1px var(--b-hl2), 0 4px 0 var(--k-lip), 0 10px 18px -10px rgba(0, 0, 0, 0.18);
+}
+.zk3[data-tone='line']:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--b-hl2), 0 5px 0 var(--k-lip), 0 14px 22px -10px rgba(0, 0, 0, 0.2);
+  filter: none;
+}
+.zk3[data-tone='line']:active:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--b-hl2), 0 0 0 var(--k-lip);
+}
+.zk3[data-tone='light'] {
+  --k-bg: #f4f4f5;
+  --k-tx: #111113;
+  --k-lip: #a9a9ad;
+  --k-sheen: rgba(255, 255, 255, 0.9);
+}
+.zk3[data-size='s'] {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  --lip: 3px;
+}
+.zk3[data-size='s']:active:not(:disabled) {
+  transform: translateY(3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zk3 {
+    transition-duration: 1ms;
+  }
+}
+
+/* ---------- a real toggle (developer mode and settings). 36 by 22, the knob slides, green when on */
+.zk-tg {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 22px;
+  border: 0;
+  padding: 0;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--zj-ink) 18%, transparent);
+  cursor: pointer;
+  transition: background-color 180ms var(--b-ease);
+}
+.zk-tg::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: transform 260ms var(--b-soft);
+}
+.zk-tg[aria-checked='true'] {
+  background: var(--g-fill);
+}
+.zk-tg[aria-checked='true']::after {
+  transform: translateX(14px);
+}

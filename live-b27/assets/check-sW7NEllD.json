@@ -1,0 +1,56 @@
+{
+  "id": "check",
+  "kind": "fix",
+  "title": "The check",
+  "hook": "Quick one",
+  "notices": "One of three answers right on the understanding check.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "check.r1",
+        "text": "That check was mostly guesses, and that's normal on day one.",
+        "after": null
+      },
+      {
+        "lineId": "check.r2",
+        "text": "Here's the trick: read your notes back once before you start building.",
+        "after": null
+      }
+    ],
+    "new": [
+      { "lineId": "check.n1", "text": "Most of that check was guesses.", "after": null },
+      {
+        "lineId": "check.n2",
+        "text": "Were the answers in your notes, or only in your head?",
+        "after": null
+      },
+      {
+        "lineId": "check.n3",
+        "text": "Read your notes back once before you build.",
+        "after": null
+      }
+    ]
+  },
+  "stake": { "points": 100, "label": "+100 for each right answer" },
+  "why": {
+    "lines": [
+      { "lineId": "check.w1", "text": "Because the check is the first thing Jay grades." },
+      { "lineId": "check.w2", "text": "Reading your notes back takes thirty seconds," },
+      { "lineId": "check.w3", "text": "and every right answer is a hundred points." }
+    ],
+    "good": {
+      "kind": "answer",
+      "question": "What is the one number we are trying to move?",
+      "file": null,
+      "lines": ["Reply time.", "Three hours ten today, under two minutes when we are done."]
+    }
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "got_it", "label": "Got it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "He reads his notes back before he builds.",
+  "points": { "n": 100, "label": "+100 Notes, earned on the check" }
+}

@@ -1,0 +1,373 @@
+/* The meeting notes in our language: the panel beside the film on the page. Our type only, two weights, outlines and one
+   divider. Her key points write themselves in with a wipe, left to right. */
+
+/* the panel: the film's height, beside it. Its place rides the Room's --np, so it slides in as the film narrows */
+.nt {
+  position: absolute;
+  z-index: 2;
+  top: 84px;
+  bottom: 20px;
+  left: calc(var(--gl) + var(--fw) + var(--np) * var(--ng));
+  width: var(--nwm);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 24px;
+  background: var(--b-slab);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  color: var(--b-t1);
+  overflow: hidden;
+  transition: transform 0.7s var(--b-eo), filter 0.5s var(--b-eo), opacity 0.4s var(--b-eo), visibility 0s linear;
+}
+.nt[data-on='0'] {
+  transform: translateX(28px) scale(0.98);
+  filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.5s var(--b-eo), filter 0.4s var(--b-eo), opacity 0.3s var(--b-eo), visibility 0s linear 0.5s;
+}
+.nt-hd {
+  flex: none;
+  height: 52px;
+  box-sizing: border-box;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: inset 0 -1px 0 var(--b-hl);
+}
+.nt-hi {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--b-t1);
+}
+.nt-ht {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  color: var(--b-t1);
+}
+.nt-bd {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 20px 24px;
+  scrollbar-width: thin;
+}
+.nt-sec + .nt-sec {
+  margin-top: 20px;
+}
+.nt-sec h3 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0;
+  color: var(--b-t3);
+  animation: nt-rise 0.6s var(--b-eo) backwards;
+}
+.nt-sec ul {
+  margin: 0;
+  padding: 6px 0 0;
+  list-style: none;
+}
+.nt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 5px 0;
+}
+.nt-dot {
+  flex: none;
+  width: 4px;
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--b-t2);
+}
+.nt-row textarea {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: none;
+  field-sizing: content;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+  color: var(--b-t1);
+}
+.nt-hint {
+  margin: 0 0 16px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t3);
+  animation: nt-rise 0.6s var(--b-eo) 0.5s backwards;
+}
+/* her key point: the line wipes in left to right and comes sharp as it lands */
+.nt-pt-t {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+  color: var(--b-t1);
+  animation: nt-write var(--nt-w, 600ms) cubic-bezier(0.3, 0, 0.2, 1) backwards;
+}
+.nt-pt .nt-dot {
+  background: var(--b-t1);
+  animation: nt-pop 0.32s var(--b-eo) backwards;
+}
+/* b15 (his note, 3 Nov: the notes are what the learner cares about, they carry the energy, the caption stays plain): the
+   line writes in green while it is soft and takes its ink as it lands */
+@keyframes nt-write {
+  from {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(3px);
+    color: var(--g-hi, #39cc72);
+  }
+  55% {
+    color: var(--g-hi, #39cc72);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+  }
+}
+@keyframes nt-pop {
+  from {
+    transform: scale(0);
+  }
+}
+.nt-row textarea::placeholder {
+  color: var(--b-t3);
+}
+.nt-row:has(textarea:placeholder-shown) .nt-dot {
+  background: var(--b-hl2);
+}
+@keyframes nt-rise {
+  from {
+    transform: translateY(8px);
+    filter: blur(5px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt,
+  .nt[data-on='0'] {
+    transform: none;
+    filter: none;
+    transition: opacity 0.2s ease, visibility 0s linear;
+  }
+  .nt-sec h3,
+  .nt-hint,
+  .nt-pt-t,
+  .nt-pt .nt-dot {
+    animation: none;
+  }
+}
+
+/* b14 after the first section the empty line keeps its place but says nothing, until you point at its section or type */
+.nt-row[data-quiet] textarea::placeholder {
+  color: transparent;
+  transition: color 160ms var(--b-ease, ease);
+}
+.nt-row[data-quiet] .nt-dot {
+  transform: scale(0);
+  transition: transform 220ms var(--b-soft, ease);
+}
+.nt-sec:hover .nt-row[data-quiet] textarea::placeholder,
+.nt-row[data-quiet]:focus-within textarea::placeholder {
+  color: var(--b-t3);
+}
+.nt-sec:hover .nt-row[data-quiet] .nt-dot,
+.nt-row[data-quiet]:focus-within .nt-dot {
+  transform: none;
+}
+
+/* b17 (his notes: "it should analyse first all my notes, and if it matches give me XP", and 2 Nov: "it should analyse ...
+   the green gradients on the text ... a premium XP celebration, no solid pill"). The check in three beats.
+   Reading: every line you wrote is read at once, a soft light passing along it, its dot breathing.
+   A match: green runs through the line left to right and its dot lands green. A line that matches nothing stays as you
+   wrote it, no mark against it.
+   Paid: the head says what you earned and why, in green, then goes back to its name. */
+.nt-row {
+  position: relative;
+}
+.nt-row[data-reading]::after {
+  content: '';
+  position: absolute;
+  inset: 2px -6px;
+  border-radius: 8px;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, transparent 30%, color-mix(in srgb, var(--b-ok) 16%, transparent) 50%, transparent 70%, transparent 100%);
+  background-size: 260% 100%;
+  animation: nt-read 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes nt-read {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -20% 0;
+  }
+}
+.nt-row[data-reading] .nt-dot {
+  animation: nt-breathe 0.9s ease-in-out infinite;
+}
+@keyframes nt-breathe {
+  50% {
+    transform: scale(1.8);
+    background: var(--b-ok);
+  }
+}
+.nt-row[data-verdict='hit']::after {
+  content: '';
+  position: absolute;
+  inset: 2px -6px;
+  border-radius: 8px;
+  pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--b-ok) 0%, transparent), color-mix(in srgb, var(--b-ok) 22%, transparent) 60%, color-mix(in srgb, var(--b-ok) 0%, transparent));
+  transform-origin: 0 50%;
+  animation: nt-match 1.1s var(--b-eo) forwards;
+}
+@keyframes nt-match {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  45% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+.nt-row[data-verdict='hit'] .nt-dot {
+  background: var(--b-ok);
+  animation: nt-land 0.5s var(--b-pop, cubic-bezier(0.34, 1.56, 0.64, 1)) backwards;
+}
+@keyframes nt-land {
+  from {
+    transform: scale(3);
+  }
+}
+.nt-ht[data-head] {
+  animation: nt-head 0.42s var(--b-eo) backwards;
+}
+@keyframes nt-head {
+  from {
+    transform: translateY(6px);
+    filter: blur(6px);
+  }
+}
+.nt-ht[data-head='check'] {
+  background: linear-gradient(100deg, var(--b-t3) 0%, var(--b-t3) 35%, var(--b-t1) 50%, var(--b-t3) 65%, var(--b-t3) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nt-head 0.42s var(--b-eo) backwards, nt-read 1.4s linear infinite;
+}
+.nt-ht[data-head='paid'] {
+  background: linear-gradient(100deg, #1aa957, #49ba61 50%, #1aa957);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nt-row[data-reading]::after,
+  .nt-row[data-reading] .nt-dot,
+  .nt-row[data-verdict='hit']::after,
+  .nt-ht[data-head] {
+    animation: none;
+  }
+}
+
+/* b23 (his note: "scan each note ... give +50, +25, +25, +50"): one line read at a time, then what it earned lands at
+   its end in green and stays */
+.nt-row[data-paid] textarea {
+  padding-right: 64px;
+}
+.nt-xp {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -9px;
+  height: 18px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  background: linear-gradient(100deg, #1aa957, #49ba61 50%, #1aa957);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: nt-xp-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+@keyframes nt-xp-in {
+  from {
+    transform: translateY(6px) scale(0.6);
+    filter: blur(4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nt-xp {
+    animation: none;
+  }
+}
+
+/* b26 (his note: "it comes in slow motion and then just stays ... it should just disappear as well"): the tag pops in
+   fast, holds a beat, then rises away into a blur. The head keeps the total */
+.nt-xp {
+  animation: nt-xp-life 1500ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+@keyframes nt-xp-life {
+  0% {
+    transform: translateY(4px) scale(0.8);
+    filter: blur(3px);
+    opacity: 0;
+  }
+  12% {
+    transform: none;
+    filter: blur(0);
+    opacity: 1;
+  }
+  72% {
+    transform: none;
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-8px);
+    filter: blur(4px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nt-xp {
+    animation: nt-xp-rm 1500ms linear forwards;
+  }
+  @keyframes nt-xp-rm {
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}

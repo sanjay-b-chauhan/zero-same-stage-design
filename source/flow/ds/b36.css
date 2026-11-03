@@ -1,0 +1,323 @@
+/* b4's one design language, from zero-workspace-next b36 (his pick, 2 Nov 2026: "a synchronized design system").
+   Values are b36 core.css :root as shipped. The kit's --zj-* names point at them, so every kit part follows.
+   Plain slabs, two hairlines, no blur behind, no shadows. The key is a white pill. Green means verified only. */
+:root,
+.zd {
+  --b-ground: #0b0b0c;
+  --b-slab: #1a1a1c;
+  --b-slab2: #232326;
+  --b-slab3: #2c2c30;
+  --b-sheet: #18181b; /* the brief sheet over the map, measured */
+  --b-hl: rgba(255, 255, 255, 0.09);
+  --b-hl2: rgba(255, 255, 255, 0.16);
+  --b-edge: #000;
+  --b-t1: #fff;
+  --b-t2: rgba(255, 255, 255, 0.62);
+  --b-t3: rgba(255, 255, 255, 0.38);
+  --b-ok: #34c759;
+  --b-warn: #ff9f0a;
+  --b-bad: #ff453a;
+  --b-paper: #eff3f8; /* the ground around the kickoff film, measured */
+  /* the kickoff page, its film and the check-in card. b36 open.html as shipped: #player light tokens, .fr.dk, .cap, .vr, .pop light */
+  --b-paper-ink: #0a2540;
+  --b-paper-line: rgba(10, 37, 64, 0.1);
+  --b-paper-key: #fff;
+  --b-paper-key2: #f6f8fb;
+  --b-film: #0b0c0a;
+  --b-film-ink: #fafaf7;
+  --b-film-ink2: rgba(250, 250, 247, 0.62);
+  --b-film-cap: rgba(250, 250, 247, 0.45);
+  --b-film-seen: rgba(250, 250, 247, 0.4);
+  --b-film-track: rgba(250, 250, 247, 0.2);
+  --b-film-hover: rgba(250, 250, 247, 0.1);
+  --b-film-dim: rgba(6, 8, 6, 0.62);
+  --b-film-panel: #121311;
+  --b-cap: rgba(10, 11, 9, 0.86); /* b36 .cap span, the caption pill on any ground */
+  --b-voice: #44453f;
+  --b-card: linear-gradient(180deg, #f7f7f8, #f0f0f1);
+  --b-card-ink: #1e1e1e;
+  --b-card-ink2: rgba(30, 30, 30, 0.56);
+  --b-card-ink3: rgba(30, 30, 30, 0.2);
+  --b-card-line: rgba(0, 0, 0, 0.06);
+  --b-card-field: rgba(0, 0, 0, 0.045);
+  --b-card-sh: inset 0 1px 0 #fff, 0 1px 3px rgba(0, 0, 0, 0.05), 0 40px 90px -30px rgba(0, 0, 0, 0.34);
+  --b-card-voice: #d6d6d2;
+  --b-card-key: linear-gradient(180deg, #2c2c2e, #101011);
+  --b-card-key-ink: #f3f3f3;
+  --b-card-key-sh: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 2px rgba(0, 0, 0, 0.22), 0 7px 18px -4px rgba(0, 0, 0, 0.38);
+  --b-card-me: #1e1e1e;
+  --b-card-me-ink: #f4f4f4;
+  --b-pop: linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849, 0.937 34.6%, 0.968, 0.991, 1.006 43%, 1.014, 1.017 48%, 1.017, 1.013, 1.006 58%, 0.995 63%, 0.991, 0.988, 0.99 77%, 1.001 85%, 1.004, 1.002 97%, 1);
+  --b-eo: cubic-bezier(0.22, 1, 0.36, 1);
+  --b-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --b-r: 14px;
+  --b-ri: 10px;
+  --b-rs: 7px;
+  --b-bh: 44px;
+  --b-gap: 6px;
+  --b-slab-sh: 0 0 0 1px var(--b-edge), inset 0 0 0 1px var(--b-hl);
+  --b-spring: linear(0, .009, .035 2.1%, .141 4.4%, .723 12.9%, .938 16.7%, 1.017 18.8%, 1.077 21%, 1.121 23.4%, 1.149 26.1%, 1.163 29.5%, 1.159 33.1%, 1.051 49.8%, 1.012 58.6%, .994 69.7%, 1.001 95%, 1);
+  --b-soft: linear(0, .02 1.3%, .083 2.8%, .34 7.1%, .651 12.7%, .869 18.5%, .943 21.6%, .995 25.2%, 1.024 29%, 1.036 33.4%, 1.027 41.9%, 1.003 62%, 1);
+  --b-ease: cubic-bezier(.2, .8, .2, 1);
+
+  --zj-canvas: var(--b-ground);
+  --zj-sheet: var(--b-slab);
+  --zj-well: var(--b-slab2);
+  --zj-well2: var(--b-slab3);
+  --zj-line: var(--b-hl);
+  --zj-line2: var(--b-hl2);
+  --zj-ink: var(--b-t1);
+  --zj-ink2: var(--b-t2);
+  --zj-ink3: var(--b-t3);
+  --zj-ink4: rgba(255, 255, 255, 0.26);
+  --zj-good: var(--b-ok);
+  --zj-live: var(--b-ok);
+  --zj-due: var(--b-bad);
+  --zj-warn: var(--b-warn);
+  --zj-key-bg: #fff;
+  --zj-key-edge: var(--b-edge);
+  --zj-sec-bg: var(--b-slab2);
+  --zj-sec-bg-hover: var(--b-slab3);
+  --zj-r-sheet: 20px;
+  --zj-r-card: var(--b-r);
+  --zj-r-dialog: var(--b-r);
+  --zj-r-row: var(--b-ri);
+  --zj-r-tile: var(--b-ri);
+  --zj-r-ctl: var(--b-ri);
+  --zj-r-sm: var(--b-rs);
+  --zj-sh-sheet: var(--b-slab-sh);
+  --zj-sh-hair: inset 0 0 0 1px var(--b-hl);
+  --zj-sh-ring: 0 0 0 1px var(--b-hl2);
+  --zj-sh-ctl: inset 0 0 0 1px var(--b-hl2);
+  --zj-sh-key: 0 0 0 1px var(--b-edge);
+  --zj-sh-key-down: 0 0 0 1px var(--b-edge);
+  --zj-sh-sec: var(--b-slab-sh);
+  --zj-sh-on: var(--b-slab-sh);
+  --zj-sh-panel: var(--b-slab-sh);
+  --zj-sh-pop: var(--b-slab-sh);
+  --zj-sh-toast: var(--b-slab-sh);
+  --zj-sh-dialog: var(--b-slab-sh);
+  --zj-sh-float: var(--b-slab-sh);
+
+  --z4-tint: var(--b-slab2);
+  --z4-tint2: var(--b-slab3);
+  --z4-frame: var(--b-ground);
+  --z4-blue: #fff;
+  --z4-blue-tx: #fff;
+  --z4-spring: var(--b-soft);
+  --z4-snap: var(--b-spring);
+  --z4-bar: var(--b-bh);
+
+  /* the stage's own names */
+  --z-bg: var(--b-ground);
+  --z-panel: var(--b-slab);
+  --z-raise: var(--b-slab2);
+  --z-raise-2: var(--b-slab3);
+  --z-line: var(--b-hl);
+  --z-line-2: var(--b-hl2);
+  --z-tx: var(--b-t1);
+  --z-tx-2: var(--b-t2);
+  --z-tx-3: var(--b-t3);
+  --z-key: #fff;
+  --z-key-tx: #0b0b0c;
+  --z-green: var(--b-ok);
+  --z-amber: var(--b-warn);
+  --z-red: var(--b-bad);
+  --z-r-8: var(--b-rs);
+  --z-r-10: var(--b-ri);
+  --z-r-12: var(--b-ri);
+  --z-r-16: var(--b-r);
+  --z-spring: var(--b-soft);
+}
+body {
+  background: var(--b-ground);
+}
+
+/* the key: a white pill, black text. Hover greys, press sinks */
+.zj-key,
+.zd .zj-key {
+  color: #0b0b0c;
+  background: #fff;
+  border-radius: 99px;
+  box-shadow: 0 0 0 1px var(--b-edge);
+  font-weight: 500;
+}
+.zj-key:hover,
+.zd .zj-key:hover {
+  filter: none;
+  background: #ececec;
+}
+.zj-key:active,
+.zd .zj-key:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 0 1px var(--b-edge);
+}
+.zj-sec,
+.zd .zj-sec {
+  color: var(--b-t1);
+  background: var(--b-slab2);
+  border-radius: 99px;
+  box-shadow: var(--b-slab-sh);
+}
+.zj-sec:hover,
+.zd .zj-sec:hover {
+  background: var(--b-slab3);
+}
+.zj-sec:active,
+.zd .zj-sec:active {
+  transform: scale(0.97);
+  box-shadow: var(--b-slab-sh);
+}
+
+/* tabs: plain words, the selected one in a thin outline pill */
+.b-tabs {
+  display: flex;
+  gap: 1px;
+}
+.b-tabs > button {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 14px;
+  color: var(--b-t3);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.14s, box-shadow 0.2s;
+}
+.b-tabs > button:hover {
+  color: var(--b-t1);
+}
+.b-tabs > button[aria-selected='true'],
+.b-tabs > button.on {
+  color: var(--b-t1);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+
+/* a slab: the one surface. Only the thing that matters most on a screen gets one (his note, 2 Nov: "surface only to important") */
+.b-slab {
+  background: var(--b-slab);
+  border-radius: var(--b-r);
+  box-shadow: var(--b-slab-sh);
+}
+/* everything else is an outline, or sits between dividers */
+.b-out {
+  background: none;
+  border-radius: var(--b-r);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.b-div {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: var(--b-hl);
+}
+
+/* the light tone (his note, 2 Nov): kickoff, POU, breakdown and objective are light, only the stage is dark.
+   Same names, so every part follows. Ground and ink are b36's kickoff page as shipped (#eff3f8, #0a2540).
+   On light a slab has no black edge, only its outline. The key is the dark pill. */
+.b-light {
+  --b-ground: var(--b-paper);
+  --b-slab: #fff;
+  --b-slab2: #f6f8fb;
+  --b-slab3: #e9edf3;
+  --b-sheet: #fff;
+  --b-hl: rgba(10, 37, 64, 0.08);
+  --b-hl2: rgba(10, 37, 64, 0.14);
+  --b-edge: transparent;
+  --b-t1: var(--b-paper-ink);
+  --b-t2: rgba(10, 37, 64, 0.62);
+  --b-t3: rgba(10, 37, 64, 0.4);
+  --b-slab-sh: inset 0 0 0 1px var(--b-hl2);
+  --b-ok: #1f9d4c;
+
+  --zj-canvas: var(--b-ground);
+  --zj-sheet: var(--b-slab);
+  --zj-well: var(--b-slab2);
+  --zj-well2: var(--b-slab3);
+  --zj-line: var(--b-hl);
+  --zj-line2: var(--b-hl2);
+  --zj-ink: var(--b-t1);
+  --zj-ink2: var(--b-t2);
+  --zj-ink3: var(--b-t3);
+  --zj-ink4: rgba(10, 37, 64, 0.26);
+  --zj-good: var(--b-ok);
+  --zj-live: var(--b-ok);
+  --zj-key-bg: #0b0b0c;
+  --zj-sec-bg: var(--b-slab);
+  --zj-sec-bg-hover: var(--b-slab2);
+  --zj-sh-sheet: var(--b-slab-sh);
+  --zj-sh-hair: inset 0 0 0 1px var(--b-hl);
+  --zj-sh-ring: 0 0 0 1px var(--b-hl2);
+  --zj-sh-ctl: inset 0 0 0 1px var(--b-hl2);
+  --zj-sh-key: none;
+  --zj-sh-key-down: none;
+  --zj-sh-sec: var(--b-slab-sh);
+  --zj-sh-on: var(--b-slab-sh);
+  --zj-sh-panel: var(--b-slab-sh);
+  --zj-sh-pop: var(--b-slab-sh);
+  --zj-sh-toast: var(--b-slab-sh);
+  --zj-sh-dialog: var(--b-slab-sh);
+  --zj-sh-float: var(--b-slab-sh);
+  --z4-tint: var(--b-slab2);
+  --z4-tint2: var(--b-slab3);
+  --z4-frame: var(--b-ground);
+  --z4-blue: var(--b-t1);
+  --z4-blue-tx: var(--b-t1);
+  --z-bg: var(--b-ground);
+  --z-panel: var(--b-slab);
+  --z-raise: var(--b-slab2);
+  --z-raise-2: var(--b-slab3);
+  --z-line: var(--b-hl);
+  --z-line-2: var(--b-hl2);
+  --z-tx: var(--b-t1);
+  --z-tx-2: var(--b-t2);
+  --z-tx-3: var(--b-t3);
+  --z-key: #0b0b0c;
+  --z-key-tx: #fff;
+  --z-green: var(--b-ok);
+  background: var(--b-ground);
+  color: var(--b-t1);
+}
+.b-light .zj-key {
+  color: #fff;
+  background: #0b0b0c;
+  box-shadow: none;
+}
+.b-light .zj-key:hover {
+  background: #26262a;
+}
+.b-light .zj-key:active {
+  box-shadow: none;
+}
+
+/* her name card, everywhere she appears: face left, name, and Manager under it */
+.b-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.b-who img {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.b-who-t {
+  display: grid;
+  min-width: 0;
+}
+.b-who-n {
+  color: var(--b-t1);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.b-who-r {
+  color: var(--b-t3);
+  font-size: 12px;
+  line-height: 16px;
+}

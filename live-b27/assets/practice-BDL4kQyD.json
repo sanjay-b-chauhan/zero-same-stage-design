@@ -1,0 +1,42 @@
+{
+  "id": "practice",
+  "kind": "fix",
+  "title": "Practice",
+  "hook": "Two minutes",
+  "notices": "The feedback report: no test behind the plan.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      { "lineId": "practice.r1", "text": "Here's the feedback in one line.", "after": null },
+      {
+        "lineId": "practice.r2",
+        "text": "The plan reads well now, but there's no test behind it.",
+        "after": null
+      },
+      {
+        "lineId": "practice.r3",
+        "text": "Jay can't take it to leadership without proof.",
+        "after": null
+      }
+    ],
+    "new": [
+      { "lineId": "practice.n1", "text": "Here's the feedback in one line.", "after": null },
+      { "lineId": "practice.n2", "text": "Jay can't take it up without proof.", "after": null },
+      {
+        "lineId": "practice.n3",
+        "text": "What would make him say yes without asking a single question?",
+        "after": null
+      },
+      { "lineId": "practice.n4", "text": "Let's practice that.", "after": null }
+    ]
+  },
+  "stake": { "points": 1000, "label": "+1,000 on the next one, with a test" },
+  "why": null,
+  "actions": [
+    { "id": "later", "label": "Later", "primary": false },
+    { "id": "practice", "label": "Practice it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "He does the missing habit once, for real.",
+  "points": null
+}

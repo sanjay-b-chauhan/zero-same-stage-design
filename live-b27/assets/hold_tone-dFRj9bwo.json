@@ -1,0 +1,62 @@
+{
+  "id": "hold_tone",
+  "kind": "fix",
+  "title": "Hold: tone",
+  "hook": "Hold on",
+  "notices": "\"yo whats up!! router stuff going good\" about to go to his manager.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "hold_tone.r1",
+        "text": "Hold on. Yo, what's up, reads like a text to a friend.",
+        "after": null
+      },
+      {
+        "lineId": "hold_tone.r2",
+        "text": "Jay is your manager. Open with what you're updating him on.",
+        "after": null
+      }
+    ],
+    "new": [
+      { "lineId": "hold_tone.n1", "text": "Hold on. Read that first line as Jay.", "after": null },
+      {
+        "lineId": "hold_tone.n2",
+        "text": "What does it tell him you're working on?",
+        "after": null
+      },
+      { "lineId": "hold_tone.n3", "text": "Open with that.", "after": null }
+    ]
+  },
+  "stake": { "points": 200, "label": "+200 if you rewrite it" },
+  "why": {
+    "lines": [
+      {
+        "lineId": "hold_tone.w1",
+        "text": "Because your first line sets how he reads everything after it."
+      },
+      { "lineId": "hold_tone.w2", "text": "Make it look like work, and he'll treat it like work." }
+    ],
+    "good": {
+      "kind": "message",
+      "question": null,
+      "file": null,
+      "lines": [
+        "Hi Jay.",
+        "Plan for the router: trigger on form submit, route by region, then deal size.",
+        "Full plan to you by 2pm."
+      ]
+    }
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "rewrite", "label": "Rewrite it", "primary": true }
+  ],
+  "feedback": null,
+  "then": [
+    "He goes, the app comes back, and the message is rewritten.",
+    "Then it sends.",
+    "Jay: \"Clear. Go.\""
+  ],
+  "points": { "n": 200, "label": "+200 Updates" }
+}

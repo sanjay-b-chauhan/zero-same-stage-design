@@ -1,0 +1,47 @@
+{
+  "id": "credits",
+  "kind": "fix",
+  "title": "Credits",
+  "hook": "Quick one",
+  "notices": "Most of his AI credits went on rewrites.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "credits.r1",
+        "text": "You've used most of your AI credits on rewrites.",
+        "after": null
+      },
+      {
+        "lineId": "credits.r2",
+        "text": "Write the first draft yourself, and save the rest for the test.",
+        "after": null
+      }
+    ],
+    "new": [
+      { "lineId": "credits.n1", "text": "Most of your credits went on rewrites.", "after": null },
+      {
+        "lineId": "credits.n2",
+        "text": "If AI writes the thinking, whose thinking is Jay grading?",
+        "after": null
+      },
+      { "lineId": "credits.n3", "text": "Draft it yourself first.", "after": null }
+    ]
+  },
+  "stake": null,
+  "why": {
+    "lines": [
+      { "lineId": "credits.w1", "text": "Because credits run out before the scenario does." },
+      { "lineId": "credits.w2", "text": "Your own first draft costs nothing," },
+      { "lineId": "credits.w3", "text": "and Jay grades your thinking, not the rewrite." }
+    ],
+    "good": null
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "got_it", "label": "Got it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "Got it. He goes. A first draft in your own words costs nothing.",
+  "points": null
+}

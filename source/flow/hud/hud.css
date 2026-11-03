@@ -1,0 +1,533 @@
+/* The HUD: the level and the coach in one pill, top right. zero-coach-levels b53 as it reads on dark (dock.css: the
+   closed pill on a dark screen, and the charcoal panel it grows into), drawn in b36's language: plain slabs, the black
+   edge and the inner hairline, no blur behind, no shadows. Every colour is a b36 token (flow/ds/b36.css). */
+.zh {
+  --zh-rh: 14px;
+  --zh-h: 36px; /* a step under b36's 44 bar, so the pill reads as a quiet status, not a control. Centred on --zh-cy, y 42 unless a [data-hud-anchor] box sets it (anchor.ts) */
+  position: fixed;
+  top: calc(var(--zh-cy, 42px) - var(--zh-h) / 2);
+  right: var(--zh-r, 26px);
+  z-index: 8000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  color: var(--b-t2);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+  /* the wrapper is as wide as the level up toast even while that is hidden, so it never takes a click itself:
+     only the pill, its sheet and a showing toast do */
+  pointer-events: none;
+  transition: top 500ms var(--b-soft), right 500ms var(--b-soft), transform 520ms var(--b-spring),
+    filter 240ms var(--b-ease), opacity 160ms var(--b-ease), visibility 0s;
+}
+.zh:not([data-on]) .zh-slab {
+  pointer-events: none;
+}
+/* the brief over the map dims the map's top row, so the pill steps back with it rather than sit on the dimmed row */
+body:has(.zo[data-step='brief']) .zh,
+.zh:not([data-on]) {
+  transform: translateY(8px);
+  filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: top 500ms var(--b-soft), right 500ms var(--b-soft), transform 520ms var(--b-spring),
+    filter 240ms var(--b-ease), opacity 200ms var(--b-ease), visibility 0s 240ms;
+}
+
+.zh-ink {
+  color: var(--b-t1);
+}
+.zh-w5 {
+  font-weight: 500;
+}
+.zh-num {
+  font-variant-numeric: tabular-nums;
+}
+.zh-m {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t3);
+}
+
+/* ---------- the slab: the pill, and the sheet it grows into ---------- */
+.zh-slab {
+  position: relative;
+  width: 160px;
+  pointer-events: auto;
+  border-radius: 18px;
+  background: var(--b-slab2);
+  box-shadow: var(--b-slab-sh);
+  overflow: hidden;
+  /* open, it takes the real panel's skin, radius and width (Hud.tsx sets them); the surface moves as PanelFrame's does */
+  transition: width 500ms var(--b-soft), border-radius 500ms var(--b-soft), background-color 350ms cubic-bezier(.2,0,0,1),
+    box-shadow 350ms cubic-bezier(.2,0,0,1);
+}
+.zh-head {
+  position: relative;
+  height: var(--zh-h);
+  transition: height 500ms var(--b-soft);
+}
+
+/* closed: badge, Level N over the bar, a hairline, his face. b53 .pill: 48 high, 4 in, 2 between */
+.zh-closed {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: max-content;
+  height: var(--zh-h);
+  padding: 4px;
+  transform-origin: 100% 50%;
+  transition: transform 320ms var(--b-ease), filter 240ms var(--b-ease), opacity 200ms var(--b-ease), visibility 0s;
+}
+.zh[data-open] .zh-closed {
+  transform: scale(0.94);
+  filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 320ms var(--b-ease), filter 240ms var(--b-ease), opacity 160ms var(--b-ease), visibility 0s 240ms;
+}
+.zh-seg {
+  display: flex;
+  align-items: center;
+  height: calc(var(--zh-h) - 8px);
+  border-radius: 99px;
+  color: var(--b-t1);
+  white-space: nowrap;
+  transition: background-color 160ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.zh-seg:hover {
+  background: var(--b-hl);
+}
+.zh-seg:active {
+  transform: scale(0.98);
+}
+.zh-lv {
+  gap: 8px;
+  padding: 0 12px 0 4px;
+}
+.zh-co {
+  justify-content: center;
+  width: calc(var(--zh-h) - 8px);
+}
+.zh-sep {
+  flex: none;
+  width: 1px;
+  height: 16px;
+  background: var(--b-hl2);
+}
+.zh-face {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.zh-co .zh-face {
+  /* 7 px between his face and the pill's edge, as b53 keeps it: 22 in 36 */
+  width: calc(var(--zh-h) - 14px);
+  height: calc(var(--zh-h) - 14px);
+  box-shadow: 0 0 0 2px var(--b-t1);
+}
+.zh-face-l {
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 0 0 1px var(--b-hl2);
+}
+
+/* the badge, with a number you can read on top of it */
+.zh-bdgw {
+  display: inline-grid;
+  flex: none;
+}
+.zh-bdg {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--s);
+  height: var(--s);
+  line-height: 0;
+}
+.zh-bdg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.zh-bdg b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--b-t1);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 1px var(--b-edge), 0 1px 2px var(--b-edge);
+  pointer-events: none;
+}
+.zh-bdg[data-big] b {
+  font-size: 16px;
+}
+.zh-bdg[data-lock] img {
+  filter: grayscale(0.85) opacity(0.55);
+}
+
+/* Level N over the bar. After a coin lands the XP rolls in, counts, and rolls back out */
+.zh-tx {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.zh-roll {
+  display: grid;
+  height: var(--zh-rh);
+  overflow: hidden;
+  color: var(--b-t1);
+  font-size: 12px;
+  line-height: var(--zh-rh);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.zh-roll > span {
+  grid-area: 1 / 1;
+  transition: transform 420ms var(--b-spring), filter 240ms var(--b-ease), opacity 200ms var(--b-ease);
+}
+.zh-roll-x,
+.zh-roll-s {
+  font-variant-numeric: tabular-nums;
+}
+.zh-roll-x {
+  transform: translateY(var(--zh-rh));
+  filter: blur(3px);
+  opacity: 0;
+}
+.zh-roll-s {
+  visibility: hidden;
+}
+.zh-roll[data-xp] .zh-roll-l {
+  transform: translateY(calc(var(--zh-rh) * -1));
+  filter: blur(3px);
+  opacity: 0;
+}
+.zh-roll[data-xp] .zh-roll-x {
+  transform: none;
+  filter: none;
+  opacity: 1;
+}
+.zh-bar,
+.zh-track {
+  display: block;
+  flex: none;
+  border-radius: 3px;
+  background: var(--b-hl2);
+  overflow: hidden;
+}
+.zh-bar {
+  width: 40px;
+  height: 3px;
+}
+.zh-track {
+  width: 100%;
+  height: 6px;
+  background: var(--b-hl);
+}
+.zh-bar i,
+.zh-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--b-t1);
+  transition: width 90ms linear;
+}
+
+/* open: the pill becomes the real panel's two tabs (PillTabs), laid out at the panel's full width from the start */
+.zh-rtabs {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform-origin: 100% 0;
+  transition: transform 320ms var(--b-ease), filter 240ms var(--b-ease), opacity 200ms var(--b-ease), visibility 0s;
+}
+.zh:not([data-open]) .zh-rtabs {
+  transform: scale(0.98);
+  filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 320ms var(--b-ease), filter 240ms var(--b-ease), opacity 160ms var(--b-ease), visibility 0s 240ms;
+}
+
+/* the body grows down; its content is laid out at full width from the start, so nothing reflows while it grows */
+.zh-body {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  transition: height 500ms var(--b-soft);
+}
+.zh-in {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transition: transform 520ms var(--b-spring), filter 260ms var(--b-ease), opacity 200ms var(--b-ease);
+}
+.zh:not([data-open]) .zh-in {
+  transform: translateY(8px);
+  filter: blur(6px);
+  opacity: 0;
+  transition: transform 240ms var(--b-ease), filter 200ms var(--b-ease), opacity 140ms var(--b-ease);
+}
+.zh-view {
+  display: grid;
+  gap: 24px;
+  animation: zh-view 520ms var(--b-spring) both;
+}
+@keyframes zh-view {
+  from {
+    transform: translateY(8px);
+    filter: blur(4px);
+    opacity: 0;
+  }
+}
+
+/* Level */
+.zh-hero {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.zh-hero-m {
+  display: grid;
+  gap: 8px;
+}
+.zh-hero-t {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.zh-sec {
+  display: grid;
+  gap: 8px;
+}
+.zh-sh {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 28px;
+}
+.zh-sh .zh-bdg {
+  justify-self: center;
+}
+/* a head with no icon still starts on the text column of the rows under it */
+.zh-sh > span:only-child {
+  grid-column: 2;
+}
+.zh-rows {
+  display: grid;
+  gap: 4px;
+}
+.zh-role {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+.zh-role-m {
+  display: grid;
+  min-width: 0;
+}
+.zh-role-t {
+  overflow: hidden;
+  color: var(--b-t1);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.zh-role-m .zh-m {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* a company: its real logo on a round white tile, as b53's favicons */
+.zh-logo {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--b-t1);
+  box-shadow: 0 0 0 1px var(--b-hl);
+  overflow: hidden;
+}
+.zh-logo img {
+  display: block;
+  width: 62%;
+  height: 62%;
+  object-fit: contain;
+}
+.zh-lock {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--b-slab3);
+  color: var(--b-t3);
+}
+.zh-more {
+  min-height: 40px;
+}
+.zh-more-t {
+  color: var(--b-t3);
+}
+.zh-lines {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zh-lines li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+.zh-amt {
+  justify-self: end;
+  color: var(--b-t1);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.zh-why {
+  overflow: hidden;
+  color: var(--b-t2);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Coach */
+.zh-coach {
+  gap: 16px;
+}
+.zh-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.zh-who-m {
+  display: grid;
+}
+.zh-watch {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: var(--b-r);
+  background: var(--b-slab3);
+  color: var(--b-t1);
+  text-wrap: pretty;
+}
+.zh-rule {
+  margin: 0;
+  color: var(--b-t2);
+  text-wrap: pretty;
+}
+
+/* a level reached: b53's level toast, a small slab under the pill */
+.zh-up {
+  display: grid;
+  gap: 10px;
+  width: 340px;
+  padding: 12px 14px 12px 12px;
+  border-radius: 18px;
+  background: var(--b-slab2);
+  box-shadow: var(--b-slab-sh);
+  transform-origin: 100% 0;
+  transform: translateY(-12px) scale(0.97);
+  filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 260ms var(--b-ease), filter 240ms var(--b-ease), opacity 200ms var(--b-ease), visibility 0s 260ms;
+}
+.zh-up[data-on] {
+  transform: none;
+  filter: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform 520ms var(--b-spring), filter 260ms var(--b-ease), opacity 160ms var(--b-ease), visibility 0s;
+}
+.zh-up-h {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* the chip in the PiP header: badge 18, Level N, the bar. The coin lands in its badge there */
+.zh-chip {
+  --zh-rh: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  color: var(--b-t1);
+}
+.zh-chip .zh-tx {
+  gap: 3px;
+}
+.zh-chip .zh-roll {
+  font-size: 12px;
+}
+.zh-chip .zh-bar {
+  width: 36px;
+}
+.zh-chip .zh-bdg b {
+  font-size: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zh,
+  .zh *,
+  .zh-chip * {
+    transition-duration: 0s !important;
+    animation: none !important;
+  }
+}
+
+/* b17: the job portal's level up, over everything */
+.zh-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  visibility: hidden;
+  pointer-events: none;
+  background: #000;
+}
+.zh-burst[data-on] {
+  visibility: visible;
+  pointer-events: auto;
+}
+.zh-burst iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

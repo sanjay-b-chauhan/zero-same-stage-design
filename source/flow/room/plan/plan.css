@@ -1,0 +1,283 @@
+/* The breakdown and the objective: b36's plan (open.html #bridge, measured live at 1512x800), on the light page
+   (b-light, his note of 2 Nov). Outlines group the stops; the one stop that matters is the only filled surface.
+   Every colour, line and radius is a b36 token from flow/ds/b36.css. */
+.plan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--zj-font);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+}
+/* the breakdown and the objective share one place; the host adds no box */
+.pl-host {
+  display: contents;
+}
+.plan[data-leaving] {
+  pointer-events: none;
+}
+/* while the breakdown hands over, the objective lets it show through: the page ground is the frame's */
+.plan[data-leaving] + .ob {
+  background: none;
+}
+.plan button {
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+/* the group sits under her face. The Room sets --plan-face-top on the frame and may set --plan-face (her size). */
+.pl-stack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--plan-face-top, 124px) + var(--plan-face, 64px) + 24px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: top 700ms var(--b-soft), transform 700ms var(--b-soft), filter 220ms ease-in, opacity 220ms ease-in;
+}
+/* her face leaves in the objective, and the group settles in the middle of the page, clear of the key */
+.plan[data-mode='objective'] .pl-stack {
+  top: calc(50% - 40px);
+  transform: translateY(-50%);
+}
+/* Again: the words, the path and the keys blur out, then she starts over */
+.pl-stack.is-clearing,
+.pl-keys.is-clearing {
+  filter: blur(10px);
+  opacity: 0;
+}
+
+/* the two lines, each wiping in on her word. b12 (his note: "we dont have this big heading"): the flow's heading size,
+   28 like the ready card's title, not b36's 32 to 44 display line */
+.pl-goal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: calc(100% - 96px);
+  margin: 0 0 72px;
+  color: var(--b-t1);
+  font-size: var(--zt-title, 28px);
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+.pl-goal > span {
+  display: block;
+  max-width: 100%;
+  text-wrap: balance;
+  clip-path: inset(-6px 100% -6px 0);
+}
+.pl-goal > span[data-in='1'] {
+  clip-path: inset(-6px -8px -6px 0);
+  transition: clip-path 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pl-goal > .pl-g2 {
+  color: var(--b-t1);
+}
+
+/* the path: one column per stop, 12 apart, b36's W = min(1440, width - 96). Dot centres on y 13, cards from y 44. */
+.pl-path {
+  position: relative;
+  display: grid;
+  column-gap: 12px;
+  width: min(1440px, calc(100% - 96px));
+}
+.pl-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pl-stop[data-in='0'] {
+  visibility: hidden;
+}
+.pl-seg {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: calc(100% + 12px);
+  height: 2px;
+  border-radius: 1px;
+  background: var(--b-t1);
+  transform-origin: 0 50%;
+}
+.pl-seg[data-in='0'] {
+  visibility: hidden;
+}
+.pl-seg[data-tone='later'] {
+  background: var(--b-hl2);
+}
+.pl-node {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--b-t1);
+  color: var(--b-ground);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.pl-node[data-tone='done'] {
+  background: var(--b-ok);
+  color: var(--b-slab);
+}
+.pl-node[data-tone='later'] {
+  background: var(--b-ground);
+  color: var(--b-t3);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+
+/* a card: an outline. b36 .pc: radius 10, padding 14, gap 8, at least 96 high, the name at 16/20, the minutes at 14.
+   Under .plan, so the Room's button reset never wins over it. */
+.plan .pl-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 96px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 0;
+  border-radius: var(--b-ri);
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t1);
+  text-align: left;
+  transition: background-color 200ms var(--b-ease), box-shadow 200ms var(--b-ease), transform 120ms var(--b-ease);
+}
+/* the stop she is on, or the stage you are on: the one filled surface */
+.plan .pl-stop[data-on='1'] .pl-card {
+  background: var(--b-slab);
+}
+.plan button.pl-card:hover {
+  box-shadow: inset 0 0 0 1px var(--b-t3);
+}
+.plan button.pl-card:active {
+  transform: scale(0.98);
+}
+.pl-stop[data-tone='later'] .pl-t {
+  color: var(--b-t2);
+}
+.pl-t {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  overflow-wrap: break-word;
+}
+.pl-sub {
+  display: grid;
+  min-width: 0;
+  color: var(--b-t2);
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.pl-sub > span {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.pl-min,
+.pl-alt {
+  transition: transform 200ms var(--b-ease), filter 200ms var(--b-ease), opacity 200ms var(--b-ease);
+}
+/* the stage you are on: on hover, what you hand in takes the minutes' place */
+.pl-alt {
+  overflow: hidden;
+  color: var(--b-t1);
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transform: translateY(6px);
+  filter: blur(4px);
+  opacity: 0;
+}
+.pl-type {
+  color: var(--b-t3);
+}
+.pl-stop[data-go='1'] .pl-card:hover .pl-min {
+  transform: translateY(-6px);
+  filter: blur(4px);
+  opacity: 0;
+}
+.pl-stop[data-go='1'] .pl-card:hover .pl-alt {
+  transform: none;
+  filter: blur(0);
+  opacity: 1;
+}
+
+/* the keys: bottom 20, centred, 12 apart. Again is an outline, the key the dark pill. */
+.pl-keys {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  pointer-events: none;
+  transition: filter 220ms ease-in, opacity 220ms ease-in;
+}
+.pl-keys > * {
+  pointer-events: auto;
+}
+/* b11: on the breakdown her last caption ("You got it?") sits at the bottom, so the keys stand above it */
+.plan:not([data-mode='objective']) .pl-keys {
+  bottom: 92px;
+}
+.pl-keys[data-in='0'] {
+  visibility: hidden;
+}
+.plan .pl-again {
+  height: 48px;
+  padding: 0 20px 0 16px;
+  font-size: 16px;
+  line-height: 20px;
+}
+.pl-again svg {
+  width: 16px;
+  height: 16px;
+}
+.plan .pl-go {
+  height: 48px;
+  padding: 0 28px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+/* the brief over the plan: b36's sheet on a dimmed page */
+.plan .pl-scrim {
+  z-index: 4;
+  background: color-mix(in srgb, var(--b-t1) 24%, transparent);
+}
+.plan .pl-sheetwrap {
+  z-index: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-stack,
+  .pl-keys,
+  .pl-card,
+  .pl-min,
+  .pl-alt,
+  .pl-goal > span[data-in='1'] {
+    transition-duration: 1ms;
+  }
+}

@@ -1,0 +1,1393 @@
+/* The fake macOS desktop. Prefix zmac- for the OS, zgs- for Google Sheets, zcl- for Claude.
+   The OS and the tools keep their own look: macOS's type, window shadow and Dock material, Sheets' and Claude's own colours.
+   Zero's own things on it (the PiP, its panels) keep b36: plain slabs, hairlines, no glass, no shadow.
+   The wallpaper is a soft vertical gradient. No radial light, no centre glow. */
+
+.zmac {
+  position: fixed;
+  inset: 0;
+  z-index: 8100;
+  overflow: hidden;
+  background: #0b0b0c;
+  color: rgba(0, 0, 0, 0.86);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-user-select: none;
+  user-select: none;
+  --zmac-spring: linear(0, 0.1057, 0.3008, 0.4909, 0.6452, 0.7601, 0.8412, 0.8967, 0.9336, 0.9578, 0.9734, 0.9833, 0.9896, 0.9936, 0.996, 0.9976, 0.9985, 0.9991, 0.9995, 0.9997, 1);
+  --zmac-firm: linear(0, 0.0665, 0.218, 0.3994, 0.5759, 0.7281, 0.848, 0.9348, 0.9922, 1.0259, 1.0419, 1.046, 1.0427, 1.0356, 1.0273, 1.0192, 1.0122, 1.0068, 1.0029, 1.0003, 0.9988, 0.9981, 0.9979, 0.998, 1);
+}
+/* a reset with no weight, so every class here and in the PiP still wins */
+:where(.zmac) :where(button, input, textarea) {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  cursor: default;
+}
+:where(.zmac) :where(button:focus-visible) {
+  outline: 2px solid rgba(10, 132, 255, 0.6);
+  outline-offset: 1px;
+}
+.zmac *,
+.zmac *::before,
+.zmac *::after {
+  box-sizing: border-box;
+}
+.zmac .zp,
+.zmac .zp * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.zmac .zp-bar,
+.zmac .zp-bar * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---------- the wallpaper ---------- */
+
+.zmac-wall {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #e8e6e1 0%, #dcdcdd 48%, #c8cdd4 100%);
+}
+
+/* ---------- layers ---------- */
+
+.zmac-wins,
+.zmac-tools,
+.zmac-ghost-slot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.zmac-wins {
+  z-index: 10;
+}
+.zmac-tools {
+  z-index: 20;
+}
+.zmac-ghost-slot {
+  z-index: 38;
+}
+.zmac .zp-dock {
+  z-index: 40;
+}
+
+/* ---------- the menu bar ---------- */
+
+.zmac-menubar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 31;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  color: rgba(0, 0, 0, 0.86);
+}
+.zmac-menus,
+.zmac-status,
+.zmac-app {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+}
+.zmac-menus {
+  overflow: hidden;
+}
+.zmac-status {
+  flex: none;
+}
+.zmac-menu {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 22px;
+  white-space: nowrap;
+  transition: background-color 120ms ease;
+}
+.zmac-menu:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.zmac-menu:active {
+  background: rgba(0, 0, 0, 0.14);
+}
+.zmac-appname {
+  font-weight: 500;
+}
+.zmac-apple {
+  padding: 0 12px 0 10px;
+}
+.zmac-apple img {
+  display: block;
+  width: 13px;
+  height: 16px;
+}
+.zmac-st {
+  padding: 0 7px;
+}
+.zmac-st svg {
+  display: block;
+}
+
+/* ---------- the Dock ---------- */
+
+.zmac-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.zmac-dock-row {
+  display: flex;
+  gap: 2px;
+  margin: 0;
+  padding: 5px 6px 3px;
+  list-style: none;
+  border-radius: 20px;
+  background: rgba(250, 250, 250, 0.42);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.6), 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 8px 28px rgba(0, 0, 0, 0.12);
+  pointer-events: auto;
+}
+.zmac-dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 54px;
+}
+.zmac-dock-key {
+  display: block;
+  width: 54px;
+  height: 54px;
+}
+.zmac-dock-key img {
+  display: block;
+  width: 54px;
+  height: 54px;
+  transition: filter 90ms ease;
+}
+.zmac-dock-key:active img {
+  filter: brightness(0.62);
+}
+.zmac-dock-dot {
+  width: 4px;
+  height: 4px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  transform: scale(0);
+  transition: transform 460ms var(--zmac-firm);
+}
+.zmac-dock-dot[data-on] {
+  transform: scale(1);
+}
+/* the app's name over its icon: rises in sharp from a blur */
+.zmac-dock-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  padding: 3px 10px;
+  border-radius: 7px;
+  background: rgba(244, 244, 244, 0.98);
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.16), 0 4px 14px rgba(0, 0, 0, 0.12);
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.86);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(3px);
+  transform: translate(-50%, 5px) scale(0.96);
+  transition: opacity 140ms ease, filter 200ms ease, transform 360ms var(--zmac-spring);
+}
+.zmac-dock-item:hover .zmac-dock-tip {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate(-50%, 0) scale(1);
+}
+
+/* ---------- windows ---------- */
+
+.zmac-win {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  pointer-events: auto;
+  background: #f9fbfd;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.14), 0 12px 32px -8px rgba(0, 0, 0, 0.22);
+  transition: box-shadow 220ms ease;
+  will-change: transform;
+}
+.zmac-win[data-active] {
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.08), 0 26px 64px -10px rgba(0, 0, 0, 0.4);
+}
+.zmac-win[data-dragging] {
+  transition: none;
+}
+.zmac-titlebar {
+  position: relative;
+  flex: none;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: #f9fbfd;
+}
+.zmac-title {
+  position: absolute;
+  left: 84px;
+  right: 84px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 32px;
+  color: rgba(0, 0, 0, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  transition: color 160ms ease;
+}
+.zmac-win:not([data-active]) .zmac-title {
+  color: rgba(0, 0, 0, 0.36);
+}
+.zmac-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* the traffic lights: colour on the front window, grey behind; their glyphs show while you are over them */
+.zmac-lights {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+}
+.zmac-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dcdcdc;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  color: transparent;
+  transition: background-color 140ms ease, color 100ms ease, filter 90ms ease;
+}
+.zmac-light svg {
+  display: block;
+}
+.zmac-win[data-active] .zmac-light[data-k='close'],
+.zmac-lights:hover .zmac-light[data-k='close'] {
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px #e2463f;
+}
+.zmac-win[data-active] .zmac-light[data-k='min']:not(:disabled),
+.zmac-lights:hover .zmac-light[data-k='min']:not(:disabled) {
+  background: #febc2e;
+  box-shadow: inset 0 0 0 0.5px #e1a116;
+}
+.zmac-win[data-active] .zmac-light[data-k='zoom']:not(:disabled),
+.zmac-lights:hover .zmac-light[data-k='zoom']:not(:disabled) {
+  background: #28c840;
+  box-shadow: inset 0 0 0 0.5px #12ac28;
+}
+.zmac-lights:hover .zmac-light[data-k='close'] {
+  color: #4d0000;
+}
+.zmac-lights:hover .zmac-light[data-k='min']:not(:disabled) {
+  color: #985712;
+}
+.zmac-lights:hover .zmac-light[data-k='zoom']:not(:disabled) {
+  color: #0b650d;
+}
+.zmac-light:active:not(:disabled) {
+  filter: brightness(0.82);
+}
+
+/* Claude: its own ground right up to the top edge, and no title, the way the app draws itself */
+.zmac-win[data-tone='claude'],
+.zmac-win[data-tone='claude'] .zmac-titlebar {
+  background: #f5f4ed;
+}
+.zmac-win[data-tone='claude'] .zmac-title {
+  visibility: hidden;
+}
+.zmac-win[data-tone='claude'] .zmac-titlebar {
+  box-shadow: inset 0 -0.5px 0 rgba(31, 30, 29, 0.1);
+}
+
+/* Zero's panels: b36 slabs, the title small, a white .09 rim inside */
+.zmac-win[data-tone='zero'],
+.zmac-win[data-tone='zero'] .zmac-titlebar {
+  background: var(--b-slab, #1a1a1c);
+}
+.zmac-win[data-tone='zero'] {
+  box-shadow: 0 0 0 0.5px #000, 0 12px 32px -8px rgba(0, 0, 0, 0.3);
+}
+.zmac-win[data-tone='zero'][data-active] {
+  box-shadow: 0 0 0 0.5px #000, 0 2px 6px rgba(0, 0, 0, 0.12), 0 26px 64px -10px rgba(0, 0, 0, 0.44);
+}
+.zmac-win[data-tone='zero']::after,
+.zmac-win[data-tone='zero-light']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+}
+.zmac-win[data-tone='zero'] .zmac-title {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.62);
+}
+.zmac-win[data-tone='zero']:not([data-active]) .zmac-title {
+  color: rgba(255, 255, 255, 0.38);
+}
+.zmac-win[data-tone='zero'] .zmac-light {
+  background: #3a3a3d;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+}
+.zmac-win[data-tone='zero-light'],
+.zmac-win[data-tone='zero-light'] .zmac-titlebar {
+  background: #ffffff;
+}
+.zmac-win[data-tone='zero-light']::after {
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 19, 0.08);
+}
+.zmac-win[data-tone='zero-light'] .zmac-title {
+  font-size: 12px;
+  color: rgba(17, 17, 19, 0.6);
+}
+
+/* a panel is as tall as what it holds, up to what the desktop has, then it scrolls */
+.zmac-win[data-panel] .zmac-body {
+  flex: none;
+  max-height: min(560px, calc(100vh - 160px));
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.zmac-win[data-panel] .zmac-body::-webkit-scrollbar {
+  display: none;
+}
+.zmac-tool.zs2.zp {
+  height: auto;
+  min-height: 0;
+}
+.zmac-win[data-panel] .zmac-tool:has(.zs2-preview) {
+  height: min(560px, calc(100vh - 160px));
+}
+
+/* ---------- Zero leaving and arriving ---------- */
+
+.zmac-ghost {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform-origin: 0 0;
+  contain: layout paint;
+  pointer-events: none;
+  will-change: transform, clip-path;
+}
+.zmac-ghost-in {
+  position: absolute;
+  inset: 0;
+  contain: layout paint;
+  will-change: filter, opacity;
+}
+.zmac-ghost-in > * {
+  position: absolute;
+  inset: 0;
+}
+.zmac-return {
+  position: fixed;
+  inset: 0;
+  z-index: 8100;
+  background: #0b0b0c;
+  pointer-events: none;
+}
+.zmac-return > .zmac-sinking {
+  position: absolute;
+  z-index: 0;
+  background: transparent;
+}
+.zmac-return > .zmac-ghost {
+  z-index: 2;
+}
+
+/* ---------- Google Sheets ---------- */
+
+.zgs {
+  --zgs-bg: #f9fbfd;
+  --zgs-ink: #1f1f1f;
+  --zgs-ink2: #444746;
+  --zgs-line: #c7c7c7;
+  --zgs-grid: #e2e3e3;
+  --zgs-head: #f8f9fa;
+  --zgs-on: #d3e3fd;
+  --zgs-on-tx: #0b57d0;
+  --zgs-blue: #1a73e8;
+  --zgs-hover: rgba(68, 71, 70, 0.08);
+  --zgs-press: rgba(68, 71, 70, 0.14);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--zgs-bg);
+  color: var(--zgs-ink);
+  font-family: 'Google Sans', 'Google Sans Text', Roboto, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.zgs-head {
+  flex: none;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px 0 10px;
+}
+.zgs-logo {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.zgs-doc {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zgs-doc-top {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  min-width: 0;
+}
+.zgs-title {
+  min-width: 0;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 18px;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow 120ms ease;
+}
+.zgs-title:hover {
+  box-shadow: inset 0 0 0 1px #747775;
+}
+.zgs-ico {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--zgs-ink2);
+  transition: background-color 120ms ease;
+}
+.zgs-menus {
+  display: flex;
+  height: 24px;
+  overflow: hidden;
+}
+.zgs-menu {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zgs-ink);
+  transition: background-color 120ms ease;
+}
+.zgs-head-r {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.zgs-round {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 20px;
+  color: var(--zgs-ink2);
+  transition: background-color 120ms ease;
+}
+.zgs-meet {
+  padding: 0 8px 0 10px;
+}
+.zgs-sm {
+  height: 32px;
+  min-width: 32px;
+  border-radius: 16px;
+}
+.zgs-ico:hover,
+.zgs-menu:hover,
+.zgs-round:hover,
+.zgs-tool:hover,
+.zgs-tab:hover {
+  background: var(--zgs-hover);
+}
+.zgs-ico:active,
+.zgs-menu:active,
+.zgs-round:active,
+.zgs-tool:active,
+.zgs-tab:active {
+  background: var(--zgs-press);
+}
+.zgs-share {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  margin: 0 6px 0 8px;
+  padding: 0 22px 0 16px;
+  border-radius: 20px;
+  background: #c2e7ff;
+  color: #001d35;
+  font-weight: 500;
+  transition: box-shadow 160ms ease, background-color 120ms ease;
+}
+.zgs-share:hover {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+.zgs-share:active {
+  background: #b0dcf8;
+}
+.zgs-me {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.zgs-tools {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 40px;
+  margin: 0 8px 8px;
+  padding: 0 6px;
+  border-radius: 24px;
+  background: #edf2fa;
+  overflow: hidden;
+}
+.zgs-tools-row {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  overflow: hidden;
+}
+.zgs-tool {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--zgs-ink2);
+  transition: background-color 120ms ease;
+}
+.zgs-tool svg {
+  display: block;
+}
+.zgs-tool-tx {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zgs-ink);
+}
+.zgs-tool-sm {
+  font-size: 12px;
+  font-weight: 500;
+}
+.zgs-font {
+  width: 64px;
+  text-align: left;
+  overflow: hidden;
+}
+.zgs-sep {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--zgs-line);
+}
+.zgs-size {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 24px;
+  margin: 0 2px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #747775;
+  font-size: 14px;
+}
+.zgs-fx {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 8px 4px;
+  min-width: 0;
+}
+.zgs-namebox {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 92px;
+  height: 26px;
+  padding: 0 6px 0 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--zgs-ink);
+}
+.zgs-fx-sep {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  background: var(--zgs-line);
+}
+.zgs-fx-mark {
+  flex: none;
+  padding: 0 12px 0 14px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #80868b;
+}
+.zgs-fx-val {
+  flex: 1;
+  min-width: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.zgs-grid {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #fff;
+  box-shadow: inset 0 1px 0 var(--zgs-line);
+}
+.zgs-sheet {
+  position: relative;
+}
+.zgs-row {
+  display: flex;
+  height: 21px;
+}
+.zgs-colheads {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 24px;
+}
+.zgs-corner,
+.zgs-colhead,
+.zgs-rowhead {
+  flex: none;
+  background: var(--zgs-head);
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 12px;
+  color: #575757;
+  text-align: center;
+}
+.zgs-corner {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  width: 46px;
+  height: 24px;
+  border-right: 1px solid var(--zgs-line);
+  border-bottom: 1px solid var(--zgs-line);
+  border-top: 1px solid var(--zgs-line);
+}
+.zgs-colhead {
+  height: 24px;
+  line-height: 22px;
+  border-right: 1px solid var(--zgs-line);
+  border-bottom: 1px solid var(--zgs-line);
+  border-top: 1px solid var(--zgs-line);
+}
+.zgs-colhead[data-on] {
+  background: var(--zgs-on);
+  color: var(--zgs-on-tx);
+  font-weight: 500;
+}
+.zgs-rowhead {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 46px;
+  height: 21px;
+  line-height: 20px;
+  border-right: 1px solid var(--zgs-line);
+  border-bottom: 1px solid var(--zgs-grid);
+}
+.zgs-cell {
+  flex: none;
+  height: 21px;
+  padding: 0 3px;
+  border-right: 1px solid var(--zgs-grid);
+  border-bottom: 1px solid var(--zgs-grid);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 20px;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* the selected cell: Sheets' blue frame and its fill handle, gliding to the next cell */
+.zgs-sel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  border: 2px solid var(--zgs-blue);
+  pointer-events: none;
+  transition: transform 90ms ease-out, width 90ms ease-out;
+}
+/* the hidden cell input that holds the keys, sitting on the selected cell like the real one */
+.zgs-keys {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  resize: none;
+  overflow: hidden;
+  pointer-events: none;
+  caret-color: transparent;
+}
+.zgs-sel::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 6px;
+  height: 6px;
+  background: var(--zgs-blue);
+  box-shadow: 0 0 0 1px #fff;
+}
+.zgs-tabs {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+  padding: 0 8px;
+  background: var(--zgs-bg);
+  box-shadow: inset 0 1px 0 #e1e3e1;
+}
+.zgs-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  margin-left: 4px;
+  padding: 0 10px 0 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--zgs-ink2);
+  white-space: nowrap;
+  transition: background-color 120ms ease;
+}
+.zgs-tab[data-on] {
+  background: #e1e9f7;
+  color: var(--zgs-on-tx);
+}
+
+/* ---------- Claude ---------- */
+
+.zcl {
+  --zcl-bg: #faf9f5;
+  --zcl-side: #f5f4ed;
+  --zcl-ink: #141413;
+  --zcl-ink2: #3d3d3a;
+  --zcl-ink3: #73726c;
+  --zcl-line: rgba(31, 30, 29, 0.15);
+  --zcl-hover: rgba(31, 30, 29, 0.06);
+  --zcl-press: rgba(31, 30, 29, 0.11);
+  --zcl-accent: #c6613f;
+  --zcl-me: #f0eee6;
+  --zcl-serif: ui-serif, 'New York', 'Iowan Old Style', Georgia, serif;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  background: var(--zcl-bg);
+  color: var(--zcl-ink);
+  font-family: ui-sans-serif, -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+.zcl-rail {
+  flex: none;
+  width: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 12px;
+  background: var(--zcl-side);
+  box-shadow: inset -0.5px 0 0 rgba(31, 30, 29, 0.1);
+}
+.zcl-ghost {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--zcl-ink3);
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease;
+}
+.zcl-ghost:hover {
+  background: var(--zcl-hover);
+  color: var(--zcl-ink);
+}
+.zcl-ghost:active {
+  background: var(--zcl-press);
+  transform: scale(0.96);
+}
+.zcl-new {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 2px 0;
+  border-radius: 50%;
+  background: var(--zcl-accent);
+  color: #fff;
+  transition: transform 160ms ease, background-color 120ms ease;
+}
+.zcl-new:hover {
+  background: #b3552f;
+}
+.zcl-new:active {
+  transform: scale(0.92);
+}
+.zcl-grow {
+  flex: 1;
+}
+.zcl-avatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #1f1e1d;
+  color: #faf9f5;
+  font-size: 12px;
+  font-weight: 500;
+}
+.zcl-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zcl-main[data-empty] {
+  justify-content: center;
+  align-items: center;
+  padding: 0 24px 40px;
+  overflow: auto;
+}
+.zcl-hello {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.zcl-greet {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--zcl-serif);
+  font-size: 34px;
+  line-height: 42px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--zcl-ink2);
+}
+.zcl-greet img {
+  width: 30px;
+  height: 30px;
+}
+.zcl-composer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 12px 10px 14px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px var(--zcl-line), 0 4px 20px rgba(0, 0, 0, 0.035);
+  transition: box-shadow 200ms ease;
+}
+.zcl-composer:focus-within {
+  box-shadow: 0 0 0 0.5px rgba(31, 30, 29, 0.3), 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+.zcl-input {
+  display: block;
+  width: 100%;
+  min-height: 24px;
+  padding: 0 4px;
+  resize: none;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--zcl-ink);
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.zcl-composer[data-big] .zcl-input {
+  min-height: 48px;
+}
+.zcl-input::placeholder {
+  color: var(--zcl-ink3);
+}
+.zcl-composer-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.zcl-boxed {
+  box-shadow: inset 0 0 0 0.5px var(--zcl-line);
+}
+.zcl-model {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--zcl-ink2);
+  transition: background-color 120ms ease;
+}
+.zcl-model:hover {
+  background: var(--zcl-hover);
+}
+.zcl-model:active {
+  background: var(--zcl-press);
+}
+.zcl-send {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--zcl-accent);
+  color: #fff;
+  transition: background-color 140ms ease, transform 140ms ease;
+}
+.zcl-send:hover:not(:disabled) {
+  background: #a9502f;
+}
+.zcl-send:active:not(:disabled) {
+  transform: scale(0.93);
+}
+.zcl-send:disabled {
+  background: #e6b9a8;
+}
+.zcl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.zcl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--zcl-bg);
+  box-shadow: inset 0 0 0 0.5px var(--zcl-line);
+  font-size: 14px;
+  color: var(--zcl-ink2);
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+.zcl-chip:hover {
+  background: var(--zcl-me);
+}
+.zcl-chip:active {
+  transform: scale(0.97);
+}
+.zcl-thread {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px 24px 8px;
+}
+.zcl-col {
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.zcl-me {
+  align-self: flex-end;
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--zcl-me);
+  font-size: 14px;
+  line-height: 22px;
+}
+.zcl-me p,
+.zcl-claude p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.zcl-claude {
+  font-family: var(--zcl-serif);
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--zcl-ink);
+}
+.zcl-claude ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.zcl-claude li {
+  margin: 4px 0;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.zcl-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 440px;
+  margin-top: 14px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px var(--zcl-line);
+  font-family: ui-sans-serif, -apple-system, system-ui, sans-serif;
+}
+.zcl-file-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  text-align: left;
+  transition: background-color 120ms ease;
+}
+.zcl-file-open:hover {
+  background: var(--zcl-hover);
+}
+.zcl-file-open:active {
+  background: var(--zcl-press);
+}
+.zcl-file-open img {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+.zcl-file-t {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zcl-file-name {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--zcl-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zcl-file-kind {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--zcl-ink3);
+}
+.zcl-file-dl {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 0.5px var(--zcl-line);
+  font-size: 14px;
+  color: var(--zcl-ink2);
+  transition: background-color 120ms ease, transform 120ms ease;
+}
+.zcl-file-dl:hover {
+  background: var(--zcl-hover);
+}
+.zcl-file-dl:active {
+  transform: scale(0.97);
+}
+.zcl-mark {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-top: 14px;
+}
+.zcl-thinking img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  animation: zcl-think 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes zcl-think {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(60deg) scale(0.82);
+  }
+  100% {
+    transform: rotate(120deg) scale(1);
+  }
+}
+.zcl-foot {
+  flex: none;
+  padding: 8px 24px 16px;
+}
+.zcl-foot .zcl-composer {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zmac-dock-tip,
+  .zmac-dock-dot,
+  .zmac-win,
+  .zgs-sel {
+    transition: none;
+  }
+  .zcl-thinking img {
+    animation: none;
+  }
+}
+
+/* ---------- her cursor (b14 co-work, Pointer.tsx) ----------
+   Above the windows, the Dock and the menu bar, under the PiP. Her colour is the one colour on it: a teammate's cursor in a
+   shared doc, never a pulse or a ring. The cells she means get her outline, the way Sheets marks a collaborator */
+.zcw-pointer {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  pointer-events: none;
+  --zcw-her: #6d4aff;
+}
+.zcw-cells {
+  position: absolute;
+  overflow: hidden;
+}
+.zcw-cell {
+  position: absolute;
+  box-shadow: inset 0 0 0 2px var(--zcw-her);
+  transform-origin: 50% 50%;
+}
+.zcw-cur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.zcw-arrow {
+  position: absolute;
+  left: -2px;
+  top: -1.5px;
+  overflow: visible;
+}
+.zcw-arrow path {
+  fill: var(--zcw-her);
+  stroke: #fff;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.zcw-tag {
+  position: absolute;
+  left: 14px;
+  top: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  width: max-content;
+  max-width: 232px;
+  padding: 4px 9px 4px 4px;
+  border-radius: 10px;
+  background: var(--zcw-her);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  pointer-events: auto;
+  transform-origin: 0 0;
+  cursor: default;
+}
+.zcw-tag[data-flip] {
+  left: auto;
+  right: 6px;
+  transform-origin: 100% 0;
+}
+.zcw-tag[data-up] {
+  top: auto;
+  bottom: var(--zcw-up, 10px);
+  transform-origin: 0 100%;
+}
+.zcw-tag[data-up][data-flip] {
+  transform-origin: 100% 100%;
+}
+.zcw-face {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+.zcw-note {
+  padding-top: 0;
+  white-space: normal;
+}
+
+/* ---------- b16: pull any side or corner. Strips 8 wide on the sides, 14 squares on the corners, the cursor is the only mark ---------- */
+.zmac-rs {
+  position: absolute;
+  z-index: 5;
+  touch-action: none;
+}
+.zmac-rs[data-e='n'],
+.zmac-rs[data-e='s'] {
+  left: 14px;
+  right: 14px;
+  height: 8px;
+  cursor: ns-resize;
+}
+.zmac-rs[data-e='n'] {
+  top: -3px;
+}
+.zmac-rs[data-e='s'] {
+  bottom: -3px;
+}
+.zmac-rs[data-e='e'],
+.zmac-rs[data-e='w'] {
+  top: 14px;
+  bottom: 14px;
+  width: 8px;
+  cursor: ew-resize;
+}
+.zmac-rs[data-e='e'] {
+  right: -3px;
+}
+.zmac-rs[data-e='w'] {
+  left: -3px;
+}
+.zmac-rs[data-e='ne'],
+.zmac-rs[data-e='nw'],
+.zmac-rs[data-e='se'],
+.zmac-rs[data-e='sw'] {
+  width: 14px;
+  height: 14px;
+}
+.zmac-rs[data-e='nw'] {
+  left: -3px;
+  top: -3px;
+  cursor: nwse-resize;
+}
+.zmac-rs[data-e='se'] {
+  right: -3px;
+  bottom: -3px;
+  cursor: nwse-resize;
+}
+.zmac-rs[data-e='ne'] {
+  right: -3px;
+  top: -3px;
+  cursor: nesw-resize;
+}
+.zmac-rs[data-e='sw'] {
+  left: -3px;
+  bottom: -3px;
+  cursor: nesw-resize;
+}
+/* a pulled panel is the size you gave it; what it holds scrolls inside */
+.zmac-win[data-panel][data-sized] .zmac-body {
+  flex: 1;
+  max-height: none;
+}
+.zmac-win[data-panel][data-sized] .zmac-tool:has(.zs2-preview) {
+  height: 100%;
+}

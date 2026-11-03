@@ -1,0 +1,602 @@
+{
+ "eryn|Alright, you've got the whole picture.": {
+  "takeId": "eryn-1033iy7",
+  "url": "static/takes/eryn-1033iy7.mp3",
+  "dur": 2.048
+ },
+ "eryn|It's a lot if you look at it as one big thing, so let's split it up, so you can move faster.": {
+  "takeId": "eryn-166wyw3",
+  "url": "static/takes/eryn-166wyw3.mp3",
+  "dur": 5.099
+ },
+ "eryn|First, we clean the data.": {
+  "takeId": "eryn-1cccmyp",
+  "url": "static/takes/eryn-1cccmyp.mp3",
+  "dur": 1.621
+ },
+ "eryn|Then we build the revenue model, market by market.": {
+  "takeId": "eryn-8vcm15",
+  "url": "static/takes/eryn-8vcm15.mp3",
+  "dur": 3.051
+ },
+ "eryn|Once we've got that, you make the call, where we raise and by how much.": {
+  "takeId": "eryn-yk8jrp",
+  "url": "static/takes/eryn-yk8jrp.mp3",
+  "dur": 3.776
+ },
+ "eryn|Then you write it up in a pricing memo.": {
+  "takeId": "eryn-9g5cvy",
+  "url": "static/takes/eryn-9g5cvy.mp3",
+  "dur": 1.984
+ },
+ "eryn|And last, you present it.": {
+  "takeId": "eryn-w5lc81",
+  "url": "static/takes/eryn-w5lc81.mp3",
+  "dur": 1.664
+ },
+ "eryn|That's it. Five pieces, and at the end you've got one clear recommendation. You got it?": {
+  "takeId": "eryn-o0pon6",
+  "url": "static/takes/eryn-o0pon6.mp3",
+  "dur": 5.227
+ },
+ "eryn|So what's going on with Spotify's prices? Your own words.": {
+  "takeId": "eryn-qr7tqn",
+  "url": "static/takes/eryn-qr7tqn.mp3",
+  "dur": 3.691
+ },
+ "eryn|Okay, tell me more. Did every market react the same?": {
+  "takeId": "eryn-kkl0ym",
+  "url": "static/takes/eryn-kkl0ym.mp3",
+  "dur": 3.371
+ },
+ "eryn|What happened after the prices went up?": {
+  "takeId": "eryn-ims4hl",
+  "url": "static/takes/eryn-ims4hl.mp3",
+  "dur": 2.219
+ },
+ "eryn|Okay. Some markets held after the rise and others lost people.": {
+  "takeId": "eryn-jdlryq",
+  "url": "static/takes/eryn-jdlryq.mp3",
+  "dur": 4.011
+ },
+ "eryn|Okay. Some markets held after the rise and others lost people. Keep that one. Okay, got it. And what does leadership actually want from us?": {
+  "takeId": "eryn-9fck2c",
+  "url": "static/takes/eryn-9fck2c.mp3",
+  "dur": 9.301
+ },
+ "eryn|Okay. Some markets held after the rise and others lost people. Keep that one. Makes sense. And what are you starting from?": {
+  "takeId": "eryn-p8vzww",
+  "url": "static/takes/eryn-p8vzww.mp3",
+  "dur": 7.424
+ },
+ "eryn|Okay, got it. And what does leadership actually want from us?": {
+  "takeId": "eryn-1i58s75",
+  "url": "static/takes/eryn-1i58s75.mp3",
+  "dur": 3.755
+ },
+ "eryn|Say more. What do they want to decide?": {
+  "takeId": "eryn-4gwcq6",
+  "url": "static/takes/eryn-4gwcq6.mp3",
+  "dur": 2.133
+ },
+ "eryn|Okay. Decide what, exactly?": {
+  "takeId": "eryn-lw4l7i",
+  "url": "static/takes/eryn-lw4l7i.mp3",
+  "dur": 2.069
+ },
+ "eryn|Okay. They want to know where to raise next, and by how much.": {
+  "takeId": "eryn-1ytyi9d",
+  "url": "static/takes/eryn-1ytyi9d.mp3",
+  "dur": 3.606
+ },
+ "eryn|Okay. They want to know where to raise next, and by how much. Keep that one. Makes sense. And what are you starting from?": {
+  "takeId": "eryn-11p4ugf",
+  "url": "static/takes/eryn-11p4ugf.mp3",
+  "dur": 6.869
+ },
+ "eryn|Makes sense. And what are you starting from?": {
+  "takeId": "eryn-14ru8m5",
+  "url": "static/takes/eryn-14ru8m5.mp3",
+  "dur": 2.368
+ },
+ "eryn|What does the data look like right now?": {
+  "takeId": "eryn-1es7e5m",
+  "url": "static/takes/eryn-1es7e5m.mp3",
+  "dur": 2.069
+ },
+ "eryn|Okay. You start from a raw export, and it is not clean.": {
+  "takeId": "eryn-1ly4d59",
+  "url": "static/takes/eryn-1ly4d59.mp3",
+  "dur": 3.349
+ },
+ "eryn|That's perfect. You nailed it.": {
+  "takeId": "eryn-1e8a7r0",
+  "url": "static/takes/eryn-1e8a7r0.mp3",
+  "dur": 1.792
+ },
+ "eryn|Good. Let's keep going.": {
+  "takeId": "eryn-miwu4i",
+  "url": "static/takes/eryn-miwu4i.mp3",
+  "dur": 1.429
+ },
+ "eryn|I didn't catch that. Say it again?": {
+  "takeId": "eryn-1c3xp8z",
+  "url": "static/takes/eryn-1c3xp8z.mp3",
+  "dur": 2.155
+ },
+ "eryn|What did you just submit to me? How would you explain it?": {
+  "takeId": "eryn-1ssm8e0",
+  "url": "static/takes/eryn-1ssm8e0.mp3",
+  "dur": 2.859
+ },
+ "eryn|Okay. But what is it? Say it like I never saw it.": {
+  "takeId": "eryn-ggcqy4",
+  "url": "static/takes/eryn-ggcqy4.mp3",
+  "dur": 3.029
+ },
+ "eryn|Tell me more. What's actually in it now?": {
+  "takeId": "eryn-15nib3x",
+  "url": "static/takes/eryn-15nib3x.mp3",
+  "dur": 2.176
+ },
+ "eryn|It's the customer file with the bad rows fixed, so markets can be compared.": {
+  "takeId": "eryn-zvq1d1",
+  "url": "static/takes/eryn-zvq1d1.mp3",
+  "dur": 4.416
+ },
+ "eryn|Okay. It's the customer file with the bad rows fixed, so markets can be compared. Keep that one.": {
+  "takeId": "eryn-188dpwt",
+  "url": "static/takes/eryn-188dpwt.mp3",
+  "dur": 6.123
+ },
+ "eryn|Why does this dataset matter?": {
+  "takeId": "eryn-1mv0ij6",
+  "url": "static/takes/eryn-1mv0ij6.mp3",
+  "dur": 1.877
+ },
+ "eryn|Okay, got it. What would actually break if we skipped this?": {
+  "takeId": "eryn-18iwkv",
+  "url": "static/takes/eryn-18iwkv.mp3",
+  "dur": 3.371
+ },
+ "eryn|Say more. Who gets hurt by a bad file?": {
+  "takeId": "eryn-1lkn2yh",
+  "url": "static/takes/eryn-1lkn2yh.mp3",
+  "dur": 2.368
+ },
+ "eryn|Everything after this sits on it. Bad rows make the revenue model wrong, and we set prices off that model.": {
+  "takeId": "eryn-n3shog",
+  "url": "static/takes/eryn-n3shog.mp3",
+  "dur": 6.699
+ },
+ "eryn|Okay. Everything after this sits on it. Bad rows make the revenue model wrong, and we set prices off that model. Keep that one.": {
+  "takeId": "eryn-vc0elk",
+  "url": "static/takes/eryn-vc0elk.mp3",
+  "dur": 8.363
+ },
+ "eryn|How did you clean it? Walk me through what you did.": {
+  "takeId": "eryn-133be9e",
+  "url": "static/takes/eryn-133be9e.mp3",
+  "dur": 2.56
+ },
+ "eryn|Okay. And then what?": {
+  "takeId": "eryn-zi16n0",
+  "url": "static/takes/eryn-zi16n0.mp3",
+  "dur": 1.515
+ },
+ "eryn|Walk me through it in order. What came first?": {
+  "takeId": "eryn-1jkl4m",
+  "url": "static/takes/eryn-1jkl4m.mp3",
+  "dur": 2.453
+ },
+ "eryn|You found the issues first, gave Claude a specific prompt, then checked what it returned and fixed what it missed.": {
+  "takeId": "eryn-n272uk",
+  "url": "static/takes/eryn-n272uk.mp3",
+  "dur": 6.293
+ },
+ "eryn|Okay. You found the issues first, gave Claude a specific prompt, then checked what it returned and fixed what it missed. Keep that one.": {
+  "takeId": "eryn-mpiwpg",
+  "url": "static/takes/eryn-mpiwpg.mp3",
+  "dur": 7.957
+ },
+ "eryn|Hey, I noticed that in your first file the pricing on some Mumbai rows didn't match the currency. Can you explain that?": {
+  "takeId": "eryn-kjjwqi",
+  "url": "static/takes/eryn-kjjwqi.mp3",
+  "dur": 7.104
+ },
+ "eryn|What would that have done to the numbers?": {
+  "takeId": "eryn-60dvdq",
+  "url": "static/takes/eryn-60dvdq.mp3",
+  "dur": 1.749
+ },
+ "eryn|Why is 119 USD a problem?": {
+  "takeId": "eryn-1ymkk0h",
+  "url": "static/takes/eryn-1ymkk0h.mp3",
+  "dur": 2.773
+ },
+ "eryn|119 is a rupee price with a dollar label. It makes those customers look like they pay ten times what anyone else does.": {
+  "takeId": "eryn-9yhmev",
+  "url": "static/takes/eryn-9yhmev.mp3",
+  "dur": 8.683
+ },
+ "eryn|Okay. 119 is a rupee price with a dollar label. It makes those customers look like they pay ten times what anyone else does. Keep that one.": {
+  "takeId": "eryn-1r3uqtb",
+  "url": "static/takes/eryn-1r3uqtb.mp3",
+  "dur": 10.176
+ },
+ "eryn|You kept the rows with blank names. Why not just delete them?": {
+  "takeId": "eryn-uk9j3r",
+  "url": "static/takes/eryn-uk9j3r.mp3",
+  "dur": 3.456
+ },
+ "eryn|What would we lose?": {
+  "takeId": "eryn-1oudo36",
+  "url": "static/takes/eryn-1oudo36.mp3",
+  "dur": 1.046
+ },
+ "eryn|They're real paying customers. Dropping them understates revenue.": {
+  "takeId": "eryn-1l1oj6v",
+  "url": "static/takes/eryn-1l1oj6v.mp3",
+  "dur": 3.904
+ },
+ "eryn|Okay. They're real paying customers. Dropping them understates revenue. Keep that one.": {
+  "takeId": "eryn-2tu44v",
+  "url": "static/takes/eryn-2tu44v.mp3",
+  "dur": 5.632
+ },
+ "eryn|Great, that's exactly what I was looking for.": {
+  "takeId": "eryn-ervjtl",
+  "url": "static/takes/eryn-ervjtl.mp3",
+  "dur": 2.517
+ },
+ "eryn|Okay, got it.": {
+  "takeId": "eryn-rnd522",
+  "url": "static/takes/eryn-rnd522.mp3",
+  "dur": 1.173
+ },
+ "eryn|Exactly.": {
+  "takeId": "eryn-b66jot",
+  "url": "static/takes/eryn-b66jot.mp3",
+  "dur": 0.981
+ },
+ "eryn|Yes. That's it.": {
+  "takeId": "eryn-l1qnru",
+  "url": "static/takes/eryn-l1qnru.mp3",
+  "dur": 1.301
+ },
+ "eryn|Awesome. This looks great. I have a few questions now.": {
+  "takeId": "eryn-w62m02",
+  "url": "static/takes/eryn-w62m02.mp3",
+  "dur": 3.328
+ },
+ "aaron|Alright, you've got the whole picture.": {
+  "takeId": "aaron-1033iy7",
+  "url": "static/takes/aaron-1033iy7.mp3",
+  "dur": 2.304
+ },
+ "aaron|It's a lot if you look at it as one big thing, so let's split it up, so you can move faster.": {
+  "takeId": "aaron-166wyw3",
+  "url": "static/takes/aaron-166wyw3.mp3",
+  "dur": 5.803
+ },
+ "aaron|First, we set up the environment.": {
+  "takeId": "aaron-1sk9vbe",
+  "url": "static/takes/aaron-1sk9vbe.mp3",
+  "dur": 2.155
+ },
+ "aaron|Then we connect the model.": {
+  "takeId": "aaron-728spm",
+  "url": "static/takes/aaron-728spm.mp3",
+  "dur": 1.664
+ },
+ "aaron|Once we can see it working, you trace it and test it.": {
+  "takeId": "aaron-14l3dhi",
+  "url": "static/takes/aaron-14l3dhi.mp3",
+  "dur": 3.371
+ },
+ "aaron|And last, you ship it.": {
+  "takeId": "aaron-11emhn8",
+  "url": "static/takes/aaron-11emhn8.mp3",
+  "dur": 1.685
+ },
+ "aaron|That's it. Four pieces, and at the end you've got a live app. You got it?": {
+  "takeId": "aaron-1trojew",
+  "url": "static/takes/aaron-1trojew.mp3",
+  "dur": 4.373
+ },
+ "aaron|So what are we building? Your own words.": {
+  "takeId": "aaron-1gj44os",
+  "url": "static/takes/aaron-1gj44os.mp3",
+  "dur": 2.645
+ },
+ "aaron|Okay. What does it actually do?": {
+  "takeId": "aaron-1d3d9qs",
+  "url": "static/takes/aaron-1d3d9qs.mp3",
+  "dur": 2.219
+ },
+ "aaron|Tell me more. Check what?": {
+  "takeId": "aaron-1vtru8q",
+  "url": "static/takes/aaron-1vtru8q.mp3",
+  "dur": 1.728
+ },
+ "aaron|Okay. An app that fact-checks Amazon announcements.": {
+  "takeId": "aaron-1hrco5y",
+  "url": "static/takes/aaron-1hrco5y.mp3",
+  "dur": 3.52
+ },
+ "aaron|Okay. An app that fact-checks Amazon announcements. Keep that one. Okay, got it. And how do I know a result is right?": {
+  "takeId": "aaron-19uia86",
+  "url": "static/takes/aaron-19uia86.mp3",
+  "dur": 8.64
+ },
+ "aaron|Okay. An app that fact-checks Amazon announcements. Keep that one. Makes sense. So what's first?": {
+  "takeId": "aaron-67q4mo",
+  "url": "static/takes/aaron-67q4mo.mp3",
+  "dur": 6.848
+ },
+ "aaron|Okay, got it. And how do I know a result is right?": {
+  "takeId": "aaron-1mrusjz",
+  "url": "static/takes/aaron-1mrusjz.mp3",
+  "dur": 3.669
+ },
+ "aaron|What would you show next to each claim?": {
+  "takeId": "aaron-15nrcai",
+  "url": "static/takes/aaron-15nrcai.mp3",
+  "dur": 2.069
+ },
+ "aaron|Okay. Each claim gets a result and a source next to it.": {
+  "takeId": "aaron-1mao3hf",
+  "url": "static/takes/aaron-1mao3hf.mp3",
+  "dur": 3.861
+ },
+ "aaron|Okay. Each claim gets a result and a source next to it. Keep that one. Makes sense. So what's first?": {
+  "takeId": "aaron-r1pye5",
+  "url": "static/takes/aaron-r1pye5.mp3",
+  "dur": 6.933
+ },
+ "aaron|Makes sense. So what's first?": {
+  "takeId": "aaron-1ikb5sp",
+  "url": "static/takes/aaron-1ikb5sp.mp3",
+  "dur": 1.984
+ },
+ "aaron|Before any of the app. What do you do?": {
+  "takeId": "aaron-1rl724b",
+  "url": "static/takes/aaron-1rl724b.mp3",
+  "dur": 2.517
+ },
+ "aaron|Okay. First you set up the project, so there is something to build on.": {
+  "takeId": "aaron-1g5edtv",
+  "url": "static/takes/aaron-1g5edtv.mp3",
+  "dur": 4.715
+ },
+ "aaron|That's perfect. You nailed it.": {
+  "takeId": "aaron-1e8a7r0",
+  "url": "static/takes/aaron-1e8a7r0.mp3",
+  "dur": 1.856
+ },
+ "aaron|Good. Let's keep going.": {
+  "takeId": "aaron-miwu4i",
+  "url": "static/takes/aaron-miwu4i.mp3",
+  "dur": 1.579
+ },
+ "aaron|I didn't catch that. Say it again?": {
+  "takeId": "aaron-1c3xp8z",
+  "url": "static/takes/aaron-1c3xp8z.mp3",
+  "dur": 2.496
+ },
+ "aaron|What did you set up in this stage?": {
+  "takeId": "aaron-1qtdjmi",
+  "url": "static/takes/aaron-1qtdjmi.mp3",
+  "dur": 1.941
+ },
+ "aaron|Okay. What's actually in the repo now?": {
+  "takeId": "aaron-2hkblh",
+  "url": "static/takes/aaron-2hkblh.mp3",
+  "dur": 2.496
+ },
+ "aaron|Tell me more. What could I open and use?": {
+  "takeId": "aaron-11msy5q",
+  "url": "static/takes/aaron-11msy5q.mp3",
+  "dur": 2.56
+ },
+ "aaron|A repo with the environment set up and a front-end you can use.": {
+  "takeId": "aaron-16gax4a",
+  "url": "static/takes/aaron-16gax4a.mp3",
+  "dur": 4.416
+ },
+ "aaron|Okay. A repo with the environment set up and a front-end you can use. Keep that one.": {
+  "takeId": "aaron-15n5imq",
+  "url": "static/takes/aaron-15n5imq.mp3",
+  "dur": 5.888
+ },
+ "aaron|Why do we need an environment file instead of putting API keys directly in our code?": {
+  "takeId": "aaron-1m9rukx",
+  "url": "static/takes/aaron-1m9rukx.mp3",
+  "dur": 6.059
+ },
+ "aaron|What goes wrong if the key sits in the code?": {
+  "takeId": "aaron-1212dlu",
+  "url": "static/takes/aaron-1212dlu.mp3",
+  "dur": 2.624
+ },
+ "aaron|Who could see it?": {
+  "takeId": "aaron-1bqectf",
+  "url": "static/takes/aaron-1bqectf.mp3",
+  "dur": 1.301
+ },
+ "aaron|Keys in code go wherever the code goes, including a public repo.": {
+  "takeId": "aaron-4w56o8",
+  "url": "static/takes/aaron-4w56o8.mp3",
+  "dur": 4.779
+ },
+ "aaron|Okay. Keys in code go wherever the code goes, including a public repo. Keep that one.": {
+  "takeId": "aaron-170chkg",
+  "url": "static/takes/aaron-170chkg.mp3",
+  "dur": 6.208
+ },
+ "aaron|Walk me through how you created the repository, configured the environment, and built the HTML interface.": {
+  "takeId": "aaron-192tz47",
+  "url": "static/takes/aaron-192tz47.mp3",
+  "dur": 7.659
+ },
+ "aaron|Okay. And then what?": {
+  "takeId": "aaron-zi16n0",
+  "url": "static/takes/aaron-zi16n0.mp3",
+  "dur": 1.536
+ },
+ "aaron|Walk me through it in order.": {
+  "takeId": "aaron-1mj1hd1",
+  "url": "static/takes/aaron-1mj1hd1.mp3",
+  "dur": 1.728
+ },
+ "aaron|You made the repo, ran one prompt for the environment and one for the front-end, then pushed.": {
+  "takeId": "aaron-1vo01ru",
+  "url": "static/takes/aaron-1vo01ru.mp3",
+  "dur": 5.995
+ },
+ "aaron|Okay. You made the repo, ran one prompt for the environment and one for the front-end, then pushed. Keep that one.": {
+  "takeId": "aaron-5gim76",
+  "url": "static/takes/aaron-5gim76.mp3",
+  "dur": 7.637
+ },
+ "aaron|What could happen if you accidentally pushed your .env file to GitHub?": {
+  "takeId": "aaron-30l37d",
+  "url": "static/takes/aaron-30l37d.mp3",
+  "dur": 4.523
+ },
+ "aaron|And what would you do right after?": {
+  "takeId": "aaron-1xukdee",
+  "url": "static/takes/aaron-1xukdee.mp3",
+  "dur": 1.835
+ },
+ "aaron|Anyone can use your keys on your bill. You'd revoke them right away.": {
+  "takeId": "aaron-1b4h652",
+  "url": "static/takes/aaron-1b4h652.mp3",
+  "dur": 4.459
+ },
+ "aaron|Okay. Anyone can use your keys on your bill. You'd revoke them right away. Keep that one.": {
+  "takeId": "aaron-7uzyim",
+  "url": "static/takes/aaron-7uzyim.mp3",
+  "dur": 5.952
+ },
+ "aaron|Nice. That's the first stage done.": {
+  "takeId": "aaron-13sujwu",
+  "url": "static/takes/aaron-13sujwu.mp3",
+  "dur": 2.347
+ },
+ "aaron|Okay, got it.": {
+  "takeId": "aaron-rnd522",
+  "url": "static/takes/aaron-rnd522.mp3",
+  "dur": 1.344
+ },
+ "aaron|Exactly.": {
+  "takeId": "aaron-b66jot",
+  "url": "static/takes/aaron-b66jot.mp3",
+  "dur": 1.067
+ },
+ "aaron|Yes. That's it.": {
+  "takeId": "aaron-l1qnru",
+  "url": "static/takes/aaron-l1qnru.mp3",
+  "dur": 1.259
+ },
+ "aaron|Awesome. This looks great. I have a few questions now.": {
+  "takeId": "aaron-w62m02",
+  "url": "static/takes/aaron-w62m02.mp3",
+  "dur": 3.584
+ },
+ "eryn|Okay, so the first thing is I have a data file, but there's a bunch of issues with it. I need you to help me figure out those issues.": {
+  "takeId": "eryn-193i4h3",
+  "url": "static/takes/eryn-193i4h3.mp3",
+  "dur": 7.573
+ },
+ "eryn|Can you open it and tell me what issues you found?": {
+  "takeId": "eryn-bdqtr5",
+  "url": "static/takes/eryn-bdqtr5.mp3",
+  "dur": 2.731
+ },
+ "eryn|That's all ten. Now the prompt.": {
+  "takeId": "eryn-1upcq77",
+  "url": "static/takes/eryn-1upcq77.mp3",
+  "dur": 2.048
+ },
+ "eryn|Have you written a prompt to clean a file with Claude before?": {
+  "takeId": "eryn-p86exl",
+  "url": "static/takes/eryn-p86exl.mp3",
+  "dur": 2.965
+ },
+ "eryn|Okay, then this one is yours.": {
+  "takeId": "eryn-1yg6ica",
+  "url": "static/takes/eryn-1yg6ica.mp3",
+  "dur": 1.899
+ },
+ "eryn|No problem. Here's a quick one.": {
+  "takeId": "eryn-1dcg6l",
+  "url": "static/takes/eryn-1dcg6l.mp3",
+  "dur": 1.941
+ },
+ "eryn|Okay, great. Now we know all the issues with the file. What is a prompt that we can send to Claude to fix these issues?": {
+  "takeId": "eryn-1pervy9",
+  "url": "static/takes/eryn-1pervy9.mp3",
+  "dur": 7.189
+ },
+ "eryn|Now go ahead and throw that in Claude and send me the clean data file when you have it ready. Hit PIP and I'll come with you.": {
+  "takeId": "eryn-lovqmr",
+  "url": "static/takes/eryn-lovqmr.mp3",
+  "dur": 7.787
+ },
+ "aaron|Okay, what we need to first do is set up our environment. Let's start by creating a GitHub repo. Hit PIP, make one, and send me the link.": {
+  "takeId": "aaron-tnbo3o",
+  "url": "static/takes/aaron-tnbo3o.mp3",
+  "dur": 9.6
+ },
+ "aaron|Okay, now we need two keys. First, OpenRouter. Do you know what OpenRouter is?": {
+  "takeId": "aaron-1yshupn",
+  "url": "static/takes/aaron-1yshupn.mp3",
+  "dur": 6.101
+ },
+ "aaron|Okay, good.": {
+  "takeId": "aaron-8kim0s",
+  "url": "static/takes/aaron-8kim0s.mp3",
+  "dur": 1.216
+ },
+ "aaron|Okay, here's a video.": {
+  "takeId": "aaron-nf6fbd",
+  "url": "static/takes/aaron-nf6fbd.mp3",
+  "dur": 1.643
+ },
+ "aaron|Go make a key on openrouter.ai. Don't paste it here. Just tell me when you have it.": {
+  "takeId": "aaron-4agr2g",
+  "url": "static/takes/aaron-4agr2g.mp3",
+  "dur": 5.824
+ },
+ "aaron|Next, LangSmith. Do you know what that is?": {
+  "takeId": "aaron-173eivo",
+  "url": "static/takes/aaron-173eivo.mp3",
+  "dur": 2.88
+ },
+ "aaron|Okay, here's one for that.": {
+  "takeId": "aaron-1wzadm3",
+  "url": "static/takes/aaron-1wzadm3.mp3",
+  "dur": 1.856
+ },
+ "aaron|Same thing. Make a key, keep it to yourself, and tell me when you have it.": {
+  "takeId": "aaron-tb2uhx",
+  "url": "static/takes/aaron-tb2uhx.mp3",
+  "dur": 4.459
+ },
+ "aaron|Good. We've got both API keys. Now we need to store them securely. How would you prompt Claude Code to set that up?": {
+  "takeId": "aaron-1ekoge6",
+  "url": "static/takes/aaron-1ekoge6.mp3",
+  "dur": 8.085
+ },
+ "aaron|Nice. Now let's build the interface. What would you tell Claude Code to create so someone can easily submit an announcement and review the results?": {
+  "takeId": "aaron-1q8tvo8",
+  "url": "static/takes/aaron-1q8tvo8.mp3",
+  "dur": 9.429
+ },
+ "aaron|Now go run both of those in Claude Code. Commit and push. Send me the repo link when it's up.": {
+  "takeId": "aaron-6t28wu",
+  "url": "static/takes/aaron-6t28wu.mp3",
+  "dur": 6.869
+ }
+}

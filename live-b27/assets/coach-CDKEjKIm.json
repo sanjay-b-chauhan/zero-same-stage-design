@@ -1,0 +1,30 @@
+{
+  "labels": {
+    "tab": "Coach",
+    "why": "Why?",
+    "gotIt": "Got it",
+    "points": "Skill points earned",
+    "statusJoin": " · "
+  },
+  "panel": {
+    "watching": {
+      "status": "Watching",
+      "beats": [["I’m still watching how you work.", "I’ll intervene whenever needed."]]
+    },
+    "sure": {
+      "status": "After you sent your plan",
+      "beats": [
+        [
+          "Based on what I’m seeing so far,",
+          "you’re doing a really good job engaging with your manager and asking good questions."
+        ],
+        ["But the way you communicate feels like you’re sending text messages to a friend."]
+      ]
+    }
+  },
+  "kinds": [
+    { "id": "fix", "ring": "#FF6A4D" },
+    { "id": "win", "ring": "#4ADE80" },
+    { "id": "brief", "ring": "#FFFFFF" }
+  ]
+}

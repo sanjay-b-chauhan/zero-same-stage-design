@@ -1,0 +1,3882 @@
+/* The stage and every part in it. Prefix zs2-. Colour, line, radius and type come from the kit tokens only:
+   .zd gives the dark values for each style preset, .z-light the kit's own light. The --z-* names below are only aliases.
+   The PIP root carries neither class, so it keeps theme.css until the pip owner moves it. No fades, no glass, no shadows on controls. */
+
+.zs2.zd,
+.zs2.z-light {
+  --z-bg: var(--zj-canvas);
+  --z-panel: var(--zj-sheet);
+  --z-raise: var(--zj-well);
+  --z-raise-2: var(--zj-well2);
+  --z-line: var(--zj-line);
+  --z-line-2: var(--zj-line2);
+  --z-tx: var(--zj-ink);
+  --z-tx-2: var(--zj-ink2);
+  --z-tx-3: var(--zj-ink3);
+  --z-tx-4: var(--zj-ink4);
+  --z-sans: var(--zj-font);
+  --z-mono: var(--zj-font);
+  --z-key: var(--zj-ink);
+  --z-key-tx: var(--zj-canvas);
+}
+
+/* b11 greens: the --g-* family from looks.css. A tick or a word in the ink, a disc or a bar in the fill */
+.zs2.zd,
+.zs2.z-light {
+  --z-green: var(--g-ink);
+  --b-ok: var(--g-fill);
+  --zs2-xp: linear-gradient(90deg, var(--g-fill), var(--g-hi));
+  --zs2-quiet-bg: var(--b-slab3);
+  --zs2-quiet-lip: var(--b-slab);
+  --zs2-quiet-sheen: rgba(255, 255, 255, 0.07);
+}
+
+/* b11 the light stage, as good as the dark one: neutral greys, never bluish. Surface 3 is the ground, white slabs on it,
+   the same token names as the dark stage, so every part follows without its own light rules */
+.zs2.z-light {
+  --b-ground: #f4f4f5;
+  --b-slab: #ffffff;
+  --b-slab2: #ececee;
+  --b-slab3: #e3e3e6;
+  --b-sheet: #ffffff;
+  --b-hl: rgba(17, 17, 19, 0.08);
+  --b-hl2: rgba(17, 17, 19, 0.14);
+  --b-edge: transparent;
+  --b-t1: #111113;
+  --b-t2: rgba(17, 17, 19, 0.64);
+  --b-t3: rgba(17, 17, 19, 0.5);
+  --b-slab-sh: inset 0 0 0 1px var(--b-hl2);
+  --zj-canvas: var(--b-ground);
+  --zj-sheet: var(--b-slab);
+  --zj-well: var(--b-slab2);
+  --zj-well2: var(--b-slab3);
+  --zj-line: var(--b-hl);
+  --zj-line2: var(--b-hl2);
+  --zj-ink: var(--b-t1);
+  --zj-ink2: var(--b-t2);
+  --zj-ink3: var(--b-t3);
+  --zj-ink4: rgba(17, 17, 19, 0.28);
+  --zj-sec-bg: var(--b-slab);
+  --zj-sec-bg-hover: var(--b-slab2);
+  --zj-sh-sheet: var(--b-slab-sh);
+  --zj-sh-hair: inset 0 0 0 1px var(--b-hl);
+  --zj-sh-ctl: inset 0 0 0 1px var(--b-hl2);
+  --zj-sh-dialog: var(--b-slab-sh);
+  --zj-sh-pop: var(--b-slab-sh);
+  --z-key: #111113;
+  --z-key-tx: #ffffff;
+  --zs2-xp: linear-gradient(90deg, var(--g-deep), var(--g-fill));
+  --zs2-quiet-bg: #ffffff;
+  --zs2-quiet-lip: #d2d2d6;
+  --zs2-quiet-sheen: rgba(255, 255, 255, 0.9);
+  color-scheme: light;
+}
+
+.zs2 {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--z-bg);
+  color: var(--z-tx);
+  font-family: var(--z-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.006em;
+  font-weight: 400;
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  --zs2-snap: linear(0, 0.0807, 0.252, 0.4425, 0.615, 0.7538, 0.8564, 0.9267, 0.9713, 0.997, 1.0098, 1.0146, 1.0149, 1.0128, 1.01, 1.0072, 1.0048, 1.0029, 1.0016, 1.0008, 1.0002, 0.9999, 0.9998, 0.9998, 1);
+  --zs2-sidew: min(560px, max(400px, calc(100vw - 1032px)));
+  --zs2-wash: color-mix(in srgb, var(--z-tx) 6%, transparent);
+  --zs2-wash-2: color-mix(in srgb, var(--z-tx) 10%, transparent);
+  /* the chat's reading column: her name card, the thread and the composer all start and end on it (his note, 2 Nov:
+     "lower the max width". It was 680) */
+  --zs2-col: 600px;
+  /* b12 (his note: "make the text more smaller the issue ones"): the left panel's type, set from the dev panel's Look */
+  --zs2-slot-fs: 12px;
+  --zs2-head-fs: 12px;
+  --zs2-mine-bg: var(--b-slab3);
+  /* her tool links, the one place a blue underline is allowed (his note, 2 Nov) */
+  --zs2-link: #6cb1ff;
+}
+.zs2.z-light {
+  --zs2-link: #0d6bdf;
+}
+
+:where(.zs2) button {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+:where(.zs2) h2,
+:where(.zs2) h3,
+:where(.zs2) p,
+:where(.zs2) dl,
+:where(.zs2) dd,
+:where(.zs2) ol {
+  margin: 0;
+  padding: 0;
+}
+:where(.zs2) :focus-visible {
+  outline: 1.5px solid var(--z-tx-2);
+  outline-offset: 2px;
+}
+.zs2-green {
+  color: var(--z-green);
+}
+
+/* frame */
+
+/* the build stamp lands on the key otherwise. In the chat's free corner it stays out of everything */
+body:has(.zs2) .z-stamp {
+  left: var(--zs2-stamp-x, calc(max(0px, (100vw - 1800px) / 2) + 372px));
+  bottom: 14px;
+}
+
+/* shared controls */
+
+.zs2-ico {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--z-r-10);
+  color: var(--z-tx-2);
+  transition: background-color 160ms ease, color 160ms ease, transform 100ms ease;
+}
+.zs2-ico:hover,
+.zs2-ico[data-active] {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2-ico:active {
+  transform: translateY(1px);
+}
+
+/* top bar */
+
+/* a black logo needs a light plate on this ground */
+
+/* timer */
+
+.zs2-timer {
+  display: inline-flex;
+  font-size: 14px;
+  line-height: 32px;
+  color: var(--z-tx);
+  transition: color 320ms ease;
+  padding: 0 4px;
+}
+.zs2-timer[data-surface='pip'] {
+  font-size: 12px;
+  line-height: 32px;
+  padding: 0;
+}
+.zs2-timer[data-low] {
+  color: var(--z-amber);
+}
+.zs2-digit {
+  display: inline-block;
+}
+
+/* work, left panel */
+
+/* steps and slots */
+
+/* room for the fill's overshoot, only while it is open. A closed fold shows nothing at all */
+
+/* the key, and the file row. Radius 8 at 8 from the panel edge, concentric with 16 */
+
+.zs2-submit {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+.zs2-submit:empty {
+  padding-top: 0;
+}
+
+.zs2-fileline {
+  min-height: 44px;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: var(--b-ri);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  transition: background-color 320ms ease;
+}
+.zs2-fileline-top {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zs2-fileline-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.zs2-fileline-icon img {
+  width: 20px;
+  height: 20px;
+}
+.zs2-fileline-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-fileline[data-green] {
+  background: var(--g-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--g-fill) 34%, transparent);
+}
+.zs2-fileline[data-green] .zs2-fileline-icon {
+  color: var(--g-ink);
+}
+.zs2-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0 12px 28px;
+}
+.zs2-stats > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.zs2-stats dt {
+  color: var(--z-tx-2);
+}
+.zs2-stats dd {
+  color: var(--z-tx);
+}
+
+/* drop area */
+
+.zs2-drop {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--b-r);
+  background: var(--b-slab);
+  box-shadow: var(--b-slab-sh);
+}
+.zs2-drop-head {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 5px 0 13px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--b-t2);
+}
+.zs2-drop-head > span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-drop-head .zs2-ico {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--b-rs);
+  color: var(--b-t3);
+  transition: background-color 140ms, color 140ms, transform 120ms var(--b-ease);
+}
+.zs2-drop-head .zs2-ico:hover {
+  background: var(--b-slab3);
+  color: var(--b-t1);
+}
+.zs2-drop-head .zs2-ico:active {
+  transform: scale(0.9);
+}
+.zs2-drop-zone {
+  height: 96px;
+  margin: 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: var(--b-ri);
+  background: var(--b-slab2);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--b-t2);
+  cursor: pointer;
+  transition: background-color 140ms, box-shadow 140ms, color 140ms, transform 240ms var(--zs2-snap);
+}
+.zs2-drop-zone:hover {
+  background: var(--b-slab3);
+  color: var(--b-t1);
+}
+.zs2-drop-zone[data-over] {
+  background: var(--b-slab3);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--b-t1);
+  transform: scale(1.012);
+}
+.zs2-drop-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 12px;
+}
+.zs2-drop-link[data-only] {
+  padding-top: 0;
+}
+.zs2-drop-input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  outline: 0;
+  border-radius: var(--b-ri);
+  background: var(--b-slab2);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  color: var(--b-t1);
+  font: inherit;
+  transition: box-shadow 140ms, background-color 140ms;
+}
+.zs2-drop-input:focus {
+  background: var(--b-slab3);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zs2-drop-input::placeholder {
+  color: var(--b-t3);
+}
+/* the link's Submit is the tactile key, green: the drop replaces the main key, so it is still the one commit */
+.zs2-drop-key {
+  flex: none;
+}
+
+/* feedback */
+
+.zs2-fblist {
+  display: flex;
+  flex-direction: column;
+}
+.zs2-fb {
+  border-radius: var(--b-ri);
+  overflow: hidden;
+}
+.zs2-fb + .zs2-fb {
+  border-top: 1px solid var(--b-hl);
+  border-radius: 0;
+}
+.zs2-fb-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 6px;
+}
+.zs2-fb[data-checked] .zs2-fb-head {
+  padding-block: 8px;
+}
+/* b14: the files key floats top right on the first heading's row, and the feedback list has no heading, so the first thing
+   to fix ran under it (its words and its chevron). The list starts under the key instead */
+.zs2-work-head ~ .zs2-work-scroll .zs2-work-view > .zs2-fblist {
+  padding-top: 36px;
+}
+.zs2-check {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--z-tx) 30%, transparent);
+  transition: background-color 160ms, box-shadow 160ms, transform 120ms var(--b-ease);
+}
+.zs2-check:hover {
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--z-tx) 55%, transparent);
+}
+.zs2-check:active {
+  transform: scale(0.92);
+}
+.zs2-check[aria-checked='true'] {
+  background: var(--z-tx);
+  color: var(--z-bg);
+  box-shadow: none;
+}
+.zs2-check-tick {
+  display: inline-flex;
+}
+.zs2-check-tick svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+.zs2-fb-one {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-top: 1px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--b-t1);
+}
+.zs2-fb-one > span {
+  flex: 1;
+  min-width: 0;
+}
+.zs2-fb[data-checked] .zs2-fb-one {
+  color: var(--z-tx-2);
+}
+.zs2-fb[data-checked]:not([data-open]) .zs2-fb-one > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-fb-chev {
+  flex: none;
+  margin-top: 2px;
+  color: var(--z-tx-3);
+  transition: transform 420ms var(--z-spring), color 160ms ease;
+}
+.zs2-fb-one:hover .zs2-fb-chev {
+  color: var(--z-tx);
+}
+.zs2-fb[data-open] .zs2-fb-chev {
+  transform: rotate(180deg);
+}
+.zs2-fb-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 560ms var(--z-spring);
+}
+.zs2-fb[data-open] .zs2-fb-fold {
+  grid-template-rows: 1fr;
+}
+.zs2-fb-fold-in {
+  min-height: 0;
+  overflow: hidden;
+}
+.zs2-fb-more {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 6px 12px 38px;
+}
+.zs2-fb-more dt {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t3);
+}
+.zs2-fb-more dd {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--b-t2);
+}
+
+/* POU lines */
+
+.zs2-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.zs2-line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--b-ri);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  transition: background-color 200ms ease;
+}
+.zs2-line[data-said] {
+  background: var(--b-slab2);
+}
+/* the coach: a different person, so he sits beside the work and never in the chat */
+.zs2-coach {
+  flex: none;
+  padding: 10px 11px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: var(--z-r-10);
+  border: 1px solid var(--z-line-2);
+  background: var(--z-raise);
+  overflow: hidden;
+}
+.zs2-coach-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zs2-coach-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+}
+.zs2-coach-line {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx);
+  text-wrap: pretty;
+}
+.zs2-coach .zs2-ico {
+  width: 24px;
+  height: 24px;
+  margin: -2px -3px -2px 0;
+  border-radius: var(--z-r-8);
+}
+
+.zs2-line-t {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+  filter: blur(4px);
+  user-select: none;
+}
+.zs2-line[data-said] .zs2-line-t {
+  filter: none;
+  color: var(--z-tx);
+  user-select: text;
+}
+
+/* centre panel */
+
+.zs2-face {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  border-radius: 50%;
+}
+.zs2-face-circle {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--z-raise-2);
+  transition: transform 90ms linear;
+}
+.zs2-face-img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* thread */
+
+@keyframes zs2-bob {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+/* file chip */
+
+/* composer */
+
+.zs2-micbars {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.zs2-micbar {
+  width: 3px;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--z-tx);
+  transform: scaleY(0.08);
+  transition: transform 60ms linear;
+}
+.zs2-heldclock {
+  flex: none;
+  font-size: 12px;
+  color: var(--z-tx-2);
+}
+
+/* voice note, real numbers in VoicePill.tsx */
+
+.zs2-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+.zs2-note[data-own] {
+  justify-content: flex-end;
+}
+.zs2-note-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.zs2-note[data-own] .zs2-note-col {
+  align-items: flex-end;
+}
+.zs2-pill {
+  flex: none;
+  height: 62px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 31px;
+  background: var(--z-raise);
+}
+.zs2-note[data-own] .zs2-pill {
+  background: var(--zs2-wash);
+}
+.zs2-pill-btn {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--zs2-wash-2);
+  color: var(--z-tx-2);
+  transition: background-color 160ms ease, color 160ms ease, transform 100ms ease;
+}
+.zs2-pill-btn:hover:not(:disabled) {
+  background: var(--z-line-2);
+  color: var(--z-tx);
+}
+.zs2-pill-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.zs2-pill-btn:disabled {
+  color: var(--z-tx-3);
+  cursor: default;
+}
+.zs2-pill-wave {
+  flex: none;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 3.82px;
+  cursor: pointer;
+  user-select: none;
+}
+.zs2-pill-bar {
+  flex: none;
+  width: 3.15px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--z-tx) 40%, transparent);
+  transition: background-color 150ms ease;
+}
+.zs2-pill-bar[data-played] {
+  background: var(--z-tx);
+}
+.zs2-pill-time {
+  flex: none;
+  width: 56px;
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--z-tx-2);
+}
+.zs2-pill-speedslot {
+  height: 0;
+  overflow: hidden;
+  transition: height 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.zs2-pill-speedslot[data-on] {
+  height: 24px;
+}
+.zs2-pill-speed {
+  margin-top: 2px;
+  height: 22px;
+  min-width: 40px;
+  padding: 0 8px;
+  border-radius: var(--z-r-12);
+  background: var(--zs2-wash);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--z-tx-2);
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.zs2-pill-speed:hover {
+  background: var(--zs2-wash-2);
+  color: var(--z-tx);
+}
+.zs2-note[data-surface='pip'] .zs2-pill {
+  height: 54px;
+  padding: 0 8px;
+  border-radius: 27px;
+}
+.zs2-note[data-surface='pip'] .zs2-pill-btn {
+  width: 38px;
+  height: 38px;
+}
+.zs2-note[data-surface='pip'] .zs2-pill-wave {
+  gap: 2px;
+  height: 18px;
+}
+.zs2-note[data-surface='pip'] .zs2-pill-bar {
+  width: 2.8px;
+}
+.zs2-transcript-t {
+  flex: none;
+  height: 20px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.24px;
+  color: color-mix(in srgb, var(--z-tx) 50%, transparent);
+  transition: color 160ms ease;
+}
+.zs2-transcript-t:hover {
+  color: color-mix(in srgb, var(--z-tx) 80%, transparent);
+}
+.zs2-transcript {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 70cqw;
+  max-width: 100cqw;
+  transition: grid-template-rows 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.zs2-transcript[data-open] {
+  grid-template-rows: 1fr;
+}
+.zs2-transcript-in {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 10px;
+}
+.zs2-transcript p {
+  margin: 2px 0 8px;
+  line-height: 1.5;
+  color: var(--z-tx);
+}
+.zs2-note[data-own] .zs2-transcript p {
+  text-align: left;
+}
+
+/* POU room */
+
+.zs2-pou {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zs2-pou[data-surface='pip'] {
+  padding: 8px;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.zs2-pou-q {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+@keyframes zs2-shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.zs2-hold {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 20px 16px;
+  transition: opacity 200ms ease;
+}
+.zs2-hold[data-off] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.zs2-hold-pill {
+  position: relative;
+  width: 98px;
+  height: 58px;
+  max-width: 100%;
+  border-radius: 29px;
+  overflow: hidden;
+  background: var(--z-raise-2);
+  transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.zs2-hold-pill[data-rec] {
+  width: 422px;
+}
+.zs2-hold-mic {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--z-tx);
+  touch-action: none;
+  transition: background-color 160ms ease, transform 100ms ease;
+}
+.zs2-hold-mic:hover {
+  background: var(--zs2-wash);
+}
+.zs2-hold-mic:active {
+  transform: translateY(1px);
+}
+.zs2-hold-pill[data-rec] .zs2-hold-mic {
+  opacity: 0;
+  pointer-events: none;
+}
+.zs2-hold-rec {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 0 9px;
+}
+.zs2-hold-x {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--zs2-wash-2);
+  transition: background-color 160ms ease, transform 100ms ease;
+}
+.zs2-hold-x:hover {
+  background: var(--z-line-2);
+}
+.zs2-hold-x:active {
+  transform: translateY(1px);
+}
+.zs2-rec-time {
+  flex: none;
+  font-size: 12px;
+  color: var(--z-tx);
+}
+.zs2-hold-label {
+  height: 16px;
+  font-family: var(--z-mono);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--z-tx-2);
+}
+.zs2-holdslab {
+  flex: none;
+  width: 100%;
+  height: 52px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--z-r-12);
+  background: var(--z-raise);
+  color: var(--z-tx-2);
+  touch-action: none;
+  transition: background-color 160ms ease, color 160ms ease, transform 100ms ease, opacity 200ms ease;
+}
+.zs2-holdslab:hover {
+  background: var(--z-raise-2);
+  color: var(--z-tx);
+}
+.zs2-holdslab:active {
+  transform: translateY(1px);
+}
+.zs2-holdslab[data-rec] {
+  background: var(--z-raise-2);
+  color: var(--z-tx);
+  justify-content: stretch;
+}
+.zs2-holdslab[data-off] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* third panel */
+
+/* the 8 px beside the panel is the gap to the chat, on whichever side the chat is */
+.zs2-sidewrap {
+  flex: none;
+  display: flex;
+  justify-content: flex-end;
+  width: 0;
+  overflow: hidden;
+  transition: width 700ms var(--z-spring);
+}
+.zs2-sidewrap[data-open] {
+  width: calc(var(--zs2-sidew) + 8px);
+}
+.zs2-sidewrap-in {
+  flex: none;
+  width: var(--zs2-sidew);
+  height: 100%;
+}
+.zs2-side {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zs2-side-head {
+  flex: none;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 10px 0 16px;
+}
+.zs2-side-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--z-tx);
+}
+.zs2-res {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.zs2-res-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.zs2-res-group h3 {
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--z-tx-3);
+}
+
+.zs2-res-none {
+  padding: 0 8px;
+  color: var(--z-tx-3);
+}
+.zs2-preview {
+  flex: 1;
+  min-height: 0;
+  margin: 0 8px 8px;
+  overflow: auto;
+  border-radius: var(--z-r-8);
+  background: var(--z-bg);
+  scrollbar-width: thin;
+  scrollbar-color: var(--z-raise-2) transparent;
+}
+/* a sheet you can grab: the hand at rest, the closed hand while it moves */
+.zs2-preview[data-grab] {
+  cursor: grab;
+}
+.zs2-preview[data-panning] {
+  cursor: grabbing;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.zs2-table {
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.zs2-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px 12px;
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 500;
+  background: var(--z-raise);
+  color: var(--z-tx-2);
+}
+.zs2-table td {
+  padding: 7px 12px;
+  white-space: nowrap;
+  color: var(--z-tx);
+  border-top: 1px solid var(--z-line);
+}
+.zs2-table tbody tr:first-child td {
+  border-top: 0;
+}
+.zs2-table tbody tr:hover td {
+  background: var(--zs2-wash);
+}
+.zs2-pretext {
+  margin: 0;
+  padding: 12px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: var(--z-tx);
+}
+
+/* film */
+
+.zs2-film {
+  width: 100%;
+  border-radius: var(--z-r-12);
+  overflow: hidden;
+  background: var(--z-raise);
+}
+.zs2-film-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+.zs2-film-scene {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: zs2-arrive 520ms var(--z-spring) both;
+}
+@keyframes zs2-arrive {
+  from {
+    transform: translateY(10px);
+    filter: blur(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+.zs2-fs {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--z-tx);
+}
+.zs2-fs-words {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-weight: 500;
+  text-align: center;
+}
+.zs2-fs-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.zs2-fs-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  transition: color 320ms ease, transform 520ms var(--z-spring), filter 320ms ease;
+}
+.zs2-fs-steps li .z-num {
+  font-size: 14px;
+  color: var(--z-tx-3);
+}
+.zs2-fs-steps li[data-state='next'] {
+  color: var(--z-tx-3);
+  filter: blur(3px);
+  transform: translateY(4px);
+}
+.zs2-fs-steps li[data-state='done'] {
+  color: var(--z-tx-2);
+}
+.zs2-fs-steps li[data-state='now'] {
+  color: var(--z-tx);
+  font-weight: 500;
+}
+.zs2-fs-route {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+.zs2-fs-box {
+  padding: 8px 12px;
+  border-radius: var(--z-r-10);
+  background: var(--z-raise-2);
+  white-space: nowrap;
+}
+.zs2-fs-line {
+  width: 28px;
+  height: 1px;
+  background: var(--z-line-2);
+  transition: transform 520ms var(--z-spring);
+  transform-origin: left;
+}
+.zs2-fs-line[data-off] {
+  transform: scaleX(0);
+}
+.zs2-fs-fan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 520ms var(--z-spring), filter 320ms ease, opacity 320ms ease;
+}
+.zs2-fs-fan[data-off] {
+  transform: translateX(-8px);
+  filter: blur(5px);
+  opacity: 0;
+}
+.zs2-fs-trace {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(320px, 100%);
+}
+.zs2-fs-trace > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.zs2-fs-trace dt {
+  color: var(--z-tx-2);
+}
+.zs2-film-bar {
+  height: 44px;
+  padding: 0 6px 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zs2-film-bar .zs2-ico:hover {
+  background: var(--zs2-wash-2);
+}
+.zs2-film-bar .zs2-ico svg {
+  fill: currentColor;
+}
+.zs2-film-track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  cursor: pointer;
+  touch-action: none;
+}
+.zs2-film-track::before,
+.zs2-film-reach,
+.zs2-film-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 3px;
+  transform-origin: left;
+}
+.zs2-film-track::before {
+  content: '';
+  background: var(--z-line);
+}
+.zs2-film-reach {
+  background: var(--z-line-2);
+}
+.zs2-film-fill {
+  background: var(--z-tx);
+}
+.zs2-film-knob {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--z-tx);
+}
+.zs2-film-time {
+  flex: none;
+  font-size: 12px;
+  color: var(--z-tx-2);
+}
+.zs2-film-speed {
+  flex: none;
+  min-width: 40px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--z-r-10);
+  font-size: 12px;
+  color: var(--z-tx-2);
+  transition: background-color 160ms ease, color 160ms ease, transform 100ms ease;
+}
+.zs2-film-speed:hover {
+  background: var(--zs2-wash-2);
+  color: var(--z-tx);
+}
+.zs2-film-speed:active {
+  transform: translateY(1px);
+}
+.zs2-filmrow {
+  max-width: 420px;
+  height: 44px;
+  padding: 0 14px 0 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--z-r-12);
+  background: var(--z-raise);
+  color: var(--z-tx);
+  transition: background-color 160ms ease, transform 100ms ease;
+}
+.zs2-filmrow:hover {
+  background: var(--z-raise-2);
+}
+.zs2-filmrow:active {
+  transform: translateY(1px);
+}
+.zs2-filmrow-play {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--z-r-10);
+  background: var(--zs2-wash-2);
+}
+.zs2-filmrow-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* dashes, the stage in one line */
+
+.zs2-dashes {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border-radius: var(--z-r-8);
+  transition: background-color 160ms ease;
+}
+.zs2-dashes:hover {
+  background: var(--z-raise);
+}
+.zs2-dash {
+  flex: 1;
+  min-width: 2px;
+  height: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--z-line-2);
+  transition: height 200ms ease;
+}
+.zs2-dashes[data-thin] .zs2-dash {
+  height: 2px;
+}
+.zs2-dash i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--z-tx);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.zs2-dash[data-filled] i {
+  transform: scaleX(1);
+}
+.zs2-dash[data-verified] i {
+  background: var(--g-fill);
+}
+.zs2-dashes-dots {
+  flex: none;
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 3px;
+}
+.zs2-dashes-dots i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--z-tx-3);
+}
+.zs2-dashes-word {
+  min-width: 0;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--z-tx);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zs2 *,
+  .zs2 *::before,
+  .zs2 *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ===== b4: the frame, the top row, the work, the chat, the cards, the composer ===== */
+
+/* shared: a 32 square ghost key. Hover fills it, a press sinks it 1 px */
+.zs2-ghost {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--zj-r-ctl);
+  color: var(--z-tx-3);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-ghost:hover,
+.zs2-ghost[data-active] {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2-ghost:active {
+  transform: translateY(1px);
+}
+.zs2-ghost:disabled {
+  color: var(--z-tx-4, var(--z-tx-3));
+  background: none;
+  cursor: default;
+}
+
+/* frame. The top row is centred on y = 42, so it lines up with the gear and the Level pill */
+.zs2-frame {
+  height: 100%;
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: 20px 14px 14px;
+  display: grid;
+  grid-template-rows: 44px minmax(0, 1fr);
+  row-gap: 12px;
+}
+.zs2-body {
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+}
+/* an outline on the ground, b36's .b-out. The filled things live inside it: the composer, an open card */
+.zs2-panel {
+  min-height: 0;
+  background: none;
+  border-radius: var(--b-r);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  overflow: hidden;
+}
+
+/* top row, 44 high, centred on y 42 with the gear. It ends in the box the Level and coach pill centres on */
+.zs2-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  height: 44px;
+}
+.zs2-top-l,
+.zs2-top-r {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.zs2-top-r {
+  justify-content: flex-end;
+}
+/* the pill's place: its right edge is the frame's, its centre the row's. The dev gear lives bottom right now */
+.zs2-hud-anchor {
+  flex: none;
+  width: 132px;
+  height: 36px;
+  pointer-events: none;
+}
+.zs2-project {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The stage you are on (his note, 2 Nov): its number in a pill, its name, a chevron. Hover or focus grows the list of
+   every stage out of the pill on the spring, blur to sharp, and it shrinks back into it. A CSS transition, so a pointer
+   that comes back mid close turns it around */
+.zs2-stages {
+  position: relative;
+  min-width: 0;
+}
+/* b14 (his note: "a better 1:5 feel, better like increased height and everything"): the key is a 36 high pill holding the
+   number pill 4 in, so the two are concentric. The number is the one heavy word on the row */
+.zs2-stages-key {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  height: 36px;
+  padding: 0 12px 0 4px;
+  border-radius: 18px;
+  transition: background-color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-stages-key:hover,
+.zs2-stages[data-open] .zs2-stages-key {
+  background: var(--z-raise);
+}
+.zs2-stages-key:active {
+  transform: translateY(1px);
+}
+.zs2-stages-pill {
+  flex: none;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 14px;
+  background: var(--z-panel);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--z-tx);
+  font-variant-numeric: tabular-nums;
+}
+.zs2-stages-of {
+  font-weight: 500;
+  color: var(--z-tx-3);
+}
+.zs2-stages-name {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-stages-chev {
+  flex: none;
+  color: var(--z-tx-3);
+  transition: transform 420ms var(--z4-spring), color 120ms var(--zj-e);
+}
+.zs2-stages[data-open] .zs2-stages-chev {
+  transform: rotate(180deg);
+  color: var(--z-tx);
+}
+/* what we are chasing, then the path. It grows out of the number pill */
+.zs2-stages-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  width: 344px;
+  margin: 0;
+  padding: 16px 16px 10px;
+  background: var(--b-slab);
+  border-radius: var(--b-r);
+  box-shadow: var(--b-slab-sh);
+  transform-origin: 18px 0;
+  transform: translateY(-6px) scale(0.92);
+  filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 340ms var(--zj-e), filter 240ms var(--zj-e), opacity 180ms var(--zj-e), visibility 0s 340ms;
+}
+.zs2-stages[data-open] .zs2-stages-pop {
+  transform: none;
+  filter: blur(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform 560ms var(--z4-snap), filter 360ms var(--zj-out), opacity 200ms var(--zj-out), visibility 0s;
+}
+.zs2-stages-goal {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--z-tx);
+  text-wrap: balance;
+}
+/* the path: a node per stage on one rail. A segment of rail joins each node to the one above it, with clear air round the
+   nodes. Walked is ink, still to come is a hairline */
+.zs2-path {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.zs2-path-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+  height: 44px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx-3);
+}
+.zs2-path-row + .zs2-path-row::before {
+  content: '';
+  position: absolute;
+  left: 11.25px;
+  top: -6px;
+  width: 1.5px;
+  height: 12px;
+  border-radius: 1px;
+  background: var(--b-hl2);
+}
+.zs2-path-row:is([data-state='done'], [data-state='now']) + .zs2-path-row:is([data-state='done'], [data-state='now'])::before {
+  background: var(--z-tx-3);
+}
+.zs2-path-node {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--z-tx-3);
+  font-variant-numeric: tabular-nums;
+}
+/* done: the green tick alone, no disc (his note, b14: "a green tick mark only. No circles"). Now: the ink disc */
+.zs2-path-row[data-state='done'] .zs2-path-node {
+  box-shadow: none;
+  color: var(--g-ink);
+}
+.zs2-path-row[data-state='now'] .zs2-path-node {
+  background: var(--z-tx);
+  box-shadow: none;
+  color: var(--z-panel);
+  font-weight: 600;
+}
+.zs2-path-t {
+  min-width: 0;
+  color: var(--z-tx-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-path-row[data-state='done'] .zs2-path-t {
+  color: var(--z-tx-2);
+}
+.zs2-path-row[data-state='now'] .zs2-path-t {
+  color: var(--z-tx);
+  font-weight: 600;
+}
+.zs2-path-min {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  font-variant-numeric: tabular-nums;
+}
+/* the nodes come down the rail one after another as it opens, blur to sharp */
+.zs2-path-row {
+  transform: translateY(-4px);
+  filter: blur(3px);
+  opacity: 0;
+  transition: transform 200ms var(--zj-e), filter 200ms var(--zj-e), opacity 140ms var(--zj-e);
+}
+.zs2-stages[data-open] .zs2-path-row {
+  transform: none;
+  filter: blur(0);
+  opacity: 1;
+  transition: transform 520ms var(--z4-snap), filter 420ms var(--zj-out), opacity 260ms var(--zj-out);
+  transition-delay: calc(60ms + var(--i, 0) * 34ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2-path-row,
+  .zs2-stages[data-open] .zs2-path-row {
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
+/* the work, left. No outline: it sits on the ground (his note, b11). Developer mode can bring the outline back */
+.zs2-work {
+  flex: none;
+  width: var(--zs2-workw, 340px);
+  display: flex;
+  flex-direction: column;
+}
+.zs2-work.zs2-panel {
+  box-shadow: none;
+  transition: box-shadow 200ms var(--zj-e);
+}
+:root[data-slot-outline='1'] .zs2-work.zs2-panel {
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zs2-work-in {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* b12 (his note: the stage name already sits after the back key): no title here, only the files key, top right on the
+   first heading's row */
+.zs2-work-head {
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.zs2-work-title {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+.zs2-work-title h2 {
+  min-width: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-tag {
+  flex: none;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+}
+.zs2-work-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px 10px 8px;
+  scrollbar-width: none;
+}
+.zs2-work-scroll::-webkit-scrollbar {
+  display: none;
+}
+.zs2-work-view {
+  min-height: 100%;
+}
+/* the key sits right under the last slot, inside the list. Its row keeps room for the lip */
+.zs2-work .zs2-submit {
+  padding: 14px 0 8px;
+}
+.zs2-work .zs2-submit:empty {
+  padding: 0;
+}
+.zs2-keyrow {
+  display: grid;
+  padding-bottom: 4px;
+}
+.zs2 .zs2-key {
+  width: 100%;
+}
+/* on the big screen the key is as wide as its words (his note, 2 Nov: "CTA or something smaller") */
+.zs2-work .zs2-keyrow {
+  justify-items: start;
+}
+.zs2 .zs2-work .zs2-key {
+  width: auto;
+}
+/* locked: the key pressed flat into the ground, its lip gone, a lock and what it opens. It reads locked */
+.zs2 .zk3[data-locked] {
+  cursor: default;
+  opacity: 1;
+  filter: none;
+  transform: translateY(4px);
+  background: var(--z-raise);
+  color: var(--z-tx-3);
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--z-line);
+}
+.zs2 .zk3[data-locked] .zs2-locked-tag {
+  font-weight: 400;
+  color: var(--z-tx-4, var(--z-tx-3));
+}
+/* the quiet tactile key: Stay, No, the other choices. A slab on its own darker lip */
+.zs2 .zk3.zs2-k-quiet {
+  --k-bg: var(--zs2-quiet-bg);
+  --k-tx: var(--z-tx);
+  --k-lip: var(--zs2-quiet-lip);
+  --k-sheen: var(--zs2-quiet-sheen);
+}
+.zs2-locked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  border-radius: var(--zj-r-ctl);
+  box-shadow: inset 0 0 0 1px var(--z-line);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx-3);
+  user-select: none;
+}
+.zs2-locked-tag {
+  color: var(--z-tx-4, var(--z-tx-3));
+}
+
+/* steps and slots, one column of numbered sections (his note, 2 Nov). Space between them, no rule.
+   The chevron sits on the slots' ring column, the number starts where a slot's words start */
+.zs2-board {
+  display: grid;
+}
+.zs2-work .zs2-board > .zs2-step:first-child .zs2-sec-head {
+  width: calc(100% - 44px);
+}
+.zs2-sec + .zs2-sec,
+.zs2-board > .zs2-step + .zs2-step {
+  margin-top: 12px;
+}
+.zs2-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 12px 0 10px;
+  border-radius: var(--zj-r-ctl);
+  text-align: left;
+  font-size: var(--zs2-head-fs);
+  line-height: 1.34;
+  font-weight: 500;
+  color: var(--z-tx);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e);
+}
+.zs2-sec-head:hover {
+  background: var(--z-raise);
+}
+.zs2-sec-chev {
+  flex: none;
+  color: var(--z-tx-3);
+  transform: rotate(90deg);
+  transition: transform 420ms var(--z4-spring), color 120ms var(--zj-e);
+}
+.zs2-sec[data-closed] .zs2-sec-chev {
+  transform: none;
+}
+.zs2-sec-head:hover .zs2-sec-chev {
+  color: var(--z-tx);
+}
+.zs2-sec-t {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-sec[data-state='done'] .zs2-sec-t {
+  color: var(--z-tx-2);
+}
+.zs2-sec[data-state='next'] .zs2-sec-t {
+  color: var(--z-tx-3);
+}
+.zs2-sec-head:hover .zs2-sec-t {
+  color: var(--z-tx);
+}
+/* the fold: the height glides on the spring, the rows blur and sink a touch as they go, sharp as they come back */
+.zs2-sec-fold {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 560ms var(--z4-spring);
+}
+.zs2-sec[data-closed] .zs2-sec-fold {
+  grid-template-rows: 0fr;
+}
+.zs2-sec-in {
+  min-height: 0;
+  overflow: hidden;
+  transform-origin: 0 0;
+  transition: transform 560ms var(--z4-spring), filter 360ms var(--zj-e);
+}
+.zs2-sec[data-closed] .zs2-sec-in {
+  transform: translateY(-6px) scale(0.98);
+  filter: blur(6px);
+}
+/* a section her word has not landed: one blurred line, no ring */
+.zs2-slot[data-pending] {
+  pointer-events: none;
+}
+/* the hand in: the compact key on the words' column, room under it for its lip */
+.zs2-step-submit .zs2-sec-in > .zs2-submit {
+  padding: 6px 0 14px 34px;
+}
+.zs2-step-submit .zs2-sec-in > .zs2-submit:empty {
+  padding: 0;
+}
+.zs2-slots {
+  display: grid;
+  padding: 0 0 6px;
+}
+.zs2-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px 0 34px;
+  border-radius: var(--zj-r-ctl);
+  text-align: left;
+  transition: background-color 120ms var(--zj-e), transform 220ms var(--z4-spring);
+}
+.zs2-slot[data-filled]:hover {
+  background: var(--z-raise);
+}
+.zs2-slot[data-named]:not([data-filled]) .zs2-slot-label {
+  color: var(--b-t3);
+}
+.zs2-fileslot {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.zs2-fileslot:active {
+  transform: scale(0.99);
+}
+.zs2-fileslot-ico {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.zs2-fileslot-eye {
+  flex: none;
+  color: var(--b-t3);
+  transition: color 120ms var(--zj-e);
+}
+.zs2-fileslot:hover .zs2-fileslot-eye {
+  color: var(--b-t1);
+}
+.zs2-redact {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  filter: blur(1.2px);
+  pointer-events: none;
+}
+.zs2-redact-line {
+  display: flex;
+  gap: 5px;
+}
+.zs2-redact i {
+  flex: none;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--z-tx) 13%, transparent);
+}
+.zs2-slot .zs2-redact {
+  position: absolute;
+  left: 34px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 220ms var(--zj-out), filter 320ms var(--zj-out), transform 320ms var(--zj-out);
+}
+.zs2-slot[data-filled] .zs2-redact {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(-50%) scaleX(0.7);
+  transform-origin: 0 50%;
+}
+.zs2-slot-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--zs2-slot-fs);
+  line-height: 1.5;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-slot-check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--z-green);
+}
+.zs2-promptslot {
+  position: relative;
+  margin: 2px 0 6px 34px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+.zs2-promptslot[data-filled] {
+  margin-left: 28px;
+  display: block;
+  padding: 10px 40px 10px 12px;
+  border-radius: var(--zj-r-row);
+  background: var(--z-raise);
+}
+.zs2-promptslot-text {
+  display: block;
+  max-height: 164px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--z-tx-2);
+  scrollbar-width: none;
+}
+.zs2-promptslot-copy {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+/* the chat. No outline: it sits on the ground. Her name card starts where the reading column starts */
+.zs2-chat {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+}
+.zs2-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: min(var(--zs2-col), calc(100% - 48px));
+  margin: 0 auto;
+  padding: 16px 0 8px;
+}
+.zs2-thread {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.zs2-thread-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 16px 24px 20px;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(transparent, black 16px, black calc(100% - 16px), transparent);
+  mask-image: linear-gradient(transparent, black 16px, black calc(100% - 16px), transparent);
+}
+.zs2-thread-scroll::-webkit-scrollbar {
+  display: none;
+}
+.zs2-thread[data-surface='pip'] .zs2-thread-scroll {
+  padding: 12px 12px 14px;
+}
+.zs2-thread-col {
+  max-width: var(--zs2-col);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.zs2-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+.zs2-row + .zs2-row {
+  margin-top: 20px;
+}
+.zs2-row[data-turn] {
+  margin-top: 28px;
+}
+.zs2-row[data-from='me'] {
+  align-items: flex-end;
+}
+.zs2-row[data-game] {
+  align-items: stretch;
+}
+/* her quiet lines are drawn in the row itself now, on both surfaces. An older copy put in from outside steps aside */
+.zs2-row > .zp-seen {
+  max-width: 100%;
+}
+.zs2-row:has(> .zp-seen) > .zp-seen-host {
+  display: none;
+}
+.zs2-her {
+  max-width: 100%;
+  font-size: var(--zs2-chat-fs, 14px);
+  line-height: calc(var(--zs2-chat-fs, 14px) + var(--zs2-chat-lg, 6px));
+  letter-spacing: var(--zs2-chat-ls, normal);
+  color: var(--z-tx);
+  overflow-wrap: anywhere;
+}
+.zs2-her[data-draft] {
+  white-space: pre-wrap;
+  padding: 12px 14px;
+  border-radius: var(--zj-r-row);
+  background: var(--z-raise);
+  color: var(--z-tx-2);
+}
+/* b14 (his note: "a smoother, non-jittery, very smooth animation ... like how ChatGPT does it"): a word never moves, it only
+   comes sharp out of a soft blur where it already sits. Its blur runs longer than its ink, so the last few words out are
+   always somewhere between soft and sharp at once: one soft wave at the edge, never a word hopping in */
+.zs2-w {
+  display: inline-block;
+  transition: filter 560ms var(--zj-out), opacity 300ms var(--zj-out), color 400ms var(--zj-out) 110ms;
+}
+/* b15 (his note, 3 Nov: "The green is the energy ... Blur with green, the little blur, and then the text"): a word waiting
+   to come out is the green. It arrives soft and green, holds the green a beat, then takes its ink as it sharpens */
+.zs2-her[data-live] .zs2-w:not([data-on]) {
+  opacity: 0;
+  filter: blur(6px);
+  color: var(--g-hi, #4fdc85);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2-w {
+    transition: none;
+  }
+}
+.zs2-mine {
+  max-width: 80%;
+  padding: 6px 10px;
+  border-radius: var(--b-ri);
+  background: var(--zs2-mine-bg, var(--b-slab3));
+  font-size: var(--zs2-chat-fs, 14px);
+  line-height: calc(var(--zs2-chat-fs, 14px) + var(--zs2-chat-lg, 6px));
+  letter-spacing: var(--zs2-chat-ls, normal);
+  color: var(--z-tx);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.zs2-mine[data-stuck] {
+  padding: 4px 12px;
+  border-radius: var(--zj-r-pill);
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--z-line-2);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+}
+.zs2-sys {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+}
+.zs2-opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+/* b14 (his note: "why are the pills with the white background ... make it better, like an outline"): her choices are outline
+   pills on the ground, no fill and no lip. Hover inks the outline and lays the faintest wash, a press sinks it a touch, and
+   the one you pick fills with ink while the rest step back, a beat before it turns into your line */
+.zs2-opt {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--z-tx);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    box-shadow 140ms var(--zj-e),
+    background-color 140ms var(--zj-e),
+    color 140ms var(--zj-e),
+    transform 320ms var(--z4-spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.zs2-opt:hover {
+  background: var(--zs2-wash);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z-tx) 34%, transparent);
+}
+.zs2-opt:active {
+  background: var(--zs2-wash-2);
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+.zs2-opt:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--z-tx) 40%, transparent);
+  outline-offset: 2px;
+}
+.zs2-opt[data-picked] {
+  background: var(--z-tx);
+  box-shadow: inset 0 0 0 1px var(--z-tx);
+  color: var(--z-panel);
+  transform: scale(1.02);
+}
+.zs2-opts[data-picking] .zs2-opt:not([data-picked]) {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  color: var(--z-tx-3);
+  cursor: default;
+}
+/* stuck mode: the pill opens on its key, a round number concentric with the pill's end, so 1 2 3 read as keys you can press */
+.zs2-opt:has(> .zs2-opt-n) {
+  padding-left: 6px;
+}
+.zs2-opt-n {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--z-tx-2);
+  transition: box-shadow 140ms var(--zj-e), color 140ms var(--zj-e);
+}
+.zs2-opt:hover .zs2-opt-n {
+  color: var(--z-tx);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z-tx) 34%, transparent);
+}
+.zs2-opt[data-picked] .zs2-opt-n {
+  color: var(--z-panel);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z-panel) 40%, transparent);
+}
+/* stuck mode stacks the keys one under the other, 1 2 3, so the composer under them reads as 4, never a ragged wrap */
+.zs2-opts[data-keys] {
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* how many of the step's finds are in, under her picks: the score of the round, a short bar and the count */
+.zs2-opts-tally {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  padding-left: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+}
+.zs2-tally-bar {
+  display: inline-flex;
+  gap: 2px;
+}
+.zs2-tally-bar > i {
+  width: 8px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--b-hl2);
+}
+.zs2-tally-bar > i[data-on] {
+  background: var(--z-tx);
+}
+.zs2-thread[data-surface='pip'] .zs2-opts {
+  gap: 6px;
+}
+.zs2-thread[data-surface='pip'] .zs2-opt {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  line-height: 16px;
+  gap: 6px;
+}
+.zs2-thread[data-surface='pip'] .zs2-opt:has(> .zs2-opt-n) {
+  padding-left: 5px;
+}
+.zs2-thread[data-surface='pip'] .zs2-opt-n {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2-opt,
+  .zs2-opt:active,
+  .zs2-opt[data-picked] {
+    transform: none;
+    transition-duration: 1ms;
+  }
+}
+
+/* b14 (his note: "when the stuck mode was on and when the stuck mode was off, like a divider and center text, and then again
+   a divider, like how WhatsApp shows when the time happens"): a hairline, the words, a hairline, across the reading column.
+   The lines draw out from the words */
+.zs2-row[data-rule] {
+  align-items: stretch;
+  margin-top: 28px;
+}
+.zs2-row[data-rule] + .zs2-row {
+  margin-top: 28px;
+}
+.zs2-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.zs2-rule-l {
+  flex: 1;
+  min-width: 0;
+  height: 1px;
+  background: var(--b-hl2);
+}
+.zs2-rule-l[data-side='l'] {
+  transform-origin: 100% 50%;
+}
+.zs2-rule-l[data-side='r'] {
+  transform-origin: 0 50%;
+}
+.zs2-rule-t {
+  flex: none;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--z-tx-2);
+  white-space: nowrap;
+}
+.zs2-latest {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--zj-r-pill);
+  background: var(--z-panel);
+  box-shadow: inset 0 0 0 1px var(--z-line-2);
+  color: var(--z-tx-2);
+  transform: translateX(-50%);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e);
+}
+.zs2-latest:hover {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2-waiting .z4-steps {
+  min-width: 260px;
+}
+
+/* a file in the chat: one compact row on surface 2, no preview (his note, b11). The real app's mark, the name and one line
+   of what it is, View and Download. Tile radius 7 at 7 in, so the row's 14 is concentric */
+.zs2-card {
+  width: 320px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 6px 7px 7px;
+  border-radius: var(--b-r);
+  background: var(--s2);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  transition: box-shadow 140ms var(--zj-e);
+}
+.zs2-card:has(.zs2-card-text:hover) {
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zs2-card-ico {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--b-rs);
+  background: var(--s1);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  color: var(--z-tx-2);
+}
+.zs2-card-ico img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.zs2-card-ico[data-kind='image'] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.zs2-card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.zs2-card-name {
+  max-width: 100%;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-card-meta {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-card[data-surface='pip'] {
+  width: 100%;
+  gap: 8px;
+  padding: 5px 4px 5px 5px;
+  border-radius: var(--b-ri);
+}
+.zs2-card[data-surface='pip'] .zs2-card-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+}
+.zs2-card[data-surface='pip'] .zs2-card-ico img {
+  width: 16px;
+  height: 16px;
+}
+.zs2-card[data-surface='pip'] .zs2-card-name {
+  font-size: 12px;
+  line-height: 16px;
+}
+.zs2-card[data-surface='pip'] .zs2-ghost {
+  width: 28px;
+  height: 28px;
+}
+
+/* a link's address strip, in the preview */
+.zs2-card-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  background: var(--z-raise-2);
+  border-bottom: 1px solid var(--z-line);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.zs2-card-strip svg {
+  flex: none;
+}
+.zs2-card-host {
+  color: var(--z-tx);
+}
+.zs2-card-path {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* your line, and her one emoji on its bottom right edge when it was right (his note, b14: "on the bottom right, like how we
+   have a reaction in WhatsApp"). The chip half overlaps the bubble's edge, cut out of it by a ring of the ground, and the
+   row keeps room under it so the next line never touches it */
+.zs2-mewrap {
+  position: relative;
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.zs2-mewrap:has(> .zs2-react) {
+  margin-bottom: 18px;
+}
+.zs2-mewrap > .zs2-mine {
+  max-width: 100%;
+}
+.zs2-react {
+  position: absolute;
+  right: 10px;
+  bottom: -18px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 12px;
+  background: var(--z-bg);
+  box-shadow: 0 0 0 2px var(--z-bg), inset 0 0 0 1px var(--b-hl2);
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-size: 15px;
+  line-height: 1;
+  transform-origin: 50% 70%;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* the composer: a two row box inside the same reading column */
+.zs2-chat-foot {
+  flex: none;
+  padding: 0 24px 16px;
+}
+.zs2-composer {
+  position: relative;
+  max-width: var(--zs2-col);
+  margin: 0 auto;
+}
+.zs2-composer-beam {
+  display: block;
+  border-radius: var(--b-r);
+}
+.zs2-composer-box {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 10px 10px 8px;
+  border-radius: var(--b-r);
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  transition: box-shadow 140ms var(--b-ease);
+}
+.zs2-composer-box:focus-within {
+  box-shadow: inset 0 0 0 1px var(--b-t3);
+}
+/* surface 2, no outline (his note, b11). The dev toggle puts the outline back */
+:root[data-chat-surface='1'] .zs2-composer-box,
+:root[data-chat-surface='1'] .zs2-composer-box:focus-within {
+  background: var(--s2);
+  box-shadow: none;
+}
+.zs2-input {
+  width: 100%;
+  min-height: 30px;
+  max-height: 132px;
+  padding: 4px 6px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--z-tx);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: inherit;
+}
+.zs2-input::placeholder {
+  color: var(--z-tx-3);
+}
+/* b14 stuck mode: the box is the key after her pills, so it opens on the next number, the same round key */
+.zs2-optnum {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--z-tx-2);
+  pointer-events: none;
+}
+.zs2-composer-box[data-optnum] > .zs2-input {
+  padding-left: 36px;
+}
+/* the PIP box is the big one scaled down (pip.css: 8 in, the words on their own 28 line), so the key sits on that line */
+.zs2-composer[data-surface='pip'] .zs2-optnum {
+  left: 10px;
+  top: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+.zs2-composer[data-surface='pip'] .zs2-composer-box[data-optnum] > .zs2-input {
+  padding-left: 30px;
+}
+.zs2-composer-bar,
+.zs2-composer-l,
+.zs2-composer-r {
+  display: flex;
+  align-items: center;
+}
+.zs2-composer-bar {
+  justify-content: space-between;
+}
+.zs2-composer-l,
+.zs2-composer-r {
+  gap: 2px;
+}
+/* I'm stuck: a plain text key beside the icons, no pill (his note, 2 Nov). Its hover is the ghost keys' tint */
+.zs2-stuckpill {
+  flex: none;
+  height: 32px;
+  margin-left: 2px;
+  padding: 0 10px;
+  border-radius: var(--zj-r-ctl);
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+  transition: color 120ms var(--zj-e), background-color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-stuckpill:hover {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2-stuckpill:active {
+  transform: translateY(1px);
+}
+.zs2-stuckpill[aria-pressed='true'] {
+  color: var(--z-tx);
+}
+.zs2-send {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--zj-r-pill);
+  background: var(--z-tx);
+  color: var(--z-panel);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-send:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.zs2-send:disabled {
+  background: var(--z-raise-2);
+  color: var(--z-tx-3);
+  cursor: default;
+}
+.zs2-micslab {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-radius: inherit;
+  background: var(--b-slab3);
+  color: var(--z-tx);
+}
+.zs2-micslab .zs2-micbars {
+  flex: 1;
+  min-width: 0;
+}
+.zs2-composer[data-surface='pip'] .zs2-composer-box {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--zj-r-row);
+}
+.zs2-composer[data-surface='pip'] .zs2-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 28px;
+  padding: 3px 4px;
+  font-size: 12px;
+  line-height: 22px;
+}
+.zs2-composer[data-surface='pip'] .zs2-stuckpill {
+  margin-left: 0;
+  padding: 0 8px;
+}
+.zs2-composer[data-surface='pip'] .zs2-ghost,
+.zs2-composer[data-surface='pip'] .zs2-send {
+  width: 28px;
+  height: 28px;
+}
+
+/* preview: a picture, or a link on its strip */
+.zs2-preview-img {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: var(--zj-r-row);
+}
+.zs2-preview-link {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: 4px 0;
+}
+.zs2-preview-link .zs2-card-strip {
+  width: 100%;
+  border-radius: var(--zj-r-ctl);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--z-line);
+}
+.zs2-talk {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Your deliverables. The icon carries the count */
+.zs2-dl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  min-width: 32px;
+  padding: 0 8px;
+}
+.zs2-dl-n {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--b-t1);
+  font-variant-numeric: tabular-nums;
+}
+/* the window: b36's .zw. A slab, a 34 high head, dragged by its head */
+.zs2-win-at {
+  position: fixed;
+  z-index: 60;
+}
+.zs2-win {
+  display: flex;
+  flex-direction: column;
+  background: var(--b-slab);
+  border-radius: var(--b-r);
+  box-shadow: var(--b-slab-sh);
+  transform-origin: 100% 0;
+  color: var(--b-t1);
+  font-family: var(--zj-font, Inter, -apple-system, system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+}
+.zs2-win button {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.zs2-win :focus-visible {
+  outline: 1.5px solid var(--b-t2);
+  outline-offset: 2px;
+}
+.zs2-win-h {
+  flex: none;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 5px 0 13px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.zs2-win[data-held] .zs2-win-h {
+  cursor: grabbing;
+}
+.zs2-win-t {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--b-t2);
+  white-space: nowrap;
+}
+.zs2-win-m {
+  margin-left: auto;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t3);
+  font-variant-numeric: tabular-nums;
+}
+.zs2-win .zs2-win-x {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--b-rs);
+  color: var(--b-t3);
+  transition: background-color 140ms, color 140ms, transform 120ms var(--b-ease);
+}
+.zs2-win .zs2-win-x:hover {
+  background: var(--b-slab3);
+  color: var(--b-t1);
+}
+.zs2-win .zs2-win-x:active {
+  transform: scale(0.9);
+}
+.zs2-win-b {
+  overflow-y: auto;
+  padding: 0 6px 6px;
+  border-radius: 0 0 var(--b-r) var(--b-r);
+  scrollbar-width: none;
+}
+.zs2-win-b::-webkit-scrollbar {
+  display: none;
+}
+.zs2-dl-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.zs2-dl-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 8px;
+  border-radius: var(--b-ri);
+  transition: background-color 140ms;
+}
+.zs2-dl-row:hover {
+  background: var(--b-slab2);
+}
+.zs2-dl-ico {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--b-rs);
+  background: var(--b-slab2);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  color: var(--b-t2);
+}
+.zs2-dl-ico img {
+  width: 18px;
+  height: 18px;
+}
+.zs2-dl-ico[data-kind='image'] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.zs2-dl-t {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.zs2-dl-t b {
+  font-size: 13px;
+  line-height: 17px;
+  font-weight: 500;
+  color: var(--b-t1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-dl-t em {
+  font-style: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-dl-at {
+  flex: none;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--b-t3);
+  font-variant-numeric: tabular-nums;
+}
+/* b36's chip */
+.zs2-dl-view {
+  flex: none;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 9px;
+  background: var(--b-slab3);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--b-t1);
+  transition: box-shadow 140ms, transform 120ms var(--b-ease);
+}
+.zs2-dl-view:hover {
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zs2-dl-view:active {
+  transform: scale(0.97);
+}
+.zs2-dl-none {
+  padding: 2px 7px 10px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--b-t2);
+}
+/* the hand in, on its way to the icon */
+.zs2-dfly {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  max-width: 240px;
+  padding: 0 12px 0 10px;
+  border-radius: var(--b-ri);
+  background: var(--b-slab2);
+  box-shadow: var(--b-slab-sh);
+  color: var(--b-t1);
+  font: 500 13px/17px var(--zj-font, Inter, -apple-system, system-ui, sans-serif);
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+}
+.zs2-dfly img,
+.zs2-dfly svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+.zs2-dfly svg {
+  color: var(--b-t2);
+}
+.zs2-dfly span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== b6: the columns, the rail, the checklist, the POU under the thread, the exit. 2 Nov: the seam drags again ===== */
+
+.zs2-body[data-snap] .zs2-work {
+  transition: width 520ms var(--z4-spring);
+}
+.zs2-body[data-snap] .zs2-sidewrap {
+  transition: width 520ms var(--z4-spring);
+}
+
+/* the seam between the work and the chat. It takes no room: a 12 wide hit area over it, a hairline in the middle.
+   At rest there is nothing to see, on hover the hairline grows to the full height from its centre, brighter while held */
+.zs2-grip {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  width: 0;
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+.zs2-grip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  width: 12px;
+}
+.zs2-grip::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: -0.5px;
+  width: 1px;
+  border-radius: 1px;
+  background: var(--b-hl2);
+  transform: scaleY(0);
+  transition: transform 520ms var(--z4-spring), background-color 160ms var(--zj-e);
+}
+.zs2-grip:hover::after,
+.zs2-grip:focus-visible::after {
+  transform: scaleY(1);
+  background: var(--z-tx-3);
+}
+.zs2-body[data-dragging] .zs2-grip::after {
+  transform: scaleY(1);
+  background: var(--z-tx-2);
+}
+/* while a drag runs nothing in the page selects, and the pointer keeps its resize arrows over everything */
+.zs2-body[data-dragging] {
+  cursor: col-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.zs2-body[data-dragging] > * {
+  pointer-events: none;
+}
+.zs2-body[data-dragging] > .zs2-grip {
+  pointer-events: auto;
+}
+.zs2-body[data-layout='resource-left'] > .zs2-grip {
+  order: 3;
+}
+.zs2-body[data-layout='resource-left'] > .zs2-grip[data-for='side'] {
+  order: 1;
+}
+
+/* files on the far left, the chat in the middle, the slots on the right */
+.zs2-body[data-layout='resource-left'] > .zs2-sidewrap {
+  order: 0;
+  flex-direction: row-reverse;
+}
+.zs2-body[data-layout='resource-left'] > .zs2-chat {
+  order: 2;
+}
+.zs2-body[data-layout='resource-left'] > .zs2-work {
+  order: 4;
+}
+
+/* the slots at their smallest: what you hand in, one line of points, the key */
+.zs2-rail {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+}
+.zs2-rail-del,
+.zs2-rail-key {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--zj-r-ctl);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-rail-del {
+  background: var(--z-raise);
+}
+.zs2-rail-del img {
+  width: 18px;
+  height: 18px;
+}
+.zs2-rail-del:hover {
+  background: var(--z-raise-2);
+}
+.zs2-rail-del:active,
+.zs2-rail-key:active,
+.zs2-rail-line:active {
+  transform: scale(0.97);
+}
+.zs2-rail-line {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  overflow: hidden;
+  border-radius: var(--zj-r-ctl);
+  transition: background-color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-rail-line:hover {
+  background: var(--z-raise);
+}
+.zs2-rail-line::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  bottom: 20px;
+  width: 1px;
+  margin-left: -0.5px;
+  background: var(--b-hl2);
+}
+.zs2-rail-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.zs2-rail-pt {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--z-bg);
+  box-shadow: inset 0 0 0 1.5px var(--z-line-2);
+  color: var(--z-bg);
+}
+.zs2-rail-pt[data-filled] {
+  width: 14px;
+  height: 14px;
+  background: var(--z-tx-2);
+  box-shadow: none;
+}
+.zs2-rail-pt[data-verified] {
+  background: var(--g-fill);
+}
+.zs2-rail-pt[data-lit] {
+  box-shadow: inset 0 0 0 1.5px var(--z-tx);
+}
+.zs2-rail-pt[data-lit]::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--z-tx);
+}
+.zs2-rail-step[data-state='next'] .zs2-rail-pt {
+  box-shadow: inset 0 0 0 1.5px var(--b-hl2);
+}
+.zs2-rail-key {
+  color: var(--z-tx-3);
+  box-shadow: inset 0 0 0 1px var(--z-line);
+}
+.zs2-rail-key[data-on] {
+  background: var(--z-key);
+  color: var(--z-key-tx);
+  box-shadow: none;
+}
+
+/* the checklist: an open ring, then a tick, green only when verified. A done slot opens on what filled it */
+.zs2-slot-mark {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 50%;
+}
+.zs2-slot-mark[data-mark='open'] {
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  left: 10px;
+  box-shadow: inset 0 0 0 1.5px var(--z-line-2);
+}
+/* verified: the green tick alone, no disc, no ring (his note, b14: "this green dot and the checkmark are not even visible
+   ... a green tick mark only. No circles"). A heavier stroke at 16 so it reads at a glance on either ground */
+.zs2-slot-mark[data-mark='ok'] {
+  color: var(--g-ink);
+}
+.zs2-slot-mark[data-mark='told'] {
+  color: var(--z-tx-2);
+}
+.zs2-slot-check {
+  display: none;
+}
+.zs2-slot-chev {
+  flex: none;
+  color: var(--z-tx-3);
+  transform: scale(0.6) translateY(-2px);
+  filter: blur(2px);
+  opacity: 0;
+  transition: transform 260ms var(--z4-spring), filter 200ms var(--zj-e), opacity 160ms var(--zj-e), color 120ms var(--zj-e);
+}
+.zs2-slot[data-more] {
+  cursor: pointer;
+}
+.zs2-slot[data-more]:hover {
+  background: var(--z-raise);
+  transform: translateY(-1px);
+}
+.zs2-slot[data-more]:active {
+  transform: translateY(0) scale(0.99);
+}
+.zs2-slot[data-more]:hover .zs2-slot-chev,
+.zs2-slot[data-more]:focus-visible .zs2-slot-chev,
+.zs2-slotwrap[data-open] .zs2-slot-chev {
+  transform: none;
+  filter: none;
+  opacity: 1;
+}
+.zs2-slotwrap[data-open] .zs2-slot[data-more] .zs2-slot-chev {
+  transform: rotate(180deg);
+  color: var(--z-tx);
+}
+.zs2-slot-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 520ms var(--z4-spring);
+}
+.zs2-slotwrap[data-open] .zs2-slot-fold {
+  grid-template-rows: 1fr;
+}
+.zs2-slot-fold-in {
+  min-height: 0;
+  overflow: hidden;
+}
+.zs2-slot-more {
+  display: grid;
+  gap: 6px;
+  padding: 2px 12px 12px 34px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--z-tx-2);
+  transform: translateY(-4px);
+  filter: blur(4px);
+  transition: transform 520ms var(--z4-spring), filter 320ms var(--zj-e);
+}
+.zs2-slotwrap[data-open] .zs2-slot-more {
+  transform: none;
+  filter: none;
+}
+.zs2-slot-more p {
+  margin: 0;
+  text-wrap: pretty;
+}
+.zs2-slot-who {
+  margin-right: 6px;
+  color: var(--z-tx-3);
+}
+.zs2-slot-more q {
+  color: var(--z-tx);
+}
+.zs2-slot-proof {
+  padding: 8px 10px;
+  border-radius: var(--zj-r-row);
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+
+/* the fill: a green band runs through the words as they type in */
+.zs2-sweep {
+  background-image: linear-gradient(90deg, var(--z-tx) 0%, var(--z-tx) 38%, var(--z-green) 50%, var(--z-tx) 62%, var(--z-tx) 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+/* the same words on their way to the Level pill */
+.zs2-xpghost {
+  position: fixed;
+  z-index: 900;
+  font-family: var(--zj-font, Inter, -apple-system, system-ui, sans-serif);
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.006em;
+  white-space: nowrap;
+  color: var(--g-ink, var(--b-ok));
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  will-change: transform, filter;
+}
+
+/* the POU under the one thread: what she listens for, then the hold. Done, the hold folds away and the lines stay */
+.zs2-pou-foot {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 24px 0;
+}
+.zs2-lines[data-in='chat'] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: var(--zs2-col);
+  margin: 0 auto;
+}
+.zs2-lines[data-in='chat'] .zs2-line-t {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.zs2-pou-holdfold {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 620ms var(--z4-spring);
+}
+.zs2-pou-holdin {
+  min-height: 0;
+  overflow: hidden;
+  transition: transform 520ms var(--z4-spring), filter 320ms var(--zj-e);
+}
+.zs2-pou-foot[data-done] {
+  padding-bottom: 16px;
+}
+.zs2-pou-foot[data-done] .zs2-pou-holdfold {
+  grid-template-rows: 0fr;
+}
+.zs2-pou-foot[data-done] .zs2-pou-holdin {
+  transform: scale(0.8) translateY(10px);
+  filter: blur(6px);
+}
+.zs2-pou-foot .zs2-chat-foot {
+  padding: 8px 0 16px;
+}
+
+/* the tips on the top row and her name card's keys: they name the key, a beat after the pointer settles.
+   The thread and the PiP have their own (pip/Pops), so this stays out of them */
+:is(.zs2-top, .zs2-work-head) [data-tip] {
+  position: relative;
+}
+:is(.zs2-top, .zs2-work-head) [data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  padding: 4px 8px;
+  border-radius: var(--zj-r-check, 6px);
+  background: var(--z-tx);
+  color: var(--z-bg);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateY(-4px) scale(0.96);
+  transition: opacity 120ms var(--zj-e), filter 160ms var(--zj-e), transform 220ms var(--z4-spring);
+}
+.zs2-top-l [data-tip]::after {
+  left: 0;
+  transform-origin: 0 0;
+}
+:is(.zs2-top-r, .zs2-work-head) [data-tip]::after {
+  right: 0;
+  transform-origin: 100% 0;
+}
+:is(.zs2-top, .zs2-work-head) [data-tip]:hover::after,
+:is(.zs2-top, .zs2-work-head) [data-tip]:focus-visible::after {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition-delay: 360ms;
+}
+
+/* Resources, the files she gave you: a 34 square key, a plain slab on a hairline. Hover lifts the fill a step, a press
+   sinks it, open it holds the higher fill and the ink */
+.zs2-reskey {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--zj-r-ctl);
+  background: var(--s2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+  color: var(--z-tx-2);
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e), transform 120ms var(--zj-e);
+}
+.zs2-reskey svg {
+  transition: transform 320ms var(--z4-spring);
+}
+.zs2-reskey:hover {
+  background: var(--z-raise);
+  color: var(--z-tx);
+}
+.zs2-reskey:hover svg {
+  transform: translateY(-1px);
+}
+.zs2-reskey:active {
+  transform: translateY(1px) scale(0.96);
+}
+.zs2-reskey[aria-pressed='true'] {
+  background: var(--z-raise-2);
+  color: var(--z-tx);
+}
+
+/* the folder: the icon lifts and tips on hover, settles on press */
+.zs2-headkey svg {
+  transition: transform 320ms var(--z4-spring);
+}
+.zs2-headkey:hover svg {
+  transform: translateY(-1px) rotate(-8deg);
+}
+.zs2-headkey:active svg {
+  transform: scale(0.92);
+}
+
+/* exit the stage: b36's dialog, as leaving the meeting */
+/* the kickoff's dialog, in the stage's own ground: a slab on the dark, never the kit's white sheet */
+.zs2-exit {
+  background: var(--z-panel);
+}
+.zs2-exit h2 {
+  margin: 0 0 16px;
+  color: var(--z-tx);
+  font-size: 16px;
+  font-weight: 500;
+}
+.zs2-exit-k {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.zs2-exit-k > button {
+  height: 36px;
+  padding: 0 16px;
+}
+
+/* the end of a stage: the work steps back, one card holds the tick, the file, the XP and her line */
+.zs2-frame {
+  transition:
+    transform 640ms var(--b-eo),
+    filter 640ms var(--b-eo);
+}
+.zs2-frame[data-cele] {
+  transform: scale(0.985);
+  filter: blur(6px);
+  pointer-events: none;
+}
+.zs2-cele {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.zs2-cele-card {
+  width: min(360px, 100%);
+  padding: 32px 28px 24px;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  background: var(--z-panel);
+  border-radius: var(--zj-r-sheet, 20px);
+  box-shadow: var(--b-slab-sh);
+}
+/* the tick lands on the firm spring from Celebrate */
+.zs2-cele-tick {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--g-grad);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 0 var(--g-deep);
+}
+.zs2-cele-tick svg {
+  width: 28px;
+  height: 28px;
+}
+.zs2-cele-tick path {
+  stroke: #fff;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: zs2-cele-draw 520ms var(--b-eo) 280ms forwards;
+}
+@keyframes zs2-cele-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.zs2-cele-card h2 {
+  margin: 18px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--z-tx);
+}
+.zs2-cele-file {
+  margin: 2px 0 0;
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-cele-xp {
+  margin-top: 14px;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  background-image: var(--zs2-xp);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.zs2-cele-said {
+  margin: 16px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx-2);
+}
+.zs2-cele-said:not([data-shown]) {
+  visibility: hidden;
+}
+/* Continue: the one green key, there once her line is */
+.zs2-cele-go {
+  width: 100%;
+  margin-top: 20px;
+}
+.zs2-cele-go:not([data-shown]) {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2-frame {
+    transition: none;
+  }
+  .zs2-cele-tick path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ===== b10: Resources on the big screen are rows, not previews. The real app, the name with what it is under it,
+   View and Download. The file opens beside the chat ===== */
+.zs2-side .zs2-res-group {
+  gap: 2px;
+}
+.zs2-resrow[data-surface='big'] {
+  height: auto;
+  min-height: 52px;
+  padding: 6px 4px 6px 6px;
+  gap: 10px;
+}
+.zs2-resrow[data-surface='big'] .zs2-resrow-ico {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--zj-r-ctl);
+  box-shadow: inset 0 0 0 1px var(--z-line);
+}
+.zs2-resrow[data-surface='big'] .zs2-resrow-ico img {
+  width: 18px;
+  height: 18px;
+}
+.zs2-resrow-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.zs2-resrow-text .zs2-resrow-name {
+  max-width: 100%;
+}
+.zs2-resrow-meta {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== 2 Nov: a file in the chat is a preview, the ChatGPT way. A tool she links is a blue underlined link ===== */
+
+/* the card: the sheet or the picture on top, its name and what it is under it, Download on the corner.
+   Surface 2 on a hairline. The peek is inset 6, radius 8, so it sits concentric in the card's 14 */
+.zs2-fcard {
+  position: relative;
+  width: 340px;
+  max-width: 100%;
+  border-radius: var(--b-r);
+  background: var(--s2);
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  transition: box-shadow 140ms var(--zj-e);
+}
+.zs2-fcard:has(.zs2-fcard-open:hover) {
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.zs2-fcard-open {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 6px;
+  text-align: left;
+  border-radius: inherit;
+}
+.zs2-fcard-peek {
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--b-hl);
+  transform-origin: 50% 0;
+  transition: transform 420ms var(--z4-spring);
+}
+.zs2-fcard-open:hover .zs2-fcard-peek {
+  transform: translateY(-1px);
+}
+.zs2-fcard-open:active .zs2-fcard-peek {
+  transform: scale(0.985);
+  transition-duration: 120ms;
+}
+.zs2-fcard-peek[data-kind='image'] img {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.zs2-fcard-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 6px 44px 2px 6px;
+}
+.zs2-fcard-ico {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  color: var(--z-tx-2);
+}
+.zs2-fcard-ico img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.zs2-fcard-t {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.zs2-fcard-name {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--z-tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-fcard-meta {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zs2-fcard-dl {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+/* the sheet, as Google Sheets draws it: letters over the columns, numbers down the side, hairline cells, A1 selected.
+   Google's own greys and blue on both stages, never our tokens: a real tool keeps its own look inside ours */
+.zs2-sheet {
+  display: grid;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 18px;
+  letter-spacing: 0;
+  color: #202124;
+  font-variant-numeric: normal;
+  user-select: none;
+}
+.zs2-sheet > span {
+  min-width: 0;
+  height: 19px;
+  padding: 0 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  border-right: 1px solid #e2e3e3;
+  border-bottom: 1px solid #e2e3e3;
+}
+.zs2-sheet > .zs2-sheet-h {
+  background: #f8f9fa;
+  color: #5f6368;
+  text-align: center;
+  border-color: #c7c7c7;
+}
+.zs2-sheet > .zs2-sheet-h[data-num] {
+  padding: 0;
+}
+.zs2-sheet-c[data-a1] {
+  box-shadow: inset 0 0 0 2px #1a73e8;
+}
+
+/* her tool link: the real logo, the name in blue with an underline, the arrow that says it opens a new tab */
+.zs2-toollink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-height: 24px;
+  border-radius: var(--b-rs);
+  color: var(--zs2-link);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  transition: color 120ms var(--zj-e);
+}
+.zs2-toollink-ico {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+/* the GitHub mark is white for a dark page, Google style black on the light stage */
+.z-light .zs2-toollink-ico[data-mono] {
+  filter: invert(1);
+}
+.zs2-toollink-t {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--zs2-link) 45%, transparent);
+  transition: text-decoration-color 120ms var(--zj-e);
+}
+.zs2-toollink-go {
+  flex: none;
+  transition: transform 260ms var(--z4-spring);
+}
+.zs2-toollink:hover .zs2-toollink-t {
+  text-decoration-color: var(--zs2-link);
+}
+.zs2-toollink:hover .zs2-toollink-go {
+  transform: translate(1px, -1px);
+}
+.zs2-toollink:active .zs2-toollink-go {
+  transform: none;
+}
+/* it belongs to the line she just wrote, so it sits close under it, and a run of links reads as one short list */
+.zs2-row[data-link]:not([data-turn]) {
+  margin-top: 8px;
+}
+
+/* ---------- b13 stuck mode (his note, 2 Nov: "When the toggle is on, the whole screen converts into a different UI and
+   different thematics"). The switch on the composer turns the stage to a calmer, guided ground: a deep slate on the dark
+   stage, a cool paper on the light one. One accent, her link blue, only where it says the mode is on: the switch and the
+   slab her moves sit on. No glow, no fades: the ground eases over, her moves rise in on the blur spring like any line */
+.zs2 {
+  transition:
+    background-color 420ms var(--b-ease),
+    color 420ms var(--b-ease);
+}
+/* b14 (his note: "I need a better stuck mode color, please. A little more evident"): the grounds carry real blue now, a
+   clear navy on the dark stage and a clear sky paper on the light one, so the mode reads from across the room. Surfaces on
+   it stay white (light) or one step up the navy (dark), never the plain greys, so nothing turns grey on blue */
+/* b20 (his note, 3 Nov: "in the I'm stuck mode only the manager bubble color gets changed and user bubble also, not the
+   whole thing"): the stage keeps its own ground. What she says and what you say while the mode is on sits on the mode's
+   blue, her lines on a soft slab of it, yours on a deeper one, so the guided stretch reads at a glance in the thread */
+.zs2 {
+  --zs2-sm-her: color-mix(in srgb, var(--zs2-link) 16%, var(--b-ground));
+  --zs2-sm-me: color-mix(in srgb, var(--zs2-link) 34%, var(--b-ground));
+}
+.zs2.z-light {
+  --zs2-sm-her: #e3edfd;
+  --zs2-sm-me: #c9daf6;
+}
+.zs2-her[data-sm] {
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: var(--b-ri, 12px);
+  background: var(--zs2-sm-her);
+  transition: background-color 420ms var(--b-ease);
+}
+.zs2-mine[data-sm],
+.zs2-mine[data-stuck][data-sm] {
+  background: var(--zs2-sm-me);
+  box-shadow: none;
+  color: var(--z-tx);
+}
+
+/* the switch: the words, then the knob. The words are its label. Off they are quiet like the icons, on they are ink */
+.zs2-stuckkey {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin-left: 6px;
+  padding: 0 2px 0 6px;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--z-tx-3);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 160ms var(--zj-e);
+}
+.zs2-stuckkey:hover,
+.zs2-stuckkey[data-on] {
+  color: var(--z-tx);
+}
+/* on is the accent, never the green: green means verified only */
+.zs2-stuckkey .zk-tg[aria-checked='true'] {
+  background: var(--zs2-link);
+}
+.zs2-composer[data-surface='pip'] .zs2-stuckkey {
+  gap: 6px;
+  margin-left: 2px;
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .zs2 {
+    transition: none;
+  }
+}
+
+/* b17: the files panel's line sits in the middle of its 8 gap, and the panel follows the pointer with no spring while held */
+.zs2-grip[data-for='side'] {
+  left: 4px;
+}
+.zs2-body[data-layout='resource-left'] > .zs2-grip[data-for='side'] {
+  left: -4px;
+}
+.zs2-body[data-dragging] .zs2-sidewrap {
+  transition: none;
+}
+
+/* b20: the work's two tabs. Plain words, the one you are on in a thin outline pill (his rule: no underline, no filled pill) */
+.zs2-wtabs {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 10px 2px;
+}
+.zs2-wtabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--zj-r-pill, 999px);
+  font-size: var(--zs2-head-fs, 12px);
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--z-tx-3);
+  transition: color 140ms var(--zj-e), box-shadow 140ms var(--zj-e);
+}
+.zs2-wtabs button:hover {
+  color: var(--z-tx);
+}
+.zs2-wtabs button[aria-selected='true'] {
+  color: var(--z-tx);
+  box-shadow: inset 0 0 0 1px var(--z-line-2);
+}
+.zs2-wtabs-n {
+  color: var(--z-tx-3);
+  font-weight: 400;
+}
+.zs2-work-scroll .zs2-side[data-surface='big'] {
+  padding: 0;
+  background: none;
+}
+
+/* b23: a section head is a title, not a control. It opens when the work reaches it; a done one keeps a small tick */
+.zs2-sec-head,
+.zs2-sec-head:hover {
+  background: none;
+  cursor: default;
+}
+.zs2-sec[data-state='next'] .zs2-sec-head:hover .zs2-sec-t {
+  color: var(--z-tx-3);
+}
+.zs2-sec[data-state='done'] .zs2-sec-head:hover .zs2-sec-t {
+  color: var(--z-tx-2);
+}
+.zs2-sec-done {
+  flex: none;
+  color: var(--z-tx-3);
+}

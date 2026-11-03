@@ -1,0 +1,242 @@
+/* b4 additions on top of the Zero Jobs kit. The kit (zero-jobs.css) is copied untouched apart from the font lines.
+   Anything new is built from --zj-* plus these few tints. White and grey first, the faintest cool in the grey.
+   Blue is rare: one small thing at a time at most, often none (his note: too much blue).
+   Green still means verified only. */
+:root {
+  --z4-tint: #f6f6f6;
+  --z4-tint2: #ececec;
+  --z4-frame: #ffffff;
+  --z4-sky: var(--z4-frame);
+  --z4-air: 1;
+  --z4-blue: #3e7bf5;
+  --z4-blue-tx: #2851c8;
+  --z4-spring: linear(0, 0.1057, 0.3008, 0.4909, 0.6452, 0.7601, 0.8412, 0.8967, 0.9336, 0.9578, 0.9734, 0.9833, 0.9896, 0.9936, 0.996, 0.9976, 0.9985, 0.9991, 0.9995, 0.9997, 1);
+  --z4-spring-ms: 700ms;
+  --z4-snap: linear(0, 0.0807, 0.252, 0.4425, 0.615, 0.7538, 0.8564, 0.9267, 0.9713, 0.997, 1.0098, 1.0146, 1.0149, 1.0128, 1.01, 1.0072, 1.0048, 1.0029, 1.0016, 1.0008, 1.0002, 0.9999, 0.9998, 0.9998, 1);
+  --z4-snap-ms: 520ms;
+  --z4-bar: 44px;
+}
+
+/* the kit in the dark, for the stage and its windows. Same names, so every kit part works inside. */
+.zd {
+  --zj-canvas: #141414;
+  --zj-sheet: #1b1b1b;
+  --zj-well: #242424;
+  --zj-well2: #2e2e2e;
+  --zj-line: rgba(255, 255, 255, 0.08);
+  --zj-line2: rgba(255, 255, 255, 0.14);
+  --zj-ink: #f4f4f4;
+  --zj-ink2: #adadad;
+  --zj-ink3: #7a7a7a;
+  --zj-ink4: #5c5c5c;
+  --z4-tint: #202020;
+  --z4-tint2: #2a2a2a;
+  --z4-blue: #f4f4f4;
+  --z4-blue-tx: #f4f4f4;
+}
+/* one key per view: white on the dark */
+.zd .zj-key {
+  background: linear-gradient(#ffffff, #e8e8e8);
+  color: #141414;
+  box-shadow: inset 0 1px 0 #fff, inset 0 -2px 0 rgba(20, 20, 20, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.zd .zj-sec {
+  background: var(--zj-well);
+  color: var(--zj-ink);
+  box-shadow: inset 0 0 0 1px var(--zj-line2);
+}
+
+/* the one loading system, see Loader.tsx. CSS only, safe in PiP */
+.z4-load,
+.z4-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.z4-px {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, 4px);
+  gap: 1.5px;
+}
+.z4-px i {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--zj-ink);
+  opacity: 0.15;
+  animation: z4-pixel 650ms ease-in-out infinite;
+}
+.z4-px i:nth-child(1), .z4-px i:nth-child(5), .z4-px i:nth-child(7) { animation-delay: 90ms; }
+.z4-px i:nth-child(2), .z4-px i:nth-child(6), .z4-px i:nth-child(8) { animation-delay: 180ms; }
+.z4-px i:nth-child(3), .z4-px i:nth-child(9) { animation-delay: 270ms; }
+.z4-px i:nth-child(4) { animation-delay: 0ms; }
+.z4-step-dot {
+  flex: none;
+  width: 15px;
+  display: grid;
+  place-items: center;
+}
+.z4-step-dot::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--zj-ink4);
+}
+.z4-load-label {
+  color: transparent;
+  background: linear-gradient(90deg, var(--zj-ink3) 35%, var(--zj-ink) 50%, var(--zj-ink3) 65%) 0 0 / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: z4-sheen 1400ms linear infinite;
+}
+.z4-load-detail,
+.z4-step-time {
+  color: var(--zj-ink4);
+  font-variant-numeric: tabular-nums;
+}
+.z4-steps {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+.z4-step {
+  display: flex;
+  animation: z4-step-in var(--z4-snap-ms) var(--z4-snap) both;
+}
+.z4-step[data-done] .z4-load-label {
+  color: var(--zj-ink3);
+  background: none;
+  animation: none;
+}
+.z4-step-time {
+  margin-left: auto;
+}
+.z4-skel {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.z4-skel i {
+  display: block;
+  height: 10px;
+  border-radius: var(--zj-r-pill);
+  background: linear-gradient(100deg, var(--zj-well) 30%, var(--zj-well2) 50%, var(--zj-well) 70%) 0 0 / 240% 100%;
+  animation: z4-sheen 1800ms linear infinite;
+}
+@keyframes z4-pixel {
+  0%, 100% { opacity: 0.15; }
+  18%, 42% { opacity: 1; }
+  62% { opacity: 0.15; }
+}
+@keyframes z4-sheen {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+@keyframes z4-step-in {
+  from {
+    transform: translateY(6px);
+    filter: blur(4px);
+  }
+}
+
+/* a panel in the DialKit manner: solid, one hairline, labelled rows, no blur and no shadow */
+.z4-dial {
+  --d-bg: #fafafa;
+  --d-line: rgba(19, 20, 23, 0.1);
+  --d-on: rgba(19, 20, 23, 0.07);
+  width: 240px;
+  padding: 6px;
+  background: var(--d-bg);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px var(--d-line);
+  color: var(--zj-ink2);
+  font-size: 12px;
+  line-height: 16px;
+}
+.zd .z4-dial {
+  --d-bg: #212121;
+  --d-line: rgba(255, 255, 255, 0.1);
+  --d-on: rgba(255, 255, 255, 0.09);
+}
+.z4-dial-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  padding: 0 4px 0 10px;
+  border-radius: 8px;
+}
+.z4-dial-seg {
+  display: inline-flex;
+  gap: 2px;
+}
+.z4-dial-seg button {
+  height: 28px;
+  min-width: 36px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: var(--zj-ink3);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  transition: background-color 120ms var(--zj-e), color 120ms var(--zj-e);
+}
+.z4-dial-seg button:hover {
+  color: var(--zj-ink);
+}
+.z4-dial-seg button[aria-pressed='true'] {
+  background: var(--d-on);
+  color: var(--zj-ink);
+}
+
+.z4-face {
+  position: relative;
+  display: inline-block;
+  flex: none;
+}
+.z4-face-c {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--z4-tint2);
+}
+.z4-face img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .z-root *,
+  .z-root *::before,
+  .z-root *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+  /* loops at 1 ms would strobe: the loader holds still, the running time still says it is working */
+  .z4-px i,
+  .z4-load-label,
+  .z4-skel i {
+    animation: none !important;
+  }
+  .z4-px i:nth-child(odd) {
+    opacity: 0.6;
+  }
+  .z4-load-label {
+    color: var(--zj-ink3);
+    background: none;
+  }
+}

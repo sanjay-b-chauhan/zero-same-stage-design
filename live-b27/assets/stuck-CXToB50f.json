@@ -1,0 +1,55 @@
+{
+  "id": "stuck",
+  "kind": "fix",
+  "title": "Stuck",
+  "hook": "Need a hand?",
+  "notices": "Twelve minutes on the hard step with no message to Jay.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      { "lineId": "stuck.r1", "text": "Your first message landed.", "after": null },
+      {
+        "lineId": "stuck.r2",
+        "text": "This next step is a hard one, and you've been on it twelve minutes.",
+        "after": null
+      },
+      {
+        "lineId": "stuck.r3",
+        "text": "Ask Jay one clear question. Asking costs you nothing.",
+        "after": null
+      }
+    ],
+    "new": [
+      { "lineId": "stuck.n1", "text": "Twelve minutes on one step.", "after": null },
+      {
+        "lineId": "stuck.n2",
+        "text": "What's the one thing Jay could tell you that gets you moving?",
+        "after": null
+      },
+      { "lineId": "stuck.n3", "text": "Ask him exactly that.", "after": null }
+    ]
+  },
+  "stake": { "points": 100, "label": "+100 if you ask now" },
+  "why": {
+    "lines": [
+      {
+        "lineId": "stuck.w1",
+        "text": "Because Jay would rather answer one question now than chase a late plan later."
+      },
+      { "lineId": "stuck.w2", "text": "A clear question keeps you moving, and keeps your points." }
+    ],
+    "good": {
+      "kind": "message",
+      "question": null,
+      "file": null,
+      "lines": ["Where is the territory map? I want to map regions to reps next."]
+    }
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "ask_jay", "label": "Ask Jay", "primary": true }
+  ],
+  "feedback": null,
+  "then": "He taps Ask Jay. Jay walks him through the trigger.",
+  "points": { "n": 100, "label": "+100 Updates" }
+}

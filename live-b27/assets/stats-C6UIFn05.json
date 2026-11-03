@@ -1,0 +1,8 @@
+[
+  { "id": "ai_slop", "label": "AI Slop", "icon": "sparkles" },
+  { "id": "understanding", "label": "Understanding", "icon": "light_bulb" },
+  { "id": "communication", "label": "Communication", "icon": "speech_bubble" },
+  { "id": "independence", "label": "Independence", "icon": "compass" },
+  { "id": "quality", "label": "Quality", "icon": "gem" },
+  { "id": "speed", "label": "Speed", "icon": "gauge" }
+]

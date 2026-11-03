@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Film lab</title>
+    <style>
+      html, body, #root { height: 100%; margin: 0; }
+      body { overflow: hidden; }
+      .lab { position: fixed; inset: 0; background: var(--b-ground); color: var(--b-t1); font-family: var(--zj-font); }
+      .lab-film { position: absolute; top: 84px; left: 50%; height: calc(100vh - 104px); width: min(calc(100vw - 96px), calc((100vh - 104px) * 1.615)); transform: translateX(-50%); border-radius: var(--b-r); overflow: hidden; outline: 1px solid var(--b-hl2); }
+      .lab-cap { position: absolute; left: 12%; right: 12%; top: 83%; text-align: center; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; color: var(--b-t2); }
+      .lab-face { position: absolute; width: 88px; height: 88px; right: calc(11% - 44px); top: calc(79% - 44px); border-radius: 50%; object-fit: cover; }
+      .lab-bar { position: absolute; left: 4%; right: 4%; bottom: 3.4%; height: 4px; border-radius: 2px; background: var(--b-hl2); }
+      .lab-bar i { display: block; height: 100%; border-radius: 2px; background: var(--b-t1); }
+      .lab-stamp { position: absolute; left: 24px; top: 30px; font-size: 13px; color: var(--b-t3); font-variant-numeric: tabular-nums; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./lab.tsx"></script>
+  </body>
+</html>
