@@ -6,6 +6,7 @@
    After her hello she asks "Ready to take notes?"; Okay closes her video into a circle that lands in the corner, then the
    notes come in. At the end her corner face flies up into the check-in's meter and the check-in starts on its own. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { ChevronLeft, Pause, Play } from 'lucide-react';
 import { useDev, useDevAction, useDevGo } from '../dev/store';
 import { takeRect } from '../ds/handoff';
@@ -25,6 +26,7 @@ import { capIndexAt, capsOfText, litAt, type Cap } from './timeline';
 import { NotesPanel } from './notes/Notes';
 import SystemFilm from './SystemFilm';
 import Walk from './Walk';
+import Join, { openFrom } from './Join';
 import './room.css';
 
 type Mode = 'kickoff' | 'pou' | 'breakdown' | 'objective';
@@ -219,6 +221,10 @@ function RoomInner({ pid }: { pid: ProjectId }) {
   leavingRef.current = leaving;
   const resumeOnStay = useRef(false);
   const [walk, setWalk] = useState(false);
+  /* b33: the Join Now landing before her hello. 'walk' when her walk closed into it, 'opening' while the film grows out */
+  const [join, setJoin] = useState<null | 'walk' | 'plain' | 'opening'>(null);
+  const joinRef = useRef(join);
+  joinRef.current = join;
   const toggleRef = useRef(toggle);
   toggleRef.current = toggle;
 
@@ -244,10 +250,18 @@ function RoomInner({ pid }: { pid: ProjectId }) {
       pouStop();
       if (id === 'kickoff:walk') {
         kickSetup(pid);
+        setJoin(null);
         setWalk(pid === 'spotify');
         return;
       }
+      if (id === 'kickoff:join') {
+        kickSetup(pid);
+        setWalk(false);
+        setJoin('plain');
+        return;
+      }
       setWalk(false);
+      setJoin(null);
       kickLand(id);
     }
   );
@@ -277,7 +291,7 @@ function RoomInner({ pid }: { pid: ProjectId }) {
       if (prev === 'breakdown' || prev === 'objective') kickReplay();
       /* b16: Spotify opens on her walk, full window; her hello at the desk starts once it closes into the frame */
       else if (pid === 'spotify') setWalk(true);
-      else kickBegin(grew.current ? 560 : 300);
+      else setJoin('plain');
     } else if (mode === 'pou') {
       kickStop(true);
       if (prev === null || prev === 'kickoff') kickFinished();
@@ -367,7 +381,7 @@ function RoomInner({ pid }: { pid: ProjectId }) {
         return;
       }
       const typing = isTextEntry(e.target);
-      if (!isFilm(modeRef.current)) return;
+      if (!isFilm(modeRef.current) || joinRef.current) return;
       if (e.shiftKey && !typing && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
         e.preventDefault();
         kickNudge(e.key === 'ArrowLeft' ? -5 : 5);
@@ -452,7 +466,7 @@ function RoomInner({ pid }: { pid: ProjectId }) {
 
   const back = () => {
     sfx.click();
-    if (!isFilm(mode)) {
+    if (!isFilm(mode) || join) {
       goto('world');
       return;
     }
@@ -474,6 +488,18 @@ function RoomInner({ pid }: { pid: ProjectId }) {
     goto('world');
   };
 
+  /* Join Now: her hello starts on the click and the film opens out of her face on the card */
+  const joinNow = (f: HTMLElement | null) => {
+    sfx.click();
+    kickBegin(0);
+    const fr = frame.current;
+    if (!f || !fr || prefersReduced(fr)) {
+      setJoin(null);
+      return;
+    }
+    void openFrom(f, fr, () => flushSync(() => setJoin('opening'))).then(() => setJoin(null));
+  };
+
   /* a click on the film pauses or plays, as b36's does. Not on the bar or a key */
   const filmClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (mode !== 'kickoff' || phase !== 'play' || check !== null || writing || ready || closing) return;
@@ -487,7 +513,7 @@ function RoomInner({ pid }: { pid: ProjectId }) {
   const onVideo = mode === 'kickoff' && !!kick.run().segments[seg]?.video;
 
   return (
-    <div ref={root} className="rm b-light" data-mode={mode} data-notes={notes} data-video={onVideo ? '1' : undefined}>
+    <div ref={root} className="rm b-light" data-mode={mode} data-notes={notes} data-video={onVideo ? '1' : undefined} data-join={(mode === 'kickoff' && join) || undefined}>
       <header className="rm-sh">
         <button type="button" className="rm-bk" aria-label="Back" onClick={back}>
           <ChevronLeft size={18} strokeWidth={2} />
@@ -521,6 +547,7 @@ function RoomInner({ pid }: { pid: ProjectId }) {
         {isFilm(mode) && <Player onSeek={kickSeek} canPlay={mode === 'kickoff' && !asking} />}
       </div>
       <NotesPanel pid={pid} on={(mode === 'kickoff' && notes === 'on') || mode === 'pou'} />
+      {join && mode === 'kickoff' && <Join fromWalk={join === 'walk'} onJoin={joinNow} />}
       {walk && mode === 'kickoff' && (
         <Walk
           frame={frame}
@@ -528,10 +555,9 @@ function RoomInner({ pid }: { pid: ProjectId }) {
             setWalk(false);
             goto('world');
           }}
-          onDone={() => {
-            setWalk(false);
-            kickBegin(120);
-          }}
+          into={() => root.current?.querySelector<HTMLElement>('.jn-face') ?? null}
+          onClosing={() => flushSync(() => setJoin('walk'))}
+          onDone={() => setWalk(false)}
         />
       )}
 

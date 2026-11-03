@@ -1733,3 +1733,103 @@
   visibility: hidden;
   transition: none;
 }
+
+/* ---------- b33: the Join Now landing on the light page, the real kickoff's landing in b36's tokens. One white card,
+   radius 32, its outline only. The film waits hidden behind it and grows out of her face on Join Now ---------- */
+.rm[data-join='walk'] .rm-fr,
+.rm[data-join='plain'] .rm-fr {
+  opacity: 0;
+  pointer-events: none;
+}
+.rm[data-join='opening'] .rm-fr {
+  z-index: 9;
+}
+.jn {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  padding: 84px 24px 40px;
+  pointer-events: none;
+}
+.jn-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+  width: min(560px, 100%);
+  padding: 48px;
+  border-radius: 32px;
+  background: var(--b-slab);
+  box-shadow: var(--b-slab-sh);
+  pointer-events: auto;
+}
+.rm[data-join='opening'] .jn-card {
+  pointer-events: none;
+}
+.jn-t {
+  margin: 0;
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--b-t1);
+  text-wrap: balance;
+}
+.jn-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.jn-face {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--b-hl);
+}
+.jn-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.jn-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.jn-name b {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--b-t1);
+}
+.jn-name span {
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--b-t2);
+}
+.jn-min {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--b-t2);
+  box-shadow: inset 0 0 0 1px var(--b-hl2);
+}
+.rm .jn-go {
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+}

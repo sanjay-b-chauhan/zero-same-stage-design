@@ -13,7 +13,19 @@ export const WALK_SRC = 'static/media/eryn-walk.mp4';
 const CLOSE_MS = 980;
 const BUTTER = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
-export default function Walk({ frame, onBack, onDone }: { frame: React.RefObject<HTMLDivElement | null>; onBack: () => void; onDone: () => void }) {
+export default function Walk({
+  frame,
+  into,
+  onClosing,
+  onBack,
+  onDone,
+}: {
+  frame: React.RefObject<HTMLDivElement | null>;
+  into?: () => HTMLElement | null;
+  onClosing?: () => void;
+  onBack: () => void;
+  onDone: () => void;
+}) {
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const closing = useRef(false);
@@ -26,7 +38,10 @@ export default function Walk({ frame, onBack, onDone }: { frame: React.RefObject
     v?.pause();
     const el = root.current;
     const fr = frame.current;
+    onClosing?.();
     if (!el || !fr || prefersReduced(el)) return onDone();
+    const at = into?.();
+    if (at) return closeTo(el, v, at);
     const r = fr.getBoundingClientRect();
     const rad = parseFloat(getComputedStyle(fr).borderTopLeftRadius) || 24;
     const to = `inset(${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px round ${rad}px)`;
@@ -43,6 +58,31 @@ export default function Walk({ frame, onBack, onDone }: { frame: React.RefObject
         { filter: 'blur(0px)', opacity: 1, offset: 0 },
         { filter: 'blur(0px)', opacity: 1, offset: 0.55 },
         { filter: 'blur(12px)', opacity: 0, offset: 1 },
+      ],
+      { duration: CLOSE_MS, easing: 'ease-in-out', fill: 'forwards' }
+    );
+    a.onfinish = () => onDone();
+  };
+  /* b33: the walk closes down into her face on the Join Now card, melting blur to clear into the face already there */
+  const closeTo = (el: HTMLDivElement, v: HTMLVideoElement | null, at: HTMLElement) => {
+    const t = at.getBoundingClientRect();
+    const ax = t.left + t.width / 2;
+    const ay = t.top + t.height / 2;
+    const far = Math.hypot(Math.max(ax, innerWidth - ax), Math.max(ay, innerHeight - ay));
+    el.style.background = 'transparent';
+    el.querySelectorAll<HTMLElement>('.wk-bk, .wk-skip').forEach((b) =>
+      b.animate([{ transform: 'none', filter: 'blur(0px)', opacity: 1 }, { transform: 'scale(.9)', filter: 'blur(6px)', opacity: 0 }], { duration: 260, easing: 'ease-out', fill: 'forwards' })
+    );
+    const a = el.animate([{ clipPath: `circle(${far}px at ${ax}px ${ay}px)` }, { clipPath: `circle(${t.width / 2}px at ${ax}px ${ay}px)` }], {
+      duration: CLOSE_MS,
+      easing: BUTTER,
+      fill: 'forwards',
+    });
+    v?.animate(
+      [
+        { filter: 'blur(0px)', opacity: 1, offset: 0 },
+        { filter: 'blur(0px)', opacity: 1, offset: 0.5 },
+        { filter: 'blur(10px)', opacity: 0, offset: 1 },
       ],
       { duration: CLOSE_MS, easing: 'ease-in-out', fill: 'forwards' }
     );

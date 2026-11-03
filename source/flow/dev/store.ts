@@ -20,6 +20,7 @@ export const DEV_STEPS: DevStep[] = [
   { id: 'brief', group: 'Opening', label: 'Project brief', jump: 'world' },
 
   { id: 'kickoff:walk', group: 'Kickoff', label: 'Her walk, full window', jump: 'kickoff' },
+  { id: 'kickoff:join', group: 'Kickoff', label: 'Join Now', jump: 'kickoff' },
   { id: 'kickoff:intro', group: 'Kickoff', label: 'Her hello', jump: 'kickoff' },
   { id: 'kickoff:ready', group: 'Kickoff', label: 'Ready to take notes?', jump: 'kickoff' },
   { id: 'kickoff:room', group: 'Kickoff', label: 'The question', jump: 'kickoff' },

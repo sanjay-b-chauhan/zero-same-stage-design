@@ -219,3 +219,9 @@ LIVE zero-same-stage-design.vercel.app ds b31, b30 at /b30/. His notes on b30, a
 - "smaller ... not on hover, it should be smaller ... by 75%": the wrap sits at scale .75 from its corner, 1 on hover, focus or while she talks.
 - "The font inside the page should be 12 px ... line spacing more like 8 px": 12 on 18 inside, 8px gaps.
 - "Click on the chat, and all should auto-collapse" and "That should not be a negative space": a click outside folds the body; the window height is auto, Slots and Chat hug their content up to min(400px, 62vh).
+
+## b33 and b34 (3 Nov 2026)
+
+- "it goes to a white screen. That should also be like 'Join Now' under 'Understand this scope, your manager, and Join Now'": `room/Join.tsx`, the real kickoff's landing (KM/index.tsx) in b36 tokens, with the real estimate ceil(audio min x 1.25 + 2). Dev step kickoff:join.
+- "When you click 'Join Now,' it transitions into the kickoff video ... I need that really, really good transition": `room/Walk.tsx` closes the walk down into her face on the card (closeTo). `openFrom` in Join.tsx starts her hello on the click and grows the film from her face's circle in the video (run.hello) to the whole frame.
+- b34, "it should be center aligned and on the white screen and not the BG": the film is opacity 0 behind the card until Join (visibility let its inner layers show through), and the card is centred, face above name.
