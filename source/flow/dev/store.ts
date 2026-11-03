@@ -57,6 +57,10 @@ export const DEV_STEPS: DevStep[] = [
   { id: 'model:2', group: 'Stage 2', label: 'Round two', jump: 'model:2' },
   { id: 'model:3', group: 'Stage 2', label: 'Round three', jump: 'model:3' },
   { id: 'model-done', group: 'Stage 2', label: 'Stage 2 done', jump: 'model-done' },
+
+  { id: 'rec', group: 'Stage 3', label: 'She opens stage 3', jump: 'rec' },
+  { id: 'memo', group: 'Stage 4', label: 'She opens stage 4', jump: 'memo' },
+  { id: 'deck', group: 'Stage 5', label: 'She opens stage 5', jump: 'deck' },
 ];
 
 export const DEV_GROUPS: string[] = [...new Set(DEV_STEPS.map((s) => s.group))];

@@ -34,7 +34,10 @@ const place = (s: FlowState, at: string): string | null => {
   if (s.screen === 'pou') return 'objective';
   const st = s.stage;
   if (!st) return 'stage';
-  if (s.project && st.stageId !== s.project.stages[0]?.id) return at.startsWith('model') ? null : 'model';
+  if (s.project && st.stageId !== s.project.stages[0]?.id) {
+    if (st.stageId !== 'model') return at === st.stageId ? null : st.stageId;
+    return at.startsWith('model') ? null : 'model';
+  }
   if (st.phase === 'pou') return 'pou-stage';
   if (st.phase === 'done' || st.phase === 'approved' || st.phase === 'feedback') return st.phase;
   if (st.phase === 'review') return at === 'feedback' || at === 'approved' ? null : 'submit';

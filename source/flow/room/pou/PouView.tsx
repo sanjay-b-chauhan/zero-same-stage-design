@@ -11,7 +11,7 @@ import { canHear, holdCancel, holdEnd, holdStart, useHoldUi } from '../hold';
 import { usePeaks } from '../peaks';
 import { meterOf, pouAnswer, pouAnswerForMe, pouFaceHand, REC_FROM, REC_TICK_MS, usePou } from '../pou';
 import { sfx } from '../prefs';
-import { cycleRate, NOTE_BARS, noteSrc, replayNote, useNote, useRate, type Msg } from '../talk';
+import { cycleRate, NOTE_BARS, noteSrc, replayNote, useNote, useRate, voiceOf, type Msg } from '../talk';
 import { mss } from '../timeline';
 import './pou.css';
 
@@ -55,13 +55,15 @@ export function PouMeter() {
 function useBars(m: Msg): number[] {
   const peaks = usePeaks(m.from === 'her' ? m.take?.url : undefined);
   if (m.voice) return m.voice.bars;
+  /* b35: a line of hers with no recorded take (stages 2 to 5) draws its bars from its words, like a typed note */
+  if (m.from === 'her' && !m.take) return voiceOf(m.text).bars;
   return Array.from({ length: NOTE_BARS }, (_, i) => Math.round(4 + (peaks ? peaks[Math.floor((i / NOTE_BARS) * peaks.length)] : 0.4) * 20));
 }
 
 function Note({ m, busy, still = false }: { m: Msg; busy: () => boolean; still?: boolean }) {
   const bars = useBars(m);
   const src = noteSrc(m);
-  const dur = src?.dur ?? m.voice?.dur ?? 0;
+  const dur = src?.dur ?? m.voice?.dur ?? (m.text ? voiceOf(m.text).dur : 0);
   const playing = useNote((s) => s.id === m.id);
   const p = useNote((s) => (s.id === m.id ? s.p : 0));
   const [open, setOpen] = useState(false);

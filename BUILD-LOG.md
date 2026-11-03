@@ -225,3 +225,13 @@ LIVE zero-same-stage-design.vercel.app ds b31, b30 at /b30/. His notes on b30, a
 - "it goes to a white screen. That should also be like 'Join Now' under 'Understand this scope, your manager, and Join Now'": `room/Join.tsx`, the real kickoff's landing (KM/index.tsx) in b36 tokens, with the real estimate ceil(audio min x 1.25 + 2). Dev step kickoff:join.
 - "When you click 'Join Now,' it transitions into the kickoff video ... I need that really, really good transition": `room/Walk.tsx` closes the walk down into her face on the card (closeTo). `openFrom` in Join.tsx starts her hello on the click and grows the film from her face's circle in the video (run.hello) to the whole frame.
 - b34, "it should be center aligned and on the white screen and not the BG": the film is opacity 0 behind the card until Join (visibility let its inner layers show through), and the card is centred, face above name.
+
+## b35 (3 Nov 2026)
+
+- "stages 2, 3, 4, 5 ... whatever content is there in the current thing, we just have to use it, but put it into our system": `same/stages.ts` holds one spec per stage (brief, the file she hands you, her slot asks with what counts as an answer, review, fixes, check-in). Numbers are the real ones from `games/stage2.ts` on the cleaned file and the sample recommendation PDF. `same/store.ts` reads the spec for every stage but clean, which keeps its own script.
+- The stage model: she asks one slot, `d1.slot` ticks it when your answer gets it (+20) or nudges you, Submit unlocks once every slot is ticked. Stage 2 and 4 have a fixes round, 3 and 5 go straight to approved.
+- Stage 5's check-in is the practice presentation: she plays the VP and pushes back.
+- Finish the project on stage 5 leaves to the objective with every stage done. The PDF upload opens a real file picker.
+- New input files `static/media/spotify_pricing_clean.csv` (58 rows) and `revenue_model.csv` (6 markets), built from clean(RAW, every fix).
+- Dev steps rec, memo, deck land on stages 3 to 5 with the ones before done.
+- "the stage POU to be the same as how we have a kickoff POU. Just remove the manager profile and the title ... make it bigger in width": `.ds-who[data-check]` hides her name card, `.ds-top[data-check]` hides the stage title, the meter is min(460px, column). Her take-less notes draw bars and a length from their words (`room/pou/PouView.tsx`).

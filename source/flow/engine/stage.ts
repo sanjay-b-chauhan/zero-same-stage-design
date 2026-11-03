@@ -2147,6 +2147,18 @@ export function createEngine(set: SetFn, get: GetFn): { actions: Actions; dev: E
       if (base2(STAGE2[scenario().meta.id]?.slots.length ?? 3)) void queue(s2Done);
       return;
     }
+    /* b35: stages 3 to 5 land with every stage before them done */
+    const deep = scenario().meta.stages.findIndex((x) => x.id === t);
+    if (deep > 1 || (deep === 1 && import.meta.env.VITE_D1 === '1')) {
+      const list = scenario().meta.stages;
+      cancel();
+      runs = {};
+      restart();
+      R = freshRun(t);
+      set({ screen: 'stage', stage: freshStage(list[deep], []), doneStages: list.slice(0, deep).map((x) => x.id) });
+      setUi(closePanels());
+      return;
+    }
     if (t === 'model') {
       if (base2(0)) void queue(s2Enter);
       else {

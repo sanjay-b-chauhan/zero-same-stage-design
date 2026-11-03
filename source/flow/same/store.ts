@@ -4,6 +4,7 @@ import { clock } from '../clock';
 import { awardXp } from '../hud';
 import { pouAnswerForMe, pouEnterLines, usePou } from '../room/pou';
 import { shotName } from './snip';
+import { specOf, type StageSpec } from './stages';
 import { BRIEF, CHECK_INTRO, FEEDBACK, OPEN, OPEN_2, SHOT_REPLY, REPLY, REPLY_ELSE, REVIEW, STAGE_CHECK, STUCK, BURN, TIERS, tierAt, ISSUES, ISSUE_ENOUGH, ASK_OPEN, ASK_HIT, ASK_MISS, ASK_ENOUGH, ASK_PROMPT_SHORT, ASK_PROMPT_OK } from './script';
 
 export type Item =
@@ -167,6 +168,10 @@ function say(lines: Line[], o: { guide?: boolean; after?: () => void; wait?: num
   });
 }
 
+/* b35: her fixes and the next slot she is asking, for any stage */
+export const fixesOf = (stageId: string) => (stageId === 'clean' ? FEEDBACK.items : (specOf(stageId)?.feedback?.items ?? []));
+export const slotAt = (sp: StageSpec, s: D1) => sp.slots.find((x) => !s.met[x.id]);
+
 const burning = (s: D1) => (s.stuck ? ((Date.now() - s.stuckSince) / 60000) * (BURN - 1) : 0);
 export const minutesIn = (s: D1 = useD1.getState()) => (Date.now() - s.startedAt) / 60000 + s.skewMin + s.burnMin + burning(s);
 /* leave stuck mode: bank what it burned */
@@ -185,11 +190,14 @@ export const d1 = {
     if (s.phase === 'approved') return d1.check(), true;
     if (s.phase === 'pou') return usePou.getState().ended ? false : (pouAnswerForMe(), true);
     if (s.phase === 'feedback') {
-      FEEDBACK.items.forEach((f) => !s.fixed[f.id] && d1.fix(f.id));
+      fixesOf(s.stageId).forEach((f) => !s.fixed[f.id] && d1.fix(f.id));
       return d1.submit(), true;
     }
     if (s.phase !== 'work') return false;
     if (s.stuck) return d1.stuckNext(), true;
+    const sp = specOf(s.stageId);
+    const slot = sp && slotAt(sp, s);
+    if (slot) return d1.send(slot.sample), true;
     if (s.ask && s.stageId === 'clean') {
       if (s.askStep === 'issues') {
         const t = DEV_ISSUES.find((w) => ISSUES.some((i) => !s.found.includes(i.id) && i.re.test(w)));
@@ -214,7 +222,7 @@ export const d1 = {
     };
     /* b29 (his note: "let's remove the first message ... start with the straight brief"): stage one opens on the brief */
     if (stageId === 'clean') later(400, brief);
-    else say([OPEN_2[0]], { wait: 400, after: () => later(250, brief) });
+    else say([specOf(stageId)?.greet ?? OPEN_2[0]], { wait: 400, after: () => later(250, brief) });
   },
 
   /* Got it, let's start: the brief lifts, her first ask comes in under it */
@@ -224,6 +232,8 @@ export const d1 = {
     if (s.briefN < BRIEF_PARTS) flush();
     useD1.setState({ phase: 'work', startedAt: Date.now(), briefN: BRIEF_PARTS, typing: false });
     push({ k: 'me', text: "Got it, let's start." });
+    const sp = specOf(s.stageId);
+    if (sp) return say([...sp.open, sp.slots[0].ask], { wait: 600 });
     if (s.stageId !== 'clean') return say([OPEN_2[1]], { wait: 500 });
     if (s.ask) return say(ASK_OPEN, { wait: 600 });
     say(OPEN, { wait: 600, after: () => push({ k: 'file' }) });
@@ -282,6 +292,9 @@ export const d1 = {
   sample(): string {
     const s = useD1.getState();
     if (s.stuck) return STUCK[s.stuckAt].chip;
+    const sp = specOf(s.stageId);
+    if (sp && s.phase === 'work') return slotAt(sp, s)?.sample ?? "It's ready. Sending it over now.";
+    if (sp && s.phase === 'feedback') return sp.feedback?.ask ?? 'What should I fix first?';
     if (s.ask && s.stageId === 'clean' && s.phase === 'work') {
       if (s.askStep === 'issues') {
         const t = DEV_ISSUES.find((w) => ISSUES.some((i) => !s.found.includes(i.id) && i.re.test(w)));
@@ -316,6 +329,8 @@ export const d1 = {
       if (t === step.chip) return d1.stuckNext();
       return say([step.help], { guide: true });
     }
+    const sp = specOf(s.stageId);
+    if (sp) return d1.slot(sp, t);
     if (s.ask && s.stageId === 'clean' && s.phase === 'work') {
       if (s.askStep === 'prompt') {
         if (t.split(/\s+/).length < 8) return say([ASK_PROMPT_SHORT]);
@@ -332,9 +347,31 @@ export const d1 = {
     say([hit ? hit.say : REPLY_ELSE]);
   },
 
+  /* b35: stages 2 to 5. She asks one slot at a time; your answer either gets it (the system ticks it, +20, her next
+     ask) or she nudges you toward it. Never the answer for you */
+  slot(sp: StageSpec, t: string) {
+    const s = useD1.getState();
+    if (s.phase === 'feedback') return say([sp.feedback ? 'Tick each fix as you make it, then hit Resubmit.' : sp.after]);
+    if (s.phase !== 'work') return say(['One sec, I am on it.']);
+    const at = slotAt(sp, s);
+    if (!at) return say([sp.after]);
+    if (!at.re.every((r) => r.test(t))) return say([at.miss]);
+    const met = { ...s.met, [at.id]: true };
+    useD1.setState({ met, pop: { id: at.id, n: ++popN } });
+    awardXp({ amount: 20, reason: sp.brief.requirements.find((r) => r.id === at.id)?.text ?? at.id, id: `d1:${s.stageId}:${at.id}` });
+    const nx = sp.slots.find((x) => !met[x.id]);
+    say([at.yes, nx ? nx.ask : sp.ready]);
+  },
+
   toggleStuck() {
     const s = useD1.getState();
     if (s.phase !== 'work' && s.phase !== 'feedback') return;
+    /* b35: on stages 2 to 5 she points you at the slot she asked, the walk through is stage 1's */
+    const sp = specOf(s.stageId);
+    if (sp && !s.stuck) {
+      const at = s.phase === 'work' ? slotAt(sp, s) : undefined;
+      return say([at ? at.miss : sp.feedback && s.phase === 'feedback' ? 'Take the fixes one at a time. Tick each one when it is done.' : sp.after], { guide: true });
+    }
     if (s.stuck) {
       unstick();
       say(["Okay, you've got it from here."]);
@@ -383,8 +420,9 @@ export const d1 = {
   },
 
   canSubmit(s: D1 = useD1.getState()) {
-    if (s.phase === 'work') return true;
-    if (s.phase === 'feedback') return FEEDBACK.items.every((f) => s.fixed[f.id]);
+    const sp = specOf(s.stageId);
+    if (s.phase === 'work') return !sp || !slotAt(sp, s);
+    if (s.phase === 'feedback') return fixesOf(s.stageId).every((f) => s.fixed[f.id]);
     return false;
   },
 
@@ -392,10 +430,14 @@ export const d1 = {
     const s = useD1.getState();
     if (!d1.canSubmit(s)) return;
     const again = s.phase === 'feedback';
-    const r = again ? REVIEW.again : REVIEW.first;
+    const sp = specOf(s.stageId);
+    const r = sp ? (again ? sp.review.again : sp.review.first) : again ? REVIEW.again : REVIEW.first;
     unstick({ phase: 'review', thread: s.thread.filter((i) => i.k !== 'chips') });
-    if (again) push({ k: 'me', text: "Fixed both. Here's the new one." });
-    push({ k: 'att', name: again ? 'spotify_pricing_clean_v2' : 'spotify_pricing_clean', meta: 'Google Sheets', link: true, sheet: true });
+    if (again) push({ k: 'me', text: sp ? sp.fixedLine : "Fixed both. Here's the new one." });
+    if (sp) {
+      const n = again ? sp.hand.name.replace(/(\.\w+)?$/, '_v2$1') : sp.hand.name;
+      push({ k: 'att', name: n, meta: sp.hand.meta, link: sp.hand.link, sheet: sp.hand.sheet });
+    } else push({ k: 'att', name: again ? 'spotify_pricing_clean_v2' : 'spotify_pricing_clean', meta: 'Google Sheets', link: true, sheet: true });
     /* b30: under your link, how long she will take, while she takes it */
     push({ k: 'sent', est: r.est });
     const sentId = seq;
@@ -411,10 +453,20 @@ export const d1 = {
       });
       return;
     }
+    if (!again && sp?.feedback) {
+      const fb = sp.feedback;
+      later(back, () => {
+        drop();
+        useD1.setState({ phase: 'feedback' });
+        say([r.back, fb.head], { after: () => push({ k: 'feedback' }) });
+      });
+      return;
+    }
     later(back, () => {
       drop();
       /* she checked them: every requirement ticks itself, you never tick a requirement */
-      useD1.setState({ phase: 'approved', met: Object.fromEntries(BRIEF.requirements.map((r) => [r.id, true])) });
+      const reqs = sp ? sp.brief.requirements : BRIEF.requirements;
+      useD1.setState({ phase: 'approved', met: Object.fromEntries(reqs.map((q) => [q.id, true])) });
       say([r.back]);
     });
   },
@@ -424,6 +476,11 @@ export const d1 = {
   check() {
     const s = useD1.getState();
     if (s.phase !== 'approved') return;
+    const sp = specOf(s.stageId);
+    if (sp) {
+      useD1.setState({ phase: 'pou' });
+      return pouEnterLines('spotify', sp.check, [sp.checkIntro], CHECK_FIRST_MS);
+    }
     if (s.stageId !== 'clean') return d1.finish();
     useD1.setState({ phase: 'pou' });
     /* b31: the page clears and the meter comes up before her first note */

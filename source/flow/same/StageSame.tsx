@@ -61,13 +61,14 @@ import { rise } from '../stage/parts/util';
 import '../stage/stage.css';
 import '../d1/d1.css';
 import './ds.css';
-import { ASK_GROUPS, BRIEF, BRIEF_2, BURN, FEEDBACK, ISSUES, ISSUE_ENOUGH, RAW_FILE, SCENARIO, STUCK, TIERS, tierAt } from './script';
+import { ASK_GROUPS, BRIEF, BRIEF_2, BURN, ISSUES, ISSUE_ENOUGH, RAW_FILE, SCENARIO, STUCK, TIERS, tierAt } from './script';
 import { type D1 } from './store';
 import Desktop from '../pip/desktop/Desktop';
 import ClaudeApp from '../pip/desktop/ClaudeApp';
 import { parse } from '../data/csv';
 import { openDesktopApp, spot } from '../pip/desktop/deskStore';
-import { BRIEF_PARTS, d1, minutesIn, useD1, type Item } from './store';
+import { BRIEF_PARTS, d1, fixesOf, minutesIn, slotAt, useD1, type Item } from './store';
+import { specOf } from './stages';
 
 const I = { size: 14, strokeWidth: 1.75 };
 
@@ -107,7 +108,15 @@ const takeShot = async () => {
   if (s) setDraft(s);
   window.setTimeout(() => document.querySelector<HTMLTextAreaElement>('.d1-comp textarea')?.focus(), 0);
 };
-const briefOf = (id: string) => (id === 'clean' ? BRIEF : BRIEF_2);
+const briefOf = (id: string) => (id === 'clean' ? BRIEF : (specOf(id)?.brief ?? BRIEF_2));
+/* b35: the file she hands you on this stage. Stage 1 the raw export, then the clean file, then your model */
+const fileOf = (id: string) => specOf(id)?.file ?? RAW_FILE;
+const useFile = () => fileOf(useD1((s) => s.stageId));
+/* b35: nothing to hand in until every slot she asked is ticked */
+const slotsLeft = (s: D1) => {
+  const sp = specOf(s.stageId);
+  return !!sp && s.phase === 'work' && !!slotAt(sp, s);
+};
 
 /* ---------- top row ---------- */
 function useNowMin() {
@@ -293,6 +302,8 @@ export const progressOf = (s: D1) => {
     const issues = Math.min(1, s.found.length / ISSUE_ENOUGH);
     return 0.06 + issues * 0.3 + (s.prompt ? 0.14 : 0);
   }
+  const sp = specOf(s.stageId);
+  if (sp && s.phase === 'work') return 0.06 + (sp.slots.filter((x) => s.met[x.id]).length / sp.slots.length) * 0.44;
   return PHASE_P[s.phase] ?? 0;
 };
 
@@ -509,11 +520,11 @@ function Todos({ s }: { s: D1 }) {
       <div className="ds-tds">
         <TodoPart title="Requirements" state={s.phase === 'brief' ? 'now' : work}>
           {b.requirements.map((r) => (
-            <TodoRow key={r.id} on={s.phase !== 'brief' && !!s.met[r.id]} text={r.text} />
+            <TodoRow key={r.id} on={s.phase !== 'brief' && !!s.met[r.id]} text={r.text} pop={s.pop?.id === r.id ? s.pop.n : undefined} />
           ))}
         </TodoPart>
         <TodoPart title="Submission" state={sent ? 'done' : 'next'}>
-          <TodoRow on={sent} text="Clean sheet sent" />
+          <TodoRow on={sent} text={specOf(s.stageId)?.sentLine ?? 'Clean sheet sent'} />
         </TodoPart>
       </div>
     );
@@ -706,10 +717,10 @@ const useSubmitting = create<{ on: boolean }>(() => ({ on: false }));
 
 function SubmitKey() {
   const phase = useD1((s) => s.phase);
-  const left = useD1((s) => FEEDBACK.items.filter((f) => !s.fixed[f.id]).length);
+  const left = useD1((s) => fixesOf(s.stageId).filter((f) => !s.fixed[f.id]).length);
   const on = useSubmitting((s) => s.on);
   /* ask mode: you hand in only after her asks, never before */
-  const gated = useD1((s) => s.ask && s.stageId === 'clean' && s.phase === 'work' && s.askStep !== 'submit');
+  const gated = useD1((s) => (s.ask && s.stageId === 'clean' && s.phase === 'work' && s.askStep !== 'submit') || slotsLeft(s));
   const ready = (phase === 'work' && !gated) || phase === 'feedback';
   /* b30 (his note: "the approved and this thing don't make sense"): once she has signed it off the key goes */
   if (phase === 'brief' || phase === 'approved' || phase === 'pou' || phase === 'done') return null;
@@ -817,7 +828,7 @@ function Brief({ inThread = false }: { inThread?: boolean }) {
             <dd className="ds-in">{b.format}</dd>
           </>
         )}
-        {stageId === 'clean' && n >= 3 && (
+        {(stageId === 'clean' || !!specOf(stageId)) && n >= 3 && (
           <>
             <dt className="ds-in">
               <Paperclip size={14} strokeWidth={1.75} />
@@ -826,8 +837,8 @@ function Brief({ inThread = false }: { inThread?: boolean }) {
             <dd className="ds-in ds-res-dd">
               <button type="button" className="ds-it" onClick={() => openSide('sheet')} title="Preview">
                 <img src="static/logos/logo-sheets.svg" alt="" />
-                <span className="ds-it-n">{RAW_FILE.name}</span>
-                <span className="ds-it-m d1-num">{RAW_FILE.meta}</span>
+                <span className="ds-it-n">{fileOf(stageId).name}</span>
+                <span className="ds-it-m d1-num">{fileOf(stageId).meta}</span>
               </button>
               <FileKeys />
             </dd>
@@ -971,8 +982,9 @@ function FilmPop() {
   const [on, setOn] = useState(true);
   const [ri, setRi] = useState(0);
   const [kind, id] = (view ?? ':').split(':');
-  const tool = kind === 'tool' ? BRIEF.tools.find((x) => x.id === id) : undefined;
-  const tr = kind === 'train' ? BRIEF.training.find((x) => x.id === id) : undefined;
+  const fb = briefOf(useD1((s) => s.stageId));
+  const tool = kind === 'tool' ? fb.tools.find((x) => x.id === id) : undefined;
+  const tr = kind === 'train' ? fb.training.find((x) => x.id === id) : undefined;
   const steps = tool?.film ?? tr?.steps ?? [];
   const len = tool ? 60 : FILM_SEC[id] ?? 90;
   const step = Math.min(steps.length - 1, Math.floor((t / len) * steps.length));
@@ -1110,24 +1122,27 @@ const useSide = create<{ view: 'sheet' | 'claude' | null; w: number; drag: boole
 const PV_MIN = 340;
 const CHAT_MIN = 400;
 const openSide = (view: 'sheet' | 'claude') => useSide.setState({ view });
-const RAW: { text: string | null; p: Promise<string> | null } = { text: null, p: null };
-function useRawText() {
-  const [text, setText] = useState(RAW.text);
+const RAW: Record<string, { text: string | null; p: Promise<string> | null }> = {};
+function useRawText(own?: string) {
+  const f = useFile();
+  const url = own ?? f.url;
+  const c = (RAW[url] ??= { text: null, p: null });
+  const [got, setGot] = useState<{ url: string; text: string | null }>({ url, text: c.text });
   useEffect(() => {
-    if (RAW.text !== null) return;
-    RAW.p ??= fetch(RAW_FILE.url)
+    if (c.text !== null) return setGot({ url, text: c.text });
+    c.p ??= fetch(url)
       .then((r) => (r.ok ? r.text() : ''))
       .catch(() => '');
     let live = true;
-    void RAW.p.then((t) => {
-      RAW.text = t;
-      if (live) setText(t);
+    void c.p.then((t) => {
+      c.text = t;
+      if (live) setGot({ url, text: t });
     });
     return () => {
       live = false;
     };
-  }, []);
-  return text;
+  }, [url, c]);
+  return got.url === url ? got.text : c.text;
 }
 const PEEK_ROWS = 5;
 const PEEK_COLS = 4;
@@ -1163,6 +1178,7 @@ function MiniSheet({ text }: { text: string }) {
 
 /* Preview, Claude and Download, on every place the file sits */
 function FileKeys() {
+  const RAW_FILE = useFile();
   return (
     <span className="ds-fkeys">
       <button type="button" className="d1-ghost" aria-label={`Preview ${RAW_FILE.name}`} title="Preview" onClick={() => openSide('sheet')}>
@@ -1180,6 +1196,7 @@ function FileKeys() {
 
 function FileCard() {
   const text = useRawText();
+  const RAW_FILE = useFile();
   return (
     <div className="zs2-fcard ds-fcard">
       <button type="button" className="zs2-fcard-open" aria-label={`Preview ${RAW_FILE.name}`} onClick={() => openSide('sheet')}>
@@ -1207,6 +1224,7 @@ function FileCard() {
 function Side() {
   const view = useSide((s) => s.view);
   const text = useRawText();
+  const RAW_FILE = useFile();
   const table = useMemo(() => (text ? parse(text) : null), [text]);
   const box = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -1320,9 +1338,10 @@ export function FeedbackCard({ inPanel = false }: { inPanel?: boolean }) {
   const phase = useD1((s) => s.phase);
   const can = useD1((s) => d1.canSubmit(s));
   const after = phase !== 'feedback' && phase !== 'review';
+  const items = fixesOf(useD1((s) => s.stageId));
   return (
     <div className="d1-fb" data-panel={inPanel || undefined}>
-      {FEEDBACK.items.map((f, i) => (
+      {items.map((f, i) => (
         <label key={f.id} className="d1-fix" data-on={fixed[f.id] || after || undefined}>
           <input type="checkbox" checked={!!fixed[f.id] || after} disabled={after} onChange={() => d1.fix(f.id)} />
           <span className="d1-box">{(fixed[f.id] || after) && <Check size={11} strokeWidth={2.6} />}</span>
@@ -1376,7 +1395,8 @@ function ShotCard({ name }: { name: string }) {
   );
 }
 function SheetLinkCard({ name, meta }: { name: string; meta: string }) {
-  const text = useRawText();
+  const own = specOf(useD1((s) => s.stageId))?.hand.preview;
+  const text = useRawText(own);
   return (
     <figure className="ds-pc ds-pc-sheet">
       <span className="ds-pc-peek" data-kind="sheet">
@@ -1619,10 +1639,11 @@ function SubmitBox() {
         </button>
       </div>
       {isFile ? (
-        <button type="button" className="ds-sub-drop">
+        <label className="ds-sub-drop">
           <Upload size={16} strokeWidth={1.75} />
           Upload file
-        </button>
+          <input type="file" accept=".pdf,.csv,.pptx,.docx" hidden onChange={(e) => e.target.files?.length && send()} />
+        </label>
       ) : (
         <div className="ds-sub-row">
           <Link2 size={15} strokeWidth={1.75} />
@@ -1836,7 +1857,7 @@ function Composer() {
     const stages = project?.stages ?? [];
     const at = stages.findIndex((x) => x.id === stageId);
     const next = stages[at + 1];
-    if (!next) return null;
+    if (!next) return phase === 'done' ? <Cta label="Finish the project" onClick={() => void leaveStage(stageId)} /> : null;
     return <Cta label={`Continue to stage ${at + 2}`} onClick={() => void leaveStage(stageId)} />;
   }
   const send = () => {
@@ -1906,7 +1927,7 @@ function Composer() {
    in the chat, over the thread, so nothing squeezes */
 function FbPin() {
   const phase = useD1((s) => s.phase);
-  const left = useD1((s) => FEEDBACK.items.filter((f) => !s.fixed[f.id]).length);
+  const left = useD1((s) => fixesOf(s.stageId).filter((f) => !s.fixed[f.id]).length);
   const has = useD1((s) => s.thread.some((i) => i.k === 'feedback'));
   const open = useFixDrop((s) => s.open);
   const box = useRef<HTMLDivElement>(null);
@@ -2009,7 +2030,7 @@ function Chat() {
   const pvDrag = useSide((s) => s.drag);
   return (
     <section className="d1-chat" data-enter data-pv={pv || undefined} data-drag={pvDrag || undefined} style={pvW ? ({ '--pv-w': `${pvW}px` } as React.CSSProperties) : undefined}>
-      <div className="d1-who ds-who" data-stuck={stuck || undefined}>
+      <div className="d1-who ds-who" data-stuck={stuck || undefined} data-check={checking || undefined}>
         <span className="d1-face">
           {m && <img src={m.face} alt={m.full} />}
         </span>
@@ -2363,7 +2384,7 @@ function ZqSlots({ home }: { home: () => void }) {
       rows: b.requirements.map((r, i) => row(r.id, !!s.met[r.id], r.text, i)),
     });
   }
-  const ready = askMode ? s.phase === 'work' && s.askStep === 'submit' : s.phase === 'work';
+  const ready = askMode ? s.phase === 'work' && s.askStep === 'submit' : s.phase === 'work' && !slotsLeft(s);
   return (
     <div className="ds-zq-slots">
       {parts.map((p, i) => (
@@ -2383,7 +2404,7 @@ function ZqSlots({ home }: { home: () => void }) {
         </h5>
         <button type="button" className="ds-zq-submit" disabled={!ready} onClick={home}>
           {sent ? <Check size={13} strokeWidth={2.2} /> : !ready ? <Lock size={13} strokeWidth={1.75} /> : <ArrowUpRight size={13} strokeWidth={1.75} />}
-          {sent ? 'Clean sheet sent' : ready ? 'Submit in Zero' : 'Submit the clean sheet'}
+          {sent ? (specOf(s.stageId)?.sentLine ?? 'Clean sheet sent') : ready ? 'Submit in Zero' : specOf(s.stageId) ? 'Submit it' : 'Submit the clean sheet'}
         </button>
       </section>
     </div>
@@ -2392,6 +2413,7 @@ function ZqSlots({ home }: { home: () => void }) {
 
 function ZqChat({ home }: { home: () => void }) {
   const thread = useD1((s) => s.thread);
+  const zf = useFile();
   const typing = useD1((s) => s.typing);
   const stuck = useD1((s) => s.stuck);
   const { mode, said, heard } = useZq();
@@ -2434,13 +2456,13 @@ function ZqChat({ home }: { home: () => void }) {
             <div key={it.id} className="ds-zq-file">
               <img src="static/logos/logo-sheets.svg" alt="" />
               <button type="button" className="ds-zq-file-t" onClick={() => (home(), openSide('sheet'))}>
-                <span>{RAW_FILE.name}</span>
-                <span className="ds-zq-dim">{RAW_FILE.meta}</span>
+                <span>{zf.name}</span>
+                <span className="ds-zq-dim">{zf.meta}</span>
               </button>
               <button type="button" className="ds-zq-ghost" aria-label="Preview" title="Preview" onClick={() => (home(), openSide('sheet'))}>
                 <Eye size={14} strokeWidth={1.75} />
               </button>
-              <a className="ds-zq-ghost" href={RAW_FILE.url} download aria-label="Download" title="Download">
+              <a className="ds-zq-ghost" href={zf.url} download aria-label="Download" title="Download">
                 <Download size={14} strokeWidth={1.75} />
               </a>
             </div>
@@ -2674,7 +2696,7 @@ export default function StageSame() {
   }, []);
 
   useDevAction('next', 'Next', () => void d1.next());
-  useDevAction('d1-fix', 'Tick every fix', () => FEEDBACK.items.forEach((f) => !useD1.getState().fixed[f.id] && d1.fix(f.id)));
+  useDevAction('d1-fix', 'Tick every fix', () => fixesOf(useD1.getState().stageId).forEach((f) => !useD1.getState().fixed[f.id] && d1.fix(f.id)));
   useDevAction('d1-time', 'Add 35 minutes to the timer', () => d1.skew(35));
   useDevAction('ds-tools', 'Tools and training: switch V1 and V2', () => useLook.setState((l) => ({ tools: l.tools === 'v1' ? 'v2' : 'v1' })));
   useDevAction('d1-pou', 'Answer her check-in', () => pouAnswerForMe());

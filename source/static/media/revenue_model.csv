@@ -1,0 +1,7 @@
+market,region,customers,currency,monthly_revenue_local,monthly_revenue_usd,revenue_per_user_usd
+Germany,Europe,8,EUR,93.92,101.43,12.68
+United States,North America,8,USD,94.92,94.92,11.87
+United Kingdom,Europe,6,GBP,65.94,83.74,13.96
+Mexico,Latin America,8,MXN,1222.00,67.21,8.40
+Brazil,Latin America,8,BRL,214.20,38.56,4.82
+India,South Asia,11,INR,1489.00,17.87,1.62
