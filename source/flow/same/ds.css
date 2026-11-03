@@ -4494,18 +4494,72 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
   min-width: 0;
 }
 
-/* the right side behind one hairline: the whole sheet, or Claude */
+/* b28 (his note: "I don't want it in another container. It should be in the same white container, but a divider ... on
+   the right ... resizable"): the sheet or Claude opens inside the chat's own white sheet, on its right, behind one
+   hairline. The chat gives it the room; its edge drags */
+.d1.ds2 .d1-chat {
+  --pv-w: clamp(420px, 42%, 640px);
+}
+.d1.ds2 .d1-chat[data-pv] > .ds-who,
+.d1.ds2 .d1-chat[data-pv] > .d1-scroll,
+.d1.ds2 .d1-chat[data-pv] > .d1-comp-wrap {
+  margin-right: var(--pv-w);
+}
+.d1.ds2 .d1-chat[data-pv] > .ds-drop {
+  right: var(--pv-w);
+}
+.d1.ds2 .d1-chat[data-drag],
+.d1.ds2 .d1-chat[data-drag] * {
+  cursor: col-resize;
+  user-select: none;
+}
+.d1.ds2 .d1-chat[data-drag] > * {
+  transition: none;
+}
 .d1.ds2 .ds-pv {
-  flex: none;
-  width: clamp(420px, 40vw, 640px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  width: var(--pv-w);
   min-width: 0;
   display: flex;
   flex-direction: column;
-  margin-left: 12px;
-  border-radius: var(--b-r, 24px);
   background: var(--ds-white);
-  box-shadow: inset 0 0 0 1px var(--ds-subtle);
-  overflow: hidden;
+  box-shadow: inset 1px 0 0 var(--ds-hair);
+}
+.d1.ds2 .ds-pv-grip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  z-index: 3;
+  width: 12px;
+  cursor: col-resize;
+  touch-action: none;
+}
+.d1.ds2 .ds-pv-grip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 4px;
+  height: 36px;
+  margin-top: -18px;
+  border-radius: 2px;
+  background: var(--ds-subtle);
+  transform: scaleY(0.6);
+  transition: transform 220ms var(--b-ease), background-color 220ms var(--b-ease);
+}
+.d1.ds2 .ds-pv-grip:hover::after,
+.d1.ds2 .d1-chat[data-drag] .ds-pv-grip::after {
+  background: var(--ds-ink-3);
+  transform: none;
+}
+.d1.ds2 .ds-pv-sheet,
+.d1.ds2 .ds-pv-cl {
+  border-bottom-right-radius: inherit;
 }
 .d1.ds2 .ds-pv-h {
   flex: none;
@@ -4883,4 +4937,12 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
 .d1.ds2 .ds-turn-room {
   flex: none;
   height: 0;
+}
+
+/* b28: her name and the keys stay centred over the chat column while the panel is open */
+.d1.ds2 .d1-chat[data-pv] > .ds-who {
+  margin-left: max(0px, calc((100% - var(--pv-w) - var(--ds-col)) / 2));
+  margin-right: calc(var(--pv-w) + max(0px, calc((100% - var(--pv-w) - var(--ds-col)) / 2)));
+  width: auto;
+  max-width: var(--ds-col);
 }

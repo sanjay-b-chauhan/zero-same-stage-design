@@ -13,7 +13,7 @@ import type { ProjectId } from '../types';
 import { timerGroup, usePrefs, type Speed } from './prefs';
 import { takesNotes } from './grade';
 import { awardXp } from '../hud/xp';
-import { gradeChapter, hasWritten, notesPaid, notesWritten, writeChapter, writeThrough, xpOf } from './notesStore';
+import { gradeChapter, hasWritten, notesWritten, writeChapter, writeThrough, xpOf } from './notesStore';
 import { runOf, type Run } from './run';
 import { capsOf, locate, offsetsOf, totalOf, type Cap } from './timeline';
 
@@ -44,7 +44,8 @@ const NOTES_MS = 1150;
 const TO_POU_MS = 900;
 /* the last key point has landed: a beat before the next chapter */
 const AFTER_WRITE_MS = 650;
-const AFTER_PAY_MS = 1900;
+/* b28 (his note: "it takes a pause ... after that you just quickly should go to the next step") */
+const AFTER_PAY_MS = 450;
 
 let run: Run = runOf('spotify');
 let project: ProjectId = 'spotify';
@@ -295,8 +296,9 @@ export function kickClear() {
     if (wrote) {
       /* b23 (his note: "let's not add that motion from the meeting notes to the XP"): each line already shows what it
          earned; the head sums it and the Level counts up where it is, nothing flies */
+      /* b28 (his note: "the meeting notes at the top are like +100 ... we don't need that at the top. 50, 25, that
+         makes sense"): the lines keep what they earned, the head stays Meeting notes */
       const amount = xpOf(seg.id);
-      notesPaid(seg.id, amount);
       if (amount > 0) awardXp({ amount, reason: 'Notes check', id: `notes:${seg.id}`, quiet: true });
     }
     timers.after(wrote ? AFTER_PAY_MS : AFTER_WRITE_MS, () => {

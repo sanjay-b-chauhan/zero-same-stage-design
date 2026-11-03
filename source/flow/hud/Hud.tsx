@@ -32,6 +32,8 @@ import './real.css';
 const TABS: readonly PanelTab[] = [PANEL_TABS.LEVEL, PANEL_TABS.COACH];
 const TABS_PAD_TOP = 8; /* PANEL_BOX.tabsPad, '8px 8px 0' */
 const EDGE = 26; /* the pill's right inset, kept on both sides when the panel is zoomed to fit */
+/* b28 (his note: "decrease the size of the Level and the Coach ... around 20% smaller") */
+const SMALL = 0.8;
 const FOOT = 16; /* room under the open panel */
 
 /* the real panels read the product's stores; they are filled before anything mounts, so no query ever starts */
@@ -71,7 +73,7 @@ export default function Hud() {
   const copy = usePillCopy().data;
   const screenSize = useSurfaceZoom();
   const panelW = PANEL_WIDTH[view];
-  const zoom = fitZoom(screenSize.zoom, panelW, screenSize.width - 2 * EDGE);
+  const zoom = fitZoom(screenSize.zoom, panelW, screenSize.width - 2 * EDGE) * SMALL;
   const skin = PANEL_SKIN[tab];
   const tabsH = (TABS_PAD_TOP + PANEL_BOX.tabHeight) * zoom;
   const [top, setTop] = useState(24);

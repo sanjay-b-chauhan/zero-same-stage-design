@@ -1016,7 +1016,11 @@ function ToolLink() {
 /* ---------- b27: the file she hands you is a preview (his note: "for Spotify, I need a preview ... whatever is a resource,
    it should be a preview, but if it's a link, it can be a link. Also a preview and an AI icon should be there. When I click
    on the AI icon, it should just open up on the right-hand side as a divider") ---------- */
-const useSide = create<{ view: 'sheet' | 'claude' | null }>(() => ({ view: null }));
+/* b28 (his note: "I don't want it in another container ... the same white container, a divider ... resizable"): w is the
+   width you dragged it to, 0 until you do; drag is true while you hold its edge */
+const useSide = create<{ view: 'sheet' | 'claude' | null; w: number; drag: boolean }>(() => ({ view: null, w: 0, drag: false }));
+const PV_MIN = 340;
+const CHAT_MIN = 400;
 const openSide = (view: 'sheet' | 'claude') => useSide.setState({ view });
 const RAW: { text: string | null; p: Promise<string> | null } = { text: null, p: null };
 function useRawText() {
@@ -1131,8 +1135,32 @@ function Side() {
   }, [view]);
   if (!view) return null;
   const close = () => useSide.setState({ view: null });
+  /* its left edge is the divider: hold it and drag, the chat gives way or takes the room back */
+  const grip = (e: React.PointerEvent<HTMLSpanElement>) => {
+    const el = box.current;
+    const chat = el?.parentElement;
+    if (e.button !== 0 || !el || !chat) return;
+    e.preventDefault();
+    const x0 = e.clientX;
+    const w0 = el.offsetWidth;
+    const max = Math.max(PV_MIN, chat.clientWidth - CHAT_MIN);
+    const g = e.currentTarget;
+    g.setPointerCapture(e.pointerId);
+    useSide.setState({ drag: true });
+    const move = (m: PointerEvent) => useSide.setState({ w: Math.round(Math.min(max, Math.max(PV_MIN, w0 + x0 - m.clientX))) });
+    const up = () => {
+      g.removeEventListener('pointermove', move);
+      g.removeEventListener('pointerup', up);
+      g.removeEventListener('pointercancel', up);
+      useSide.setState({ drag: false });
+    };
+    g.addEventListener('pointermove', move);
+    g.addEventListener('pointerup', up);
+    g.addEventListener('pointercancel', up);
+  };
   return (
     <aside ref={box} className="ds-pv" data-view={view} aria-label={view === 'sheet' ? RAW_FILE.name : 'Claude'}>
+      <span className="ds-pv-grip" role="separator" aria-orientation="vertical" aria-label="Resize" onPointerDown={grip} onDoubleClick={() => useSide.setState({ w: 0 })} />
       <header className="ds-pv-h">
         <img className="ds-pv-ico" src={view === 'sheet' ? 'static/logos/logo-sheets.svg' : 'static/logos/logo-claude.svg'} alt="" />
         <span className="ds-pv-t">{view === 'sheet' ? RAW_FILE.name : 'Claude'}</span>
@@ -1737,8 +1765,10 @@ function Composer() {
   );
 }
 
-const TURN_ROWS = 3;
-const TURN_TOP = 16;
+/* b28 (his note: "one at a time is too much ... we should see at least some messages above ... centered or a little on
+   the top"): your newest line sits a third of the way down, what came before it stays in view above */
+const TURN_AT = 0.32;
+const TURN_FOOT = 24;
 /* where a row sits inside the scroller, untouched by the rise it is still running */
 const offsetIn = (n: HTMLElement, root: HTMLElement) => {
   let t = 0;
@@ -1775,7 +1805,7 @@ function Chat() {
     }
     /* b27 (his note: "once the user says I got it, move the chat to the top ... if it is on the lower side it feels very
        clustered ... the latest thing, one at a time or two or three at a time, not four"): the newest turn rises to the
-       top of the chat with room under it, your line first, then at most three rows. Older rows are a scroll up away */
+       top of the chat with room under it. b28 moves it down to a third of the chat, so her last lines show above it */
     const rows = [...el.querySelectorAll<HTMLElement>('.d1-thread > .d1-row')];
     let a = rows.length - 1;
     for (let i = rows.length - 1; i >= 0; i--) {
@@ -1784,13 +1814,16 @@ function Chat() {
         break;
       }
     }
-    const anchor = rows[Math.max(a, rows.length - TURN_ROWS)];
+    const anchor = rows[a];
     const col = el.querySelector<HTMLElement>('.d1-thread');
     if (!anchor || !col) return;
+    const lift = Math.round(el.clientHeight * TURN_AT);
     const at = offsetIn(anchor, el);
     const end = offsetIn(col, el) + col.offsetHeight;
-    pad.style.height = `${Math.max(0, el.clientHeight - (end - at) - TURN_TOP)}px`;
-    el.scrollTo({ top: Math.max(0, at - TURN_TOP), behavior: 'smooth' });
+    pad.style.height = `${Math.max(0, el.clientHeight - (end - at) - lift)}px`;
+    /* a long answer under your line: its newest row stays in view rather than your line */
+    const top = Math.max(at - lift, end - el.clientHeight + TURN_FOOT);
+    el.scrollTo({ top: Math.max(0, Math.min(top, at - TURN_FOOT)), behavior: 'smooth' });
   }, [thread.length, typing, started]);
 
   const m = project?.manager;
@@ -1806,8 +1839,11 @@ function Chat() {
     return () => io.disconnect();
   }, [thread.some((i) => i.k === 'brief')]);
   const showKey = gone || drop;
+  const pv = useSide((s) => !!s.view);
+  const pvW = useSide((s) => s.w);
+  const pvDrag = useSide((s) => s.drag);
   return (
-    <section className="d1-chat" data-enter>
+    <section className="d1-chat" data-enter data-pv={pv || undefined} data-drag={pvDrag || undefined} style={pvW ? ({ '--pv-w': `${pvW}px` } as React.CSSProperties) : undefined}>
       <div className="d1-who ds-who" data-stuck={stuck || undefined}>
         <span className="d1-face">
           {m && <img src={m.face} alt={m.full} />}
@@ -1845,6 +1881,7 @@ function Chat() {
       </div>
       <BriefDrop />
       <FixDrop />
+      <Side />
     </section>
   );
 }
@@ -2281,7 +2318,6 @@ export default function StageSame() {
         <div className="d1-body" data-ver={ver}>
           {ver === 'v2' ? <Work2 /> : <Rail />}
           <Chat />
-          <Side />
         </div>
         <FilmPop />
       </div>

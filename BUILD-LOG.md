@@ -165,3 +165,12 @@ Same stage, design system (3 Nov): zero-same-stage-design.vercel.app CURRENT ds 
 ## b23 (3 Nov 2026)
 
 LIVE zero-same-stage-design.vercel.app ds b23, b22 at /b22/. Arrow Right is one Next everywhere (dev action id 'next' wins; stage d1.next() flushes pending waits, then plays your side; objective skips her line per press and on a click on her side). Empty field gives arrows back. Roles hook: bigger dotted pill, hover opens Levels 1 to 3 with two roles each. Check-in: thread from the top with 56px breathing room, no sending ring, the line under the talk key says '<manager> is listening'. Notes check: one line scanned at a time, +50 +25 +25 +50 tags land on each matched line, mallet sound rising per hit, no fly to Level. Still to do: V1 V2 V3 stage switcher, full brief revealing as she speaks, Got it outside the brief, smaller play icon, PiP icon on Level line, dashed screenshot icon, versions index in gear, HUD Level and Coach in new DS, handover zip, roles voice line (ask ElevenLabs cost first), '2 Level Upoids' unclear.
+
+## b28 (3 Nov 2026)
+
+LIVE zero-same-stage-design.vercel.app ds b28, b27 at /b27/. His notes on b27, and what changed:
+- "I don't want it in another container ... the same white container, a divider ... resizable": the sheet preview and Claude open inside `.d1-chat` (absolute, `--pv-w`, default clamp(420px, 42%, 640px)), one hairline on the left, the chat column and header shift left by margin. Its left edge drags (pointer capture, 340 px min, chat keeps 400 px); double click resets. `same/StageSame.tsx` Side, `same/ds.css` b28 block.
+- "one at a time is too much ... we should see at least some messages above ... centered or a little on the top": your newest line sits at 32% of the chat height with her earlier lines above (TURN_AT); a long answer keeps its newest row in view.
+- "around 20% smaller ... not the same font": Hud.tsx multiplies the panel zoom by 0.8 (363 to 290 px wide at 1512), `.zh-real` uses the stage's Inter stack.
+- "as soon as I send, it should go into that listening mode, and then ... recording ... super fast": hold.ts SEND_MS 600 to 140, pou.ts REPLY_MS 900 to 380, recording beat stays 650. Send to her note is about 1.2 s (was about 2.2 s).
+- "the meeting notes at the top are like +100 ... we don't need that at the top. 50, 25 ... then quickly go to the next step": no "+N XP · Notes check" head, scan 520 to 320 ms a line, land 260 to 160, AFTER_PAY_MS 1900 to 450. One written line to the next chapter is about 2 s (was about 4 s).

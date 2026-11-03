@@ -49,7 +49,7 @@ export const useHoldUi = create<HoldUi>(() => ({ holding: false, at: 0, heard: '
 
 /* b20 (his note: "when I record and send there is no loader state"): every note you send shows as sending for a beat
    before it lands, even when the words are already in */
-const SEND_MS = 600;
+const SEND_MS = 140;
 
 interface Take {
   at: number;

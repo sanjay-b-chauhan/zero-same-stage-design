@@ -20,7 +20,8 @@ const level = (v: number) => useFlow.getState().actions.setLevel(v);
 const timers = timerGroup();
 
 /* the beat between your note landing and hers starting, while she listens */
-const REPLY_MS = 900;
+/* b28 (his note: "as soon as I send, it should go into that listening mode, and then ... recording. Super fast") */
+const REPLY_MS = 380;
 
 let R = 0;
 let brain: Brain | null = null;

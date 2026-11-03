@@ -98,8 +98,8 @@ export function fillSample(segId: string) {
 
 export const hasWritten = (segId: string) => !!chapterOf(segId)?.notes.some((x) => x.by === 'me' && x.text.trim());
 
-const SCAN_MS = 520;
-const LAND_MS = 260;
+const SCAN_MS = 320;
+const LAND_MS = 160;
 
 /* what a check paid, said in the panel's head for a moment */
 export function notesPaid(segId: string, amount: number) {
@@ -161,7 +161,7 @@ export function gradeChapter(segId: string, animate: boolean, done?: () => void)
       sfx.land(mine.length + j);
     });
   });
-  timers.after(last + 380, () => {
+  timers.after(last + 200, () => {
     patch(segId, (ch) => ({ ...ch, graded: true, notes: finalNotes }));
     useNotes.setState({ checking: null, reading: false, scan: null });
     if (!hers.length && mine.length) sfx.ting();

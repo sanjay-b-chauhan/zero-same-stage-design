@@ -1,8 +1,9 @@
 /* The real Level and Coach panels are styled the product way: inline styles plus a few Tailwind utilities, on top of
    Tailwind's base. The prototype carries no Tailwind, so here are that base and exactly the utilities those
    components use, scoped to the panel so nothing else on the page changes. */
+/* b28 (his note: "it doesn't have the same font styling that we have"): the stage's own type, Inter */
 .zh-real {
-  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  font-family: 'Inter', -apple-system, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
   font-feature-settings: normal;
   letter-spacing: normal;
   line-height: 1.5;
