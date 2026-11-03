@@ -847,3 +847,35 @@
     animation: none;
   }
 }
+
+/* b29 (his note: "I don't want a surface colour when it's in a recording state. I just need recording bars only"): her
+   recording is her face and the live bars, nothing behind them */
+.pv-rb {
+  padding: 0 4px;
+  background: none;
+  box-shadow: none;
+}
+.pv-rw i {
+  background: var(--b-t1);
+}
+/* her listening, shimmering under your note for a beat */
+.pv-lsn {
+  margin-top: -12px;
+  justify-content: flex-end;
+}
+.pv-lsn-t {
+  font-size: 12px;
+  line-height: 16px;
+  background: linear-gradient(90deg, var(--b-t3) 0%, var(--b-t3) 35%, var(--b-t1) 50%, var(--b-t3) 65%, var(--b-t3) 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pv-shim 1.2s linear infinite, pv-rise 0.3s var(--b-soft) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pv-lsn-t {
+    animation: none;
+    -webkit-text-fill-color: var(--b-t2);
+  }
+}

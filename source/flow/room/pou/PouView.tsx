@@ -160,7 +160,6 @@ function Recording({ first }: { first: boolean }) {
     <div className="pv-row pv-recg" data-from="her" data-first={first ? '1' : undefined}>
       <Face />
       <span className="pv-rb" aria-label="Recording">
-        <Mic size={14} strokeWidth={2} />
         <span className="pv-rw" aria-hidden>
           {Array.from({ length: 9 }, (_, i) => (
             <i key={i} style={{ animationDelay: `${(i % 5) * -0.11}s` }} />
@@ -189,6 +188,7 @@ function Thread() {
   const col = useRef<HTMLDivElement>(null);
   const last = thread[thread.length - 1];
   const waiting = !ended && !speaking && last?.from === 'me';
+  const name = useFlow((s) => s.project?.manager?.name ?? 'She');
   /* b17 (his note: "I can't scroll and see all the parts"): the whole conversation stays, the page scrolls */
   const shown = thread;
   const key = shown.map((m) => m.id).join(',');
@@ -236,6 +236,13 @@ function Thread() {
         {shown.map((m) => (
           <Note key={m.id} m={m} busy={busy} />
         ))}
+        {/* b29 (his note: "the voice note goes and then for .5 sec listening, shimmer, below the user voice note, and then
+            the manager recording .5 sec, and then the voice note comes") */}
+        {waiting && (
+          <div className="pv-row pv-lsn" data-from="me" aria-live="polite">
+            <span className="pv-lsn-t">{name} is listening</span>
+          </div>
+        )}
         {recording && <Recording first={thread.length === 0} />}
       </div>
     </div>
@@ -281,7 +288,6 @@ function Hold() {
      while your note goes over and she takes it in, the line under the key says so. Then her recording comes in above */
   const speaking = usePou((s) => s.speaking);
   const listening = usePou((s) => !s.ended && !s.speaking && s.thread[s.thread.length - 1]?.from === 'me') || sending;
-  const name = useFlow((s) => s.project?.manager?.name ?? 'She');
   const [live, setLive] = useState<number[]>(() => Array(LIVE_BARS).fill(0));
   const [now, setNow] = useState(0);
   useEffect(() => {
@@ -339,8 +345,9 @@ function Hold() {
           </button>
         )}
       </div>
-      <span className="pv-hint" data-on={holding || (!listening && speaking) ? '0' : '1'} data-busy={listening || undefined} aria-live="polite">
-        {listening ? `${name} is listening` : 'Hold Space to talk'}
+      {/* b29: her listening moved up under your note; the line here only says how to talk */}
+      <span className="pv-hint" data-on={holding || listening || speaking ? '0' : '1'}>
+        Hold Space to talk
       </span>
     </div>
   );

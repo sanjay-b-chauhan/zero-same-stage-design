@@ -265,12 +265,12 @@ function TopBar() {
         <button type="button" className="d1-ghost" aria-label="Back to the project" onClick={() => useFlow.getState().actions.goto('objective')}>
           <ChevronLeft size={16} strokeWidth={1.75} />
         </button>
-        {ver === 'v2' ? (
+        {ver !== 'v1' ? (
           <StagePick />
         ) : (
           <>
             {project && <img className="d1-logo" src={project.logo} alt={project.company} />}
-            <span className="ds-scn">{SCENARIO.title}</span>
+            <span className="ds-scn">{project?.title ?? SCENARIO.title}</span>
           </>
         )}
       </div>
@@ -419,34 +419,96 @@ function Asks({ s }: { s: D1 }) {
   );
 }
 
-/* V2's left side (zero-stage-five b23). b27 (his note: "we don't need resources, we just need to-dos, and instead of to-dos
-   just write Manager's ask"): one list, her asks in Ask mode or the requirements, blank lines until Got it */
-function Work2() {
-  const s = useD1();
+/* V2's left side. b29 (his note: "directly replicate what's there in image 2, issues to identify, then a prompt for Claude,
+   submission ... when you chat with the manager it gets unlocked ... don't copy the blur, just an empty space like --"):
+   her to-dos as one list in three parts. A part opens when you reach it, each line fills when you get it right in the chat */
+const TODO_BLANK = '--';
+type TodoState = 'done' | 'now' | 'next';
+function TodoRow({ on, text, pop }: { on: boolean; text?: string; pop?: number }) {
+  return (
+    <li className="ds-td-row" data-on={on || undefined} data-pop={pop}>
+      <span className="ds-td-m">{on && <Check size={10} strokeWidth={2.8} />}</span>
+      <span className="ds-td-t" data-blank={!on || undefined}>
+        {on ? text : TODO_BLANK}
+      </span>
+      {pop !== undefined && (
+        <span key={pop} className="ds-plus d1-num">
+          +20
+        </span>
+      )}
+    </li>
+  );
+}
+function TodoPart({ title, state, children }: { title: string; state: TodoState; children?: React.ReactNode }) {
+  return (
+    <section className="ds-td" data-state={state}>
+      <h5 className="ds-td-h">{title}</h5>
+      {state !== 'next' && children && <ul className="ds-td-l">{children}</ul>}
+    </section>
+  );
+}
+function Todos({ s }: { s: D1 }) {
   const b = briefOf(s.stageId);
   const askMode = s.ask && s.stageId === 'clean';
+  const sent = s.phase !== 'brief' && s.phase !== 'work';
+  if (!askMode) {
+    const work: TodoState = s.phase === 'brief' ? 'next' : sent ? 'done' : 'now';
+    return (
+      <div className="ds-tds">
+        <TodoPart title="Requirements" state={s.phase === 'brief' ? 'now' : work}>
+          {b.requirements.map((r) => (
+            <TodoRow key={r.id} on={s.phase !== 'brief' && !!s.met[r.id]} text={r.text} />
+          ))}
+        </TodoPart>
+        <TodoPart title="Submission" state={sent ? 'done' : 'next'}>
+          <TodoRow on={sent} text="Clean sheet sent" />
+        </TodoPart>
+      </div>
+    );
+  }
+  const order = ['issues', 'prompt', 'submit'];
+  const at = s.phase === 'brief' ? 0 : s.phase === 'work' ? order.indexOf(s.askStep) : 3;
+  const st = (k: number): TodoState => (k < at ? 'done' : k === at ? 'now' : 'next');
   return (
-    <aside className="ds-w2" data-enter aria-label="Manager's ask">
+    <div className="ds-tds">
+      <TodoPart title={ASK_GROUPS[0].title} state={st(0)}>
+        {ISSUES.map((it) => {
+          const got = s.found.includes(it.id);
+          return <TodoRow key={it.id} on={got} text={it.label} pop={s.pop?.id === it.id ? s.pop.n : undefined} />;
+        })}
+      </TodoPart>
+      <TodoPart title={ASK_GROUPS[1].title} state={st(1)}>
+        <TodoRow on={!!s.prompt} text={s.prompt} />
+      </TodoPart>
+      <TodoPart title={ASK_GROUPS[2].title} state={st(2)}>
+        <TodoRow on={at > 2} text="Clean sheet sent" />
+      </TodoPart>
+    </div>
+  );
+}
+function Work2() {
+  const s = useD1();
+  return (
+    <aside className="ds-w2" data-enter aria-label="To-dos">
       <div className="ds-w2-tabs">
-        <span className="ds-w2-one">Manager's ask</span>
+        <span className="ds-w2-one">To-dos</span>
       </div>
       <div className="ds-w2-body">
-        {s.phase === 'brief' ? (
-          <ul className="ds-req ds-req-wait" aria-label="Her asks land after Got it">
-            {b.requirements.map((r) => (
-              <li key={r.id}>
-                <span className="ds-req-m">
-                  <i />
-                </span>
-                <span className="ds-slot-blank" />
-              </li>
-            ))}
-          </ul>
-        ) : askMode ? (
-          <Asks s={s} />
-        ) : (
-          <Reqs s={s} b={b} land />
-        )}
+        <Todos s={s} />
+      </div>
+    </aside>
+  );
+}
+
+/* V3. b29 (his note: "the V3 version should be the replica of the V2 version on the left ... 1 by 5 and the stage name,
+   and just below that the requirements in bullet points"): V2's header, the requirements under it from the start */
+function Work3() {
+  const s = useD1();
+  const b = briefOf(s.stageId);
+  return (
+    <aside className="ds-w2 ds-w3" data-enter aria-label="Requirements">
+      <div className="ds-w2-body">
+        <Reqs s={s} b={b} land={false} />
       </div>
     </aside>
   );
@@ -1765,21 +1827,6 @@ function Composer() {
   );
 }
 
-/* b28 (his note: "one at a time is too much ... we should see at least some messages above ... centered or a little on
-   the top"): your newest line sits a third of the way down, what came before it stays in view above */
-const TURN_AT = 0.32;
-const TURN_FOOT = 24;
-/* where a row sits inside the scroller, untouched by the rise it is still running */
-const offsetIn = (n: HTMLElement, root: HTMLElement) => {
-  let t = 0;
-  let c: HTMLElement | null = n;
-  while (c && c !== root) {
-    t += c.offsetTop;
-    c = c.offsetParent as HTMLElement | null;
-  }
-  return t;
-};
-
 function Chat() {
   const project = useFlow((s) => s.project);
   const thread = useD1((s) => s.thread);
@@ -1803,27 +1850,10 @@ function Chat() {
       el.scrollTo({ top, behavior: 'smooth' });
       return;
     }
-    /* b27 (his note: "once the user says I got it, move the chat to the top ... if it is on the lower side it feels very
-       clustered ... the latest thing, one at a time or two or three at a time, not four"): the newest turn rises to the
-       top of the chat with room under it. b28 moves it down to a third of the chat, so her last lines show above it */
-    const rows = [...el.querySelectorAll<HTMLElement>('.d1-thread > .d1-row')];
-    let a = rows.length - 1;
-    for (let i = rows.length - 1; i >= 0; i--) {
-      if (rows[i].classList.contains('d1-row-me')) {
-        a = i;
-        break;
-      }
-    }
-    const anchor = rows[a];
-    const col = el.querySelector<HTMLElement>('.d1-thread');
-    if (!anchor || !col) return;
-    const lift = Math.round(el.clientHeight * TURN_AT);
-    const at = offsetIn(anchor, el);
-    const end = offsetIn(col, el) + col.offsetHeight;
-    pad.style.height = `${Math.max(0, el.clientHeight - (end - at) - lift)}px`;
-    /* a long answer under your line: its newest row stays in view rather than your line */
-    const top = Math.max(at - lift, end - el.clientHeight + TURN_FOOT);
-    el.scrollTo({ top: Math.max(0, Math.min(top, at - TURN_FOOT)), behavior: 'smooth' });
+    /* b29 (his note: "let's do a normal chat, like how normal chat comes, till the bottom ... a little spacing at the
+       bottom, but not extreme"): no room under the turn, the newest line follows the bottom like any chat */
+    pad.style.height = '0px';
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [thread.length, typing, started]);
 
   const m = project?.manager;
@@ -2316,7 +2346,7 @@ export default function StageSame() {
       <div className="d1-frame">
         <TopBar />
         <div className="d1-body" data-ver={ver}>
-          {ver === 'v2' ? <Work2 /> : <Rail />}
+          {ver === 'v2' ? <Work2 /> : ver === 'v3' ? <Work3 /> : <Rail />}
           <Chat />
         </div>
         <FilmPop />

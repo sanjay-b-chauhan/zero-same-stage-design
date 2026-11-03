@@ -21,7 +21,7 @@ const timers = timerGroup();
 
 /* the beat between your note landing and hers starting, while she listens */
 /* b28 (his note: "as soon as I send, it should go into that listening mode, and then ... recording. Super fast") */
-const REPLY_MS = 380;
+const REPLY_MS = 500;
 
 let R = 0;
 let brain: Brain | null = null;
@@ -29,7 +29,7 @@ let project: ProjectId = 'spotify';
 
 const wait = (ms: number) => new Promise<void>((r) => timers.after(ms, r));
 /* each of her notes is recorded first, a quick beat (b11: "it records the voice note and sends it") */
-const RECORD_MS = 650;
+const RECORD_MS = 500;
 const say = (texts: string[], tok: number) => sayInto(usePou, texts, VOICE_OF[project], () => tok === R, wait, RECORD_MS);
 
 function end() {

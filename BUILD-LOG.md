@@ -174,3 +174,14 @@ LIVE zero-same-stage-design.vercel.app ds b28, b27 at /b27/. His notes on b27, a
 - "around 20% smaller ... not the same font": Hud.tsx multiplies the panel zoom by 0.8 (363 to 290 px wide at 1512), `.zh-real` uses the stage's Inter stack.
 - "as soon as I send, it should go into that listening mode, and then ... recording ... super fast": hold.ts SEND_MS 600 to 140, pou.ts REPLY_MS 900 to 380, recording beat stays 650. Send to her note is about 1.2 s (was about 2.2 s).
 - "the meeting notes at the top are like +100 ... we don't need that at the top. 50, 25 ... then quickly go to the next step": no "+N XP · Notes check" head, scan 520 to 320 ms a line, land 260 to 160, AFTER_PAY_MS 1900 to 450. One written line to the next chapter is about 2 s (was about 4 s).
+
+## b29 (3 Nov 2026)
+
+LIVE zero-same-stage-design.vercel.app ds b29, b28 at /b28/. His notes on b28, and what changed:
+- "Let's remove the first chat ... start with ... the straight brief": stage 1 opens on the brief with no greeting (`same/store.ts` begin, GREET unused). Stage 2 still opens with her line.
+- "directly replicate what's there in image 2 ... issues to identify ... prompt for Claude, submissions ... it gets unlocked ... don't copy the blur ... an empty space, like '--'": V2's left side is To-dos (`same/StageSame.tsx` Todos, TodoPart, TodoRow). Ask mode: Issues to identify (ten rows, each a -- until you name it, then a green tick and +20), Prompt to Claude, Submission. The part you are on is ink, the rest dim. Normal mode: Requirements, then Submission.
+- "the whole scenario name": V1's top bar shows the project title, "Find Where Spotify Can Raise Prices Next".
+- "V3 ... 1 by 5 and the stage name ... requirements in bullet points": V3's left is StagePick plus the requirement bullets (Work3).
+- "when I hover, it just jumps the bubble. It should just stay there": `room/room.css` freezes the face and caption translate in the kickoff while a check-in is up.
+- "I don't want a surface color when it's in a recording state ... recording bars only ... listening ... shimmer below the user voice note": PouView shows "<manager> is listening" as a shimmer line under your note, then bars only with no pill, then her note. pou.ts REPLY_MS 500, RECORD_MS 500.
+- "let's do a normal chat ... till the bottom ... a little spacing at the bottom": no room under the turn, the chat follows the bottom like any chat, 40 px above the box (TURN_AT gone).

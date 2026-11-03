@@ -1721,6 +1721,12 @@
   transform: translateY(100%);
   transition: none;
 }
+/* b28 (his note: "when she asks are we clear, when I hover, it just jumps the bubble. It should just stay there"): her
+   face and the caption hold their place too */
+.rm[data-mode='kickoff'] .rm-fr[data-hot='1']:has(.kc[data-placed='1']) :is(.rm-face, .rm-cap) {
+  translate: 0 0;
+  transition: none;
+}
 .rm-fr[data-hot='1']:has(.kc[data-placed='1']) .rm-ctl {
   translate: 0 16px;
   filter: blur(8px);

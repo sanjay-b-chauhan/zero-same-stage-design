@@ -22,7 +22,7 @@ export default function FlowRoot() {
         <Hud />
       </div>
       <StageTurn />
-      <span className="z-stamp">{import.meta.env.VITE_DS === '2' ? 'ds b28' : import.meta.env.VITE_DS === '1' ? 'ds b1' : import.meta.env.VITE_D1 === '1' ? 'd1 b1' : 'b23'}</span>
+      <span className="z-stamp">{import.meta.env.VITE_DS === '2' ? 'ds b29' : import.meta.env.VITE_DS === '1' ? 'ds b1' : import.meta.env.VITE_D1 === '1' ? 'd1 b1' : 'b23'}</span>
     </div>
   );
 }

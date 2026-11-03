@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { clock } from '../clock';
 import { awardXp } from '../hud';
 import { showTurn } from '../stage/parts/turnStore';
-import { APPROVED, BRIEF, FEEDBACK, GREET, OPEN, OPEN_2, SHOT_REPLY, POU, REPLY, REPLY_ELSE, REVIEW_STEPS, STUCK, BURN, TIERS, tierAt, ISSUES, ISSUE_ENOUGH, ASK_OPEN, ASK_HIT, ASK_MISS, ASK_ENOUGH, ASK_PROMPT_SHORT, ASK_PROMPT_OK } from './script';
+import { APPROVED, BRIEF, FEEDBACK, OPEN, OPEN_2, SHOT_REPLY, POU, REPLY, REPLY_ELSE, REVIEW_STEPS, STUCK, BURN, TIERS, tierAt, ISSUES, ISSUE_ENOUGH, ASK_OPEN, ASK_HIT, ASK_MISS, ASK_ENOUGH, ASK_PROMPT_SHORT, ASK_PROMPT_OK } from './script';
 
 export type Item =
   | { id: number; k: 'brief' }
@@ -200,15 +200,14 @@ export const d1 = {
     const keep = useD1.getState();
     useD1.setState({ ...fresh(stageId), railOpen: keep.railOpen, panelW: keep.panelW, ask: keep.ask, phase: 'brief' });
     /* b14 (founder call): she says hello, the brief builds in, and nothing else happens until you say Got it */
-    say([stageId === 'clean' ? GREET : OPEN_2[0]], {
-      wait: 400,
-      after: () =>
-        later(250, () => {
-          push({ k: 'brief' });
-          useD1.setState({ typing: true });
-          for (let k = 1; k <= BRIEF_PARTS; k++) later(k * PART_MS, () => useD1.setState({ briefN: k, typing: k < BRIEF_PARTS }));
-        }),
-    });
+    const brief = () => {
+      push({ k: 'brief' });
+      useD1.setState({ typing: true });
+      for (let k = 1; k <= BRIEF_PARTS; k++) later(k * PART_MS, () => useD1.setState({ briefN: k, typing: k < BRIEF_PARTS }));
+    };
+    /* b29 (his note: "let's remove the first message ... start with the straight brief"): stage one opens on the brief */
+    if (stageId === 'clean') later(400, brief);
+    else say([OPEN_2[0]], { wait: 400, after: () => later(250, brief) });
   },
 
   /* Got it, let's start: the brief lifts, her first ask comes in under it */
