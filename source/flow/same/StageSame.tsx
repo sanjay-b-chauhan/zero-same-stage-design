@@ -491,15 +491,15 @@ const TODO_BLANK = '--';
 type TodoState = 'done' | 'now' | 'next';
 /* b36 (his note: "when we click on Prompt ... the Read More button should be there so we can see the whole bigger prompt") */
 const LONG_TODO = 90;
-function TodoRow({ on, text, pop, copy }: { on: boolean; text?: string; pop?: number; copy?: boolean }) {
+function TodoRow({ on, text, pop, copy, plain }: { on: boolean; text?: string; pop?: number; copy?: boolean; plain?: boolean }) {
   const [open, setOpen] = useState(false);
   const long = !!copy && on && (text?.length ?? 0) > LONG_TODO;
   return (
     <li className="ds-td-row" data-on={on || undefined} data-pop={pop} data-copy={(copy && on) || undefined}>
       <span className="ds-td-m">{on && <Check size={15} strokeWidth={2.4} />}</span>
       <span className="ds-td-tw">
-        <span className="ds-td-t" data-blank={!on || undefined} data-open={open || undefined}>
-          {on ? text : TODO_BLANK}
+        <span className="ds-td-t" data-blank={(!on && !plain) || undefined} data-open={open || undefined}>
+          {on || plain ? text : TODO_BLANK}
         </span>
         {long && (
           <button type="button" className="ds-td-more" onClick={() => setOpen((v) => !v)}>
@@ -528,6 +528,16 @@ function Todos({ s }: { s: D1 }) {
   const b = briefOf(s.stageId);
   const askMode = s.ask && s.stageId === 'clean';
   const sent = s.phase !== 'brief' && s.phase !== 'work';
+  if (specOf(s.stageId)?.call)
+    return (
+      <div className="ds-tds">
+        <TodoPart title="In the call" state="now">
+          {b.requirements.map((r) => (
+            <TodoRow key={r.id} on={false} text={r.text} plain />
+          ))}
+        </TodoPart>
+      </div>
+    );
   if (!askMode) {
     const work: TodoState = s.phase === 'brief' ? 'next' : sent ? 'done' : 'now';
     return (
@@ -741,6 +751,7 @@ function SubmitKey() {
   const gated = useD1((s) => (s.ask && s.stageId === 'clean' && s.phase === 'work' && s.askStep !== 'submit') || slotsLeft(s));
   const graded = useD1((s) => !!specOf(s.stageId)?.grade);
   const gradeV = useD1((s) => s.gradeV);
+  const call = useD1((s) => !!specOf(s.stageId)?.call);
   const ready = (phase === 'work' && !gated) || phase === 'feedback';
   /* b39 (his note: "whenever you hover on Submit, when you have feedback, there should be a thing like 'Complete all the
      feedback changes' ... to unlock"): Resubmit waits for every note ticked, and says so on hover */
@@ -748,6 +759,13 @@ function SubmitKey() {
   if (graded && phase === 'feedback' && gradeV === 2) return null;
   /* b30 (his note: "the approved and this thing don't make sense"): once she has signed it off the key goes */
   if (phase === 'brief' || phase === 'approved' || phase === 'pou' || phase === 'done') return null;
+  /* b41 (his note: "the option at the top will be Join the call where we had the submit CTA") */
+  if (call)
+    return (
+      <button type="button" className="ds-key ds-key-ink" onClick={joinCall}>
+        Join the call
+      </button>
+    );
   const label =
     phase === 'review'
       ? 'Checking'
@@ -2347,6 +2365,8 @@ function Composer() {
   const box = useRef<HTMLTextAreaElement>(null);
   const canStuck = phase === 'work' || phase === 'feedback';
   if (phase === 'brief') return null;
+  /* b41: the last stage has no work to hand in, only the call */
+  if (phase === 'work' && specOf(stageId)?.call) return <Cta label="Join the call now" onClick={joinCall} />;
   if (submitting) return <SubmitBox />;
   const manager = project?.manager.name.split(' ')[0] ?? 'her';
   if (phase === 'approved') return <Cta label={`Explain it to ${manager}`} onClick={() => d1.check()} />;

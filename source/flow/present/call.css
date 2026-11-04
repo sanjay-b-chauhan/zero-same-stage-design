@@ -1921,3 +1921,76 @@
   aspect-ratio: 16 / 9;
   max-height: calc(100dvh - 410px);
 }
+
+/* ---------- b41 (his note: "this thing has to be in a charcoal thing, because the pure black is super hard to read") ---------- */
+.zs2.d1.ds2.zc[data-mode='dark'] {
+  --ds-paper: #1d1e22;
+  --ds-white: #2a2b30;
+  --ds-ink-2: #c4c7cf;
+  --ds-ink-3: #9a9ea8;
+  --ds-hair: rgba(255, 255, 255, 0.09);
+}
+/* the replay carries you too: a small camera tile over the slide, the way a recorded call looks */
+.zc .zc-replay-me {
+  position: absolute;
+  right: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 2);
+  width: 22%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 2;
+  box-shadow: 0 0 0 1px var(--ds-hair), 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+.zc .zc-replay-me .zc-name {
+  font-size: 11px;
+}
+
+/* b41 (his note: "too much color and AI slop content, add it in the drop down, less is more and intentional"): rows are
+   a title and a grey time, the chevron only on hover; colour lives only in the overall and inside an open row */
+.zc .zc-mo .zc-mo-h {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 14px;
+  align-items: center;
+  gap: 10px;
+}
+.zc .zc-mo .zc-mo-at {
+  font-size: 12px;
+  color: var(--ds-ink-3);
+}
+.zc .zc-mo .zc-mo-c {
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 160ms var(--zc-ease), transform 160ms var(--zc-ease);
+}
+.zc .zc-mo:hover .zc-mo-c,
+.zc .zc-mo[data-open='true'] .zc-mo-c {
+  opacity: 1;
+  transform: none;
+}
+.zc .zc-mo-x .zc-mo-m {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ds-ink-2);
+  margin-bottom: 4px;
+}
+.zc .zc-mo-x .zc-mo-b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.zc .zc-bandc .ds-band {
+  --band: var(--ds-ink-2) !important;
+}
+.zc .zc-mark,
+.zc .zc-mark[data-kind='work'] {
+  background: var(--ds-ink-3);
+}
+.zc .zc-mark[data-on='true'] {
+  background: var(--ds-ink);
+}
+.zc .zc-mo-x .zc-mo-m {
+  padding-left: 0;
+}

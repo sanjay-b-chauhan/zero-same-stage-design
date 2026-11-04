@@ -74,11 +74,7 @@ export const DEV_STEPS: DevStep[] = [
   { id: 'ds:memo:done', group: 'Submit your final deliverables', label: 'Stage done', jump: 'memo' },
 
   { id: 'deck', group: 'Present to the stakeholder', label: 'She opens the stage', jump: 'deck' },
-  { id: 'ds:deck:review', group: 'Present to the stakeholder', label: 'You send it, she reads it', jump: 'deck' },
-  { id: 'ds:deck:feedback', group: 'Present to the stakeholder', label: 'Her feedback', jump: 'deck' },
-  { id: 'ds:deck:approved', group: 'Present to the stakeholder', label: 'Approved', jump: 'deck' },
-  { id: 'ds:deck:pou', group: 'Present to the stakeholder', label: 'Her check-in', jump: 'deck' },
-  { id: 'ds:deck:done', group: 'Present to the stakeholder', label: 'Practice done, Join the call', jump: 'deck' },
+  { id: 'ds:deck:work', group: 'Present to the stakeholder', label: 'Her pack, then Join the call', jump: 'deck' },
   { id: 'call:lobby', group: 'Present to the stakeholder', label: 'The call, before you join', jump: 'deck' },
   { id: 'call:call', group: 'Present to the stakeholder', label: 'In the call, she says hello', jump: 'deck' },
   { id: 'call:check', group: 'Present to the stakeholder', label: 'Framing, slide and mic checks', jump: 'deck' },

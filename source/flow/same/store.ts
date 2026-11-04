@@ -205,6 +205,7 @@ export const d1 = {
       return d1.submit(), true;
     }
     if (s.phase !== 'work') return false;
+    if (specOf(s.stageId)?.call) return false;
     if (s.stuck) return d1.stuckNext(), true;
     const sp = specOf(s.stageId);
     const slot = sp && slotAt(sp, s);
@@ -258,6 +259,7 @@ export const d1 = {
     useD1.setState({ phase: 'work', startedAt: Date.now(), briefN: BRIEF_PARTS, typing: false });
     push({ k: 'me', text: "Got it, let's start." });
     const sp = specOf(s.stageId);
+    if (sp?.call) return say(sp.open, { wait: 600 });
     if (sp) return say([...sp.open, sp.slots[0].ask], { wait: 600 });
     if (s.stageId !== 'clean') return say([OPEN_2[1]], { wait: 500 });
     if (s.ask) return say(ASK_OPEN, { wait: 600 });

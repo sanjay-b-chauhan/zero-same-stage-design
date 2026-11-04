@@ -69,6 +69,9 @@ export interface StageSpec {
   feedback?: { head: string; items: FixItem[]; ask: string };
   /* b39: a graded review on the right instead of fixes to tick */
   grade?: Grade;
+  /* b41 (his note: "No PO experience, no final submission, nothing. It's like directly you are joining the call"): she sends
+     the pack, the only key is Join the call */
+  call?: boolean;
   fixedLine: string;
   checkIntro: string;
   check: CheckLine[];
@@ -427,15 +430,16 @@ const memo: StageSpec = {
 };
 
 const deck: StageSpec = {
+  call: true,
   brief: {
     stage: 'Present to the stakeholder',
     deliverable: 'Slide deck, three slides',
     deliverableLine: 'The ask, the numbers behind it, the risk.',
     format: 'Google Slides link',
-    formatLine: "Three slides. You'll present it to me live.",
+    formatLine: "Three slides, built from your memo. You present it to me live.",
     voice:
-      "Last one. You're presenting this to the VP of pricing, and you get five minutes. Three slides is plenty. The ask, the numbers behind it, and the risk with how we'd catch it. Don't read the slides out loud, talk to them. When it's built you'll practise it on me first, and I'll push back like the VP would.",
-    voiceSec: 21,
+      "Last one. You're presenting this to the VP of pricing, and you get five minutes. Three slides is plenty. The ask, the numbers behind it, and the risk with how we'd catch it. Don't read the slides out loud, talk to them. When you're ready, join the call and present it to me like I'm the VP. Then I'll ask the questions the VP would.",
+    voiceSec: 22,
     problem: 'The VP of pricing gives you five minutes. The deck has to make the ask before they ask you.',
     requirements: [
       { id: 'ask', text: 'Slide 1, the ask' },
@@ -453,7 +457,12 @@ const deck: StageSpec = {
   },
   file: MODEL_FILE,
   greet: 'The memo went up. The VP wants to hear it from you.',
-  open: ['You have everything already. The model is right here if you need a chart.', { file: true }],
+  open: [
+    'Here is everything. Your deck is built from the memo, three slides.',
+    'The model is here too, in case anyone asks for a number.',
+    { file: true },
+    'Five minutes on the deck, then my questions. Join the call when you are ready.',
+  ],
   slots: [
     {
       id: 'ask',

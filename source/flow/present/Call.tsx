@@ -469,20 +469,21 @@ function MomentRow({ m, open, onPick }: { m: Moment; open: boolean; onPick: () =
   return (
     <div className="zc-mo" data-kind={m.kind} data-open={open}>
       <button type="button" className="zc-mo-h" aria-expanded={open} onClick={onPick}>
-        <i className="zc-dot" />
         <span className="zc-mo-t">{m.title}</span>
+        <span className="zc-mo-at zc-num">{fmt(m.at)}</span>
         <ChevronDown className="zc-mo-c" size={14} strokeWidth={2} />
       </button>
-      <span className="zc-mo-m">
-        <span className="zc-tag zc-num">{fmt(m.at)}</span>
-        <span className="zc-tag">{m.crit}</span>
-        <span className="zc-tag zc-mo-b">
-          <Band band={m.band} small />
-          {BANDS_SHORT[m.band]}
-        </span>
-      </span>
+      {/* b41 (his note: "too much color ... add it in the drop down, less is more"): the row is the title and its time,
+          the criterion and its band only once you open it */}
       {open && (
         <div className="zc-mo-x" ref={body}>
+          <span className="zc-mo-m">
+            {m.crit}
+            <span className="zc-mo-b">
+              <Band band={m.band} small />
+              {BANDS_SHORT[m.band]}
+            </span>
+          </span>
           <span className="zc-mo-l">What you did</span>
           <p>{m.did}</p>
           <span className="zc-mo-l">{HOW[m.band]}</span>
@@ -557,6 +558,7 @@ function Report({ onRedo, onKeep }: { onRedo: () => void; onKeep: () => void }) 
               ) : (
                 <SlideView i={slideAt(t)} />
               )}
+              <Self cam mic className="zc-replay-me" />
             </div>
           )}
         </div>
@@ -596,13 +598,10 @@ function Report({ onRedo, onKeep }: { onRedo: () => void; onKeep: () => void }) 
           </div>
         </div>
         <div className="zc-rkeys">
-          <span className="zc-rec-w">
-            <span className="zc-rec">Recommended</span>
-            <button type="button" className="zc-key" onClick={onRedo}>
-              <RotateCcw size={15} strokeWidth={2} />
-              Redo presentation
-            </button>
-          </span>
+          <button type="button" className="zc-key" onClick={onRedo}>
+            <RotateCcw size={15} strokeWidth={2} />
+            Redo presentation
+          </button>
           <button type="button" className="zc-pill zc-keep" onClick={onKeep}>
             I’m happy with this, add it to my portfolio
             <ArrowRight size={15} strokeWidth={2} />

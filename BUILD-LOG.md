@@ -2,6 +2,12 @@
 
 The working notes kept while building, newest first: what each round changed, why, and which note from the reviews it answers.
 
+## ds b41 (4 Nov 2026), not yet reviewed
+- His note: "No PO experience, no final submission, nothing. It's like directly you are joining the call". StageSpec.call (deck): start() says only her pack (deck, model file, a plan line), next() never submits, the Composer shows Join the call now, SubmitKey becomes Join the call at the top ("the option at the top will be Join the call where we had the submit CTA"). To-dos show the three slides as plain lines under In the call. Dev list: one deck step, her pack then Join the call.
+- "The pure black is super hard to read": the call root redefines paper #1d1e22, surface #2a2b30, stronger ink-2, ink-3 and hairlines.
+- "A small video of the user presenting": the report replay carries your camera tile bottom right of the slide.
+- "Too much color and AI slop content, add it in the drop down, less is more": moment rows are the title and a grey time, chevron on hover; criterion and band only inside an open row; Delivery and Understanding bars and scrub marks neutral; Recommended badge removed.
+
 ## ds b40 (4 Nov 2026), not yet reviewed
 - His note: "if there are five issues to identify now, there should be five dashes ... As soon as the user types, it just prefills that". Todos ask mode renders ISSUE_ENOUGH (5) dash rows from the start (the b36 "only what you named" rule is replaced); rows fill top down in the order found. Requirements mode already had one dash per requirement.
 
