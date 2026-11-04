@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kickoff film</title>
+<!-- zero-kickoff v4 b1 -->
+<style>
+:root{--bg:#000;--s2:#141416;--s3:#1f1f22;--ln:#ececef;--ln2:rgba(236,236,239,.34);--ln3:rgba(236,236,239,.16);--t1:#f5f5f7;--t2:rgba(245,245,247,.6);--t3:rgba(245,245,247,.36);--up:#30d158;--dn:#ff453a;
+--f:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b0c0a;color:var(--t1);font-family:var(--f);-webkit-font-smoothing:antialiased;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+#wrap{position:fixed;inset:0}
+#view{position:absolute;overflow:hidden;background:#0b0c0a}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden}
+#world{position:absolute;left:0;top:0;width:1px;height:1px;transform-origin:0 0;will-change:transform}
+.a{position:absolute;visibility:hidden}
+.h1{font-size:84px;font-weight:600;letter-spacing:-.035em;line-height:1.04}
+.h2{font-size:56px;font-weight:600;letter-spacing:-.03em;line-height:1.08}
+.h3{font-size:38px;font-weight:600;letter-spacing:-.025em;line-height:1.15}
+.b{font-size:28px;font-weight:500;letter-spacing:-.015em}
+.l{font-size:22px;font-weight:500;color:var(--t2);letter-spacing:-.01em}
+.s{font-size:19px;font-weight:500;color:var(--t3)}
+.num{font-variant-numeric:tabular-nums}
+.nw{white-space:nowrap}
+.line{border-radius:28px;box-shadow:inset 0 0 0 2px var(--ln2)}
+.dash{border-radius:28px;border:2px dashed var(--ln2)}
+.chip{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 20px;border-radius:24px;box-shadow:inset 0 0 0 2px var(--ln2);font-size:22px;font-weight:600;letter-spacing:-.01em;white-space:nowrap}
+.flag{display:block;border-radius:6px;box-shadow:0 0 0 1px rgba(255,255,255,.14);object-fit:cover}
+.pp{display:block}
+/* player */
+#bar{display:flex;align-items:center;gap:14px;height:52px;padding:0 10px 0 6px;border-radius:26px;background:var(--s2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+#bar .ib{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center}
+#bar .ib:hover{background:var(--s3)}
+#bar svg{width:20px;height:20px;fill:currentColor}
+#seek{position:relative;width:min(520px,44vw);height:28px;cursor:pointer;touch-action:none}
+#seek .tr{position:absolute;left:0;right:0;top:12px;height:4px;border-radius:2px;background:#2c2c2e}
+#seek .wt{position:absolute;left:0;top:12px;height:4px;border-radius:2px;background:rgba(255,255,255,.22)}
+#seek .fi{position:absolute;left:0;top:12px;height:4px;border-radius:2px;background:var(--t1)}
+#time{font-size:13px;font-weight:500;color:var(--t2);font-variant-numeric:tabular-nums;min-width:86px}
+.tg{height:30px;min-width:44px;padding:0 10px;border-radius:15px;font-size:13px;font-weight:600;color:var(--t2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.tg.on{color:var(--t1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+#cap{min-height:30px;font-size:17px;font-weight:500;color:var(--t1);letter-spacing:-.01em;text-align:center;max-width:min(980px,92vw);line-height:1.4}
+#cap.off{visibility:hidden}
+#stamp{position:fixed;right:12px;bottom:8px;font-size:11px;font-weight:500;color:rgba(245,245,247,.32);pointer-events:none}
+.over{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#000;z-index:5}
+.over.off{display:none}
+.key{height:56px;padding:0 30px;border-radius:28px;background:var(--t1);color:#000;font-size:19px;font-weight:600;letter-spacing:-.01em;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.key:active{transform:scale(.97)}
+.ghost{font-size:16px;font-weight:500;color:var(--t2);height:40px;padding:0 16px}
+.ghost:hover{color:var(--t1)}
+
+/* ---------- Google Sheets (real UI at 1x, shown zoomed) ---------- */
+.win{position:absolute;width:1080px;height:700px;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 40px 80px rgba(0,0,0,.6);transform-origin:0 0;font-family:Roboto,Arial,sans-serif;color:#1f1f1f}
+.chr{height:38px;background:#dfe3e8;display:flex;align-items:flex-end;padding:0 10px;gap:10px;position:relative}
+.dots{position:absolute;left:14px;top:13px;display:flex;gap:8px}.dots i{width:12px;height:12px;border-radius:6px;display:block}
+.tab{margin-left:76px;height:30px;width:250px;background:#fff;border-radius:9px 9px 0 0;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:12px;color:#1f1f1f;white-space:nowrap;overflow:hidden}
+.url{height:36px;background:#fff;display:flex;align-items:center;gap:12px;padding:0 12px;border-bottom:1px solid #e3e3e3}
+.url .box{flex:1;height:26px;border-radius:13px;background:#eef1f4;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#444}
+.gh{height:62px;display:flex;align-items:center;padding:0 14px 0 12px;gap:10px;background:#f9fbfd}
+.gh .ttl{font-size:18px;color:#1f1f1f;font-family:"Google Sans",Roboto,Arial,sans-serif}
+.gh .mn{display:flex;gap:2px;font-size:14px;color:#1f1f1f;margin-top:3px;font-family:"Google Sans",Roboto,Arial,sans-serif}
+.gh .mn span{padding:2px 7px;border-radius:4px}
+.share{margin-left:auto;height:40px;padding:0 20px;border-radius:20px;background:#c2e7ff;color:#001d35;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;font-family:"Google Sans",Roboto,Arial,sans-serif}
+.tb{margin:4px 12px 6px;height:40px;border-radius:20px;background:#edf2fa;display:flex;align-items:center;gap:4px;padding:0 10px;color:#444746;font-size:13px}
+.tb svg{width:18px;height:18px;fill:#444746}.tb .sep{width:1px;height:20px;background:#c7c7c7;margin:0 6px}
+.tb .t{padding:0 6px}
+.fx{height:30px;display:flex;align-items:center;border-top:1px solid #e1e3e1;border-bottom:1px solid #e1e3e1;font-size:13px;background:#fff}
+.fx .nb{width:92px;height:100%;display:flex;align-items:center;padding-left:10px;border-right:1px solid #e1e3e1;color:#1f1f1f}
+.fx .fi2{width:36px;text-align:center;color:#80868b;font-style:italic;font-family:Georgia,serif;border-right:1px solid #e1e3e1}
+.fx .fv{padding-left:10px;color:#1f1f1f}
+.grid{position:relative;font-size:13px;background:#fff}
+.grid .row{display:flex;height:21px}
+.grid .c{border-right:1px solid #e1e1e1;border-bottom:1px solid #e1e1e1;padding:0 4px;line-height:20px;white-space:nowrap;overflow:hidden;flex:none}
+.grid .rh{width:46px;text-align:center;color:#444746;background:#f8f9fa;font-size:11px;border-right:1px solid #c4c7c5}
+.grid .hd .c{background:#f8f9fa;color:#444746;text-align:center;font-size:11px;border-bottom:1px solid #c4c7c5}
+.grid .r{text-align:right}
+.grid .c.bad{background:#fce8e6;color:#b3261e}
+.sel{position:absolute;border:2px solid #1a73e8;background:rgba(26,115,232,.08);pointer-events:none;visibility:hidden}
+.sel i{position:absolute;right:-4px;bottom:-4px;width:6px;height:6px;background:#1a73e8;border:1px solid #fff}
+.sh{position:absolute;left:0;right:0;bottom:0;height:40px;background:#f9fbfd;border-top:1px solid #e1e3e1;display:flex;align-items:center;gap:16px;padding:0 14px;font-size:13px;color:#444746}
+.sh .act{height:30px;padding:0 14px;border-radius:15px;background:#e1e9f7;color:#0b57d0;display:flex;align-items:center;font-weight:500}
+
+/* ---------- Claude (real UI, light) ---------- */
+.cl{position:absolute;width:1120px;height:680px;border-radius:12px;overflow:hidden;background:#faf9f5;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 40px 80px rgba(0,0,0,.6);transform-origin:0 0;display:flex;color:#141413;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+.cl .sb{width:220px;background:#f5f4ed;border-right:1px solid #e8e6dc;padding:14px 10px;font-size:13px;color:#3d3d3a}
+.cl .wm{font-family:"Copernicus","Tiempos Headline",Georgia,"Times New Roman",serif;font-size:20px;letter-spacing:-.02em;padding:0 6px 14px;color:#141413}
+.cl .it{display:flex;align-items:center;gap:10px;height:30px;padding:0 8px;border-radius:8px}
+.cl .it svg{width:16px;height:16px;stroke:#3d3d3a;fill:none;stroke-width:1.6}
+.cl .rc{font-size:11px;color:#83827d;padding:16px 8px 6px}
+.cl .it.on{background:#ebe9e1}
+.cl .mainc{flex:1;position:relative}
+.cl .tt{height:48px;display:flex;align-items:center;padding:0 20px;font-size:14px;color:#3d3d3a}
+.cl .th{position:absolute;left:0;right:0;top:48px;bottom:112px;padding:10px 0 0;overflow:hidden}
+.cl .col{width:640px;margin:0 auto}
+.cl .ub{margin-left:auto;max-width:440px;background:#f0eee6;border-radius:12px;padding:10px 14px;font-size:14.5px;line-height:1.5}
+.cl .att{margin:0 0 8px auto;width:260px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e8e6dc;border-radius:10px;padding:10px 12px;font-size:13px}
+.cl .att .ic{width:34px;height:40px;border-radius:6px;background:#0f9d58;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700}
+.cl .att .m{font-size:11px;color:#83827d}
+.cl .rp{font-family:"Anthropic Serif","Tiempos Text",Georgia,"Times New Roman",serif;font-size:16px;line-height:1.6;color:#141413;margin-top:22px}
+.cl .rp b{font-weight:600}
+.cl .rp ul{padding-left:22px;margin:6px 0}
+.cl .art{margin-top:14px;width:340px;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e8e6dc;border-radius:12px;padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;font-size:13.5px;visibility:hidden}
+.cl .comp{position:absolute;left:50%;transform:translateX(-50%);bottom:30px;width:640px;height:84px;background:#fff;border-radius:18px;box-shadow:0 0 0 1px #e8e6dc,0 4px 16px rgba(0,0,0,.04);padding:14px 16px;font-size:14.5px;color:#83827d}
+.cl .comp .row2{position:absolute;left:14px;right:12px;bottom:10px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#3d3d3a}
+.cl .send{width:30px;height:30px;border-radius:8px;background:#d97757;display:flex;align-items:center;justify-content:center}
+.cl .disc{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:11px;color:#83827d}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="view">
+    <div id="stage"><div id="world"></div></div>
+  </div>
+</div>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="pg" viewBox="0 0 40 40"><circle cx="20" cy="13" r="6.2" fill="none" stroke="#ececef" stroke-width="2.2"/><path d="M9.5 33.5a10.5 10.5 0 0 1 21 0" fill="none" stroke="#ececef" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="pgd" viewBox="0 0 40 40"><circle cx="20" cy="13" r="6.2" fill="none" stroke="#ececef" stroke-width="2.2" stroke-dasharray="3 3.2"/><path d="M9.5 33.5a10.5 10.5 0 0 1 21 0" fill="none" stroke="#ececef" stroke-width="2.2" stroke-dasharray="3 3.2"/></symbol>
+  <pattern id="crowd" width="40" height="40" patternUnits="userSpaceOnUse"><use href="#pg" width="40" height="40"/></pattern>
+</defs></svg>
+<script>
+const DATA = {"lines":[{"t":0,"e":2.944,"x":"Hey, I'm Eryn. I'll be your manager on this one."},{"t":3.224,"e":5.101,"x":"Quick question before we start."},{"t":5.381,"e":9.136,"x":"If Spotify charged you one more dollar a month, would you cancel?"},{"t":9.416,"e":11.443,"x":"Most people wouldn't. Some would."},{"t":11.723,"e":13.771,"x":"And that gap is the whole project."},{"t":14.571,"e":18.837,"x":"Picture a room with a hundred people in it, all paying eleven ninety-nine."},{"t":19.117,"e":21.101,"x":"We raise it to twelve ninety-nine."},{"t":21.381,"e":24.24,"x":"If ninety-five people stay, we make more money."},{"t":24.52,"e":27.357,"x":"But if ninety-two stay, we actually make less."},{"t":27.637,"e":31.925,"x":"So a dollar's only worth it when fewer than eight people walk out of the room."},{"t":32.725,"e":36.395,"x":"Now, last year Spotify raised Premium in six markets."},{"t":36.675,"e":40.429,"x":"The US, Mexico, Brazil, the UK, Germany, and India."},{"t":40.709,"e":41.755,"x":"Six rooms."},{"t":42.035,"e":45.789,"x":"In some, almost nobody left. In others, people walked."},{"t":46.069,"e":50.101,"x":"And leadership wants to know which room we raise next, and by how much."},{"t":50.901,"e":55.189,"x":"Here's the catch. Nobody can answer that yet, 'cause the data's a mess."},{"t":55.469,"e":58.755,"x":"We pulled the raw export, and there are ten things wrong with it."},{"t":59.035,"e":60.4,"x":"Negative prices."},{"t":60.68,"e":63.133,"x":"Test accounts mixed in with real people."},{"t":63.413,"e":65.376,"x":"Dates written three different ways."},{"t":65.656,"e":69.176,"x":"Count people from a broken list, and you're counting the wrong room."},{"t":69.976,"e":71.619,"x":"So what does good look like?"},{"t":71.899,"e":73.285,"x":"One recommendation."},{"t":73.565,"e":75.784,"x":"Not three options, and not a maybe."},{"t":76.064,"e":80.864,"x":"One market, one new price, and the numbers that prove it's worth the people you lose."},{"t":81.144,"e":83.512,"x":"A call you'd defend in front of leadership."},{"t":84.312,"e":86.147,"x":"You'll get there in five stages."},{"t":86.427,"e":93.232,"x":"First, you clean the data. That's about fifteen minutes, and once you've found the problems, Claude does the heavy lifting."},{"t":93.512,"e":99.037,"x":"Second, the revenue model. Twenty-five minutes. That's the big one, where you count every room."},{"t":99.317,"e":100.747,"x":"Third, you make the call."},{"t":101.027,"e":102.627,"x":"Fourth, you write the memo."},{"t":102.907,"e":104.571,"x":"And last, you present it."},{"t":104.851,"e":106.941,"x":"About eighty minutes, start to finish."},{"t":107.741,"e":113.309,"x":"And you're not doing this alone. I'm right here the whole way, so if you get stuck, just ask me."},{"t":113.589,"e":116.491,"x":"Alright. Let's go find the room where nobody leaves."},{"t":116.771,"e":120.12,"x":"Open the export, and tell me the first thing that looks wrong."}],"dur":120.12};
+const A = {"f_gb":"flags/gb.svg","f_in":"flags/in.svg","f_us":"flags/us.svg","f_br":"flags/br.svg","f_mx":"flags/mx.svg","f_de":"flags/de.svg","l_f-csv":"logos/f-csv.svg","l_spotify":"logos/spotify.svg","l_sheets":"logos/logo-sheets.svg","l_claude":"logos/logo-claude.svg","face":"../../faces/eryn.webp"};
+const LN = DATA.lines;
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x)), lerp = (a, b, k) => a + (b - a) * k;
+// critically damped spring, settles at x = 1 (damping 1, no overshoot, no wobble)
+const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : (1 - (1 + 8 * x) * Math.exp(-8 * x)) / (1 - 9 * Math.exp(-8));
+// cue times come from the voice: "L6" = line 6 starts, "L6@.5" = halfway through it, "L6e" = it ends, "+0.3" shifts
+const T = s => {
+  if (s == null || s === '') return null; if (typeof s === 'number') return s;
+  const m = String(s).match(/^L(\d+)(e|@[\d.]+)?([+-][\d.]+)?$/); if (!m) { const n = parseFloat(s); return isNaN(n) ? (console.warn('cue?', s), null) : n; }
+  const l = LN[+m[1] - 1]; if (!l) { console.warn('cue?', s); return null; }
+  let t = m[2] === 'e' ? l.e : m[2] ? l.t + parseFloat(m[2].slice(1)) * (l.e - l.t) : l.t;
+  return t + (m[3] ? parseFloat(m[3]) : 0);
+};
+const flag = (k, w, h) => `<img src="${A['f_' + k]}" class="flag" style="width:${w}px;height:${h}px" alt="">`;
+const logo = (k, s) => `<img src="${A['l_' + k]}" style="width:${s}px;height:${s}px;display:block" alt="">`;
+const peep = (k, h) => `<img src="${A['p_' + k]}" class="pp" style="height:${h}px" alt="">`;
+// el(in, x, y, html, {out, m, id, st, dx}) : world coordinates; a group arrives as one piece
+const el = (inn, x, y, html, o = {}) => `<div class="a ${o.cls || ''}" data-in="${inn}" ${o.out ? `data-out="${o.out}"` : ''} ${o.m ? `data-m="${o.m}"` : ''} ${o.dx != null ? `data-dx="${o.dx}"` : ''} ${o.id ? `id="${o.id}"` : ''} style="left:${x}px;top:${y}px;${o.st || ''}">${html}</div>`;
+const money = v => '$' + Math.round(v).toLocaleString('en-US');
+const MK = [['us', 'United States', '$11.99'], ['mx', 'Mexico', 'MX$139'], ['br', 'Brazil', 'R$23.90'], ['gb', 'United Kingdom', '£11.99'], ['de', 'Germany', '€11.99'], ['in', 'India', '₹119']];
+const H = [];
+
+/* ============ 1. hook (frame 0,0) ============ */
+H.push(`
+  ${el('L2+0.1', 900, 300, `<div class="line" style="width:620px;padding:40px 44px">
+      <div style="display:flex;align-items:center;gap:14px">${logo('spotify', 40)}<div class="b nw">Premium Individual</div></div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-top:24px"><div id="hprice" class="num" style="font-size:108px;font-weight:600;letter-spacing:-.04em">$11.99</div><div class="l">/ month</div></div></div>`)}
+  ${el('L3@.5', 1550, 390, `<div class="chip num">+ $1</div>`, { m: 'pop' })}
+  ${el('L4', 900, 640, `<div style="position:relative;width:640px;height:56px">${Array.from({ length: 10 }, (_, i) => `<svg width="56" height="56" style="position:absolute;left:${i * 62}px;top:0" ${i === 9 ? 'id="hleave"' : ''}><use href="#pg"/></svg>`).join('')}</div>`)}`);
+
+/* ============ 2. the room (detail frame at 2200,0) ============ */
+// a room is 480 x 480, people sit on a 40px grid, the door is the gap in the right wall
+const ROOM = (id, pre = '') => `<svg width="560" height="480" viewBox="0 0 560 480" style="overflow:visible;display:block" ${id ? `id="${id}"` : ''}>
+  <path d="M480 70V32a32 32 0 0 0-32-32H32A32 32 0 0 0 0 32v416a32 32 0 0 0 32 32h416a32 32 0 0 0 32-32v-38" fill="none" stroke="rgba(236,236,239,.34)" stroke-width="2"/>${pre}</svg>`;
+const RX = 2500, RY = 300;                            // the US room, also the first of six
+const LEAVE5 = [3, 4, 5, 6, 7], LEAVE3 = [1, 2, 8];  // seats in the last column, next to the door
+H.push(`
+  ${el('L6', RX, RY - 100, `<div style="display:flex;align-items:center;gap:16px">${flag('us', 48, 36)}<div class="b nw">United States</div><div class="chip num" id="rprice" style="height:42px;font-size:20px">$11.99</div></div>`)}
+  ${el('L6', RX, RY, ROOM('room0', `<rect x="40" y="40" width="360" height="400" fill="url(#crowd)"/>${Array.from({ length: 10 }, (_, r) => `<use href="#pg" x="400" y="${40 + r * 40}" width="40" height="40" class="seat" data-r="${r}"/>`).join('')}`))}
+  ${el('L6@.55', RX + 650, RY + 10, `<div class="s">People</div><div id="rn" class="num" style="font-size:96px;font-weight:600;letter-spacing:-.04em;line-height:1.05">100</div>
+      <div class="s" style="margin-top:28px">Each month</div><div id="rrev" class="num" style="font-size:96px;font-weight:600;letter-spacing:-.04em;line-height:1.05">$1,199</div>
+      <div id="rwas" class="l num" style="margin-top:6px;visibility:hidden">was $1,199</div>`, { out: 'L11-0.2' })}
+  ${el('L8', RX + 650, RY + 470, `<div style="position:relative;width:560px;height:120px">
+      <div class="s" style="position:absolute;left:0;top:0">Walked out</div>
+      <div style="position:absolute;left:0;top:58px;width:${7.5 / 12 * 560}px;height:4px;border-radius:2px;background:var(--up)"></div>
+      <div style="position:absolute;left:${7.5 / 12 * 560}px;top:58px;width:${4.5 / 12 * 560}px;height:4px;border-radius:2px;background:var(--dn)"></div>
+      ${Array.from({ length: 13 }, (_, i) => `<div style="position:absolute;left:${i / 12 * 560 - 1}px;top:${i % 2 ? 70 : 68}px;width:2px;height:${i % 2 ? 6 : 10}px;background:var(--ln3)"></div>${i % 2 ? '' : `<div class="s num" style="position:absolute;left:${i / 12 * 560 - 20}px;top:86px;width:40px;text-align:center;font-size:16px">${i}</div>`}`).join('')}
+      <div id="rmark" style="position:absolute;left:-11px;top:49px;width:22px;height:22px;border-radius:11px;background:var(--t1);box-shadow:0 0 0 5px #000"></div>
+      <div class="a" data-in="L10@.35" data-m="pop" style="left:${7.5 / 12 * 560 - 70}px;top:-6px"><div class="chip" style="height:40px;font-size:18px;width:140px;justify-content:center">Break even</div></div>
+    </div>`, { out: 'L11-0.2' })}`);
+
+/* ============ 3. six markets: the camera pulls back, five more rooms ============ */
+const RP = i => [RX + (i % 3) * 620, RY + Math.floor(i / 3) * 720];
+H.push(MK.slice(1).map(([k, n, p], j) => { const [x, y] = RP(j + 1); return `
+  ${el('L11+0.1', x, y - 100, `<div style="display:flex;align-items:center;gap:16px">${flag(k, 48, 36)}<div class="b nw">${n}</div><div class="chip num" style="height:42px;font-size:20px">${p}</div></div>`)}
+  ${el('L11+0.1', x, y, ROOM('', `<rect x="40" y="40" width="400" height="400" fill="url(#crowd)"/>`))}`; }).join('') +
+  MK.map((m, i) => { const [x, y] = RP(i); return el('L14', x + 500, y + 200, `<div style="width:72px;height:72px;border-radius:36px;box-shadow:inset 0 0 0 2px var(--ln2);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:600;color:var(--t2)">?</div>`, { m: 'pop' }); }).join('') + `
+  <div class="a" id="ring" data-in="L15" data-m="pop" style="left:${RX - 30}px;top:${RY - 30}px;width:540px;height:540px;border-radius:52px;box-shadow:0 0 0 4px var(--t1)"></div>
+  ${el('L15@.7', 0, 0, `<div class="chip num" style="background:var(--t1);color:#000;box-shadow:none;height:56px;font-size:26px">+ ?</div>`, { id: 'howfar', m: 'pop' })}`);
+
+/* ============ 4. the raw export, real Google Sheets (frame 0,2000) ============ */
+const GCOLS = [['A', 'customer_id', 78], ['B', 'customer_name', 104], ['C', 'email', 186], ['D', 'plan', 128], ['E', 'monthly_price', 92, 1], ['F', 'currency', 64], ['G', 'billing_city', 104], ['H', 'signup_date', 90], ['I', 'status', 64], ['J', 'months_active', 98, 1]];
+const GROWS = [ // rows 2 to 20 of spotify_pricing_raw.csv, as exported
+  ['SP-10401', 'Hannah Cole', 'hannah.cole@example.com', 'Premium Individual', '-11.99', 'USD', 'New York', '2024-07-01', 'active', '14'],
+  ['SP-10404', 'Liam Mehta', 'liam.mehta@example.com', 'PREM_IND', '11.99', 'USD', 'Austin', '2022-10-24', 'churned', '38'],
+  ['SP-10407', 'Sofia Costa', 'sofia.costa@example.com', 'Premium Family', '$19.99', 'USD', 'Chicago', '06/19/23', 'churned', '4'],
+  ['SP-10410', 'Leo Cole', 'leo.cole@example.com', 'Premium Individual', '139', '', 'Mexico City', '15 Dec 2023', 'active', '25'],
+  ['SP-10413', 'Liam Cole', 'liam.cole@example.com', 'Premium Individual', '-139', 'MXN', 'Monterrey', '2024-10-05', 'active', '2'],
+  ['SP-10416', '', 'nina.costa@example.com', 'Premium Individual', '23.9', 'BRL', 'São Paulo', '2022-04-26', 'active', '39'],
+  ['SP-10419', 'Priya Reed', 'priya.reed@example.com', 'Premium Individual', '0.00', 'BRL', 'Rio de Janeiro', '2022-04-08', 'active', '11'],
+  ['SP-10422', 'Hannah Silva', 'hannah.silva@example.com', 'Premium Individual', '£11.99', 'GBP', 'London', '10/12/22', 'active', '26'],
+  ['SP-10425', 'Mateo Silva', 'mateo.silva@example.com', 'Premium Individual', '11.99', 'GBP', 'Manchester', '2021-09-13', 'active', '35'],
+  ['SP-10428', 'Nina Moreno', 'nina.moreno@example.com', 'premium indiv', '11.99', 'EUR', 'Berlin', '2024-09-20', 'active', '1'],
+  ['SP-10431', 'Riya Becker', 'riya.becker@example.com', 'Premium Family', '20.99', '', 'Munich', '11 Feb 2021', 'active', '8'],
+  ['SP-10434', 'Hannah Nair', 'hannah.nair@example.com', 'Premium Individual', '119', 'USD', 'Mumbai', '2024-09-16', 'active', '30'],
+  ['SP-10437', 'Jordan Becker', 'jordan.becker@example.com', 'Premium Student', '₹59', 'INR', 'Delhi', '11/04/22', 'churned', '31'],
+  ['SP-10440', 'Carlos Klein', 'carlos.klein@example.com', 'Family Plan', '179', 'INR', 'Bengaluru', '2024-11-20', 'active', '32'],
+  ['SP-10443', '', 'arjun.walsh@example.com', 'Premium Individual', '11.99', 'USD', 'New York', '2023-02-21', 'churned', '31'],
+  ['SP-10446', 'Ananya Reyes', 'ananya.reyes@example.com', 'Premium Individual', '1199', 'USD', 'Austin', '2023-08-07', 'active', '5'],
+  ['SP-10449', 'Priya Mehta', 'priya.mehta@example.com', 'Premium Individual', '1199', 'USD', 'Chicago', '2024-02-26', 'active', '13'],
+  ['SP-99001', 'QA Test', 'qa+1@spotify-internal.example', 'Premium Individual', '0.00', 'USD', 'New York', '2024-01-15', 'active', '1'],
+  ['SP-10452', 'Max Becker', 'max.becker@example.com', 'Premium Individual', '139', '', 'Mexico City', '12/09/22', 'active', '19'],
+];
+// every broken cell in these rows (row 13 is a real Mumbai price, not a mistake)
+const GBAD = [[0, 4], [1, 3], [2, 4], [2, 7], [3, 5], [3, 7], [4, 4], [5, 1], [6, 4], [7, 4], [7, 7], [9, 3], [10, 5], [10, 7], [12, 4], [12, 7], [13, 3], [14, 1], [15, 4], [16, 4], ...Array.from({ length: 10 }, (_, j) => [17, j]), [18, 5], [18, 7]];
+const GZ = 1.3, GX = 120, GY = 2050;
+const gsIcons = {
+  menu: '<svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"/></svg>',
+  undo: '<svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8"/></svg>',
+  redo: '<svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16a8 8 0 0 1 7.6-5.5c1.95 0 3.73.72 5.12 1.88L13 16h9V7z"/></svg>',
+  print: '<svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3m-3 11H8v-5h8zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m-1-9H6v4h12z"/></svg>',
+  paint: '<svg viewBox="0 0 24 24"><path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h1v4H9v11c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-9h8V4z"/></svg>',
+  bold: '<svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42M10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5"/></svg>',
+  ital: '<svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>',
+  fill: '<svg viewBox="0 0 24 24"><path d="M16.56 8.94 7.62 0 6.21 1.41l2.38 2.38-5.15 5.15a1.49 1.49 0 0 0 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12M5.21 10 10 5.21 14.79 10zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#001d35" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2M9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>',
+  star: '<svg viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="#444746" stroke-width="1.6" d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>',
+};
+const gsWin = () => `<div class="win" id="gs" style="left:0;top:0;transform:scale(${GZ})">
+  <div class="chr"><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+    <div class="tab"><img src="${A.l_sheets}" style="width:14px;height:14px">spotify_pricing_raw - Google Sheets</div></div>
+  <div class="url"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#5f6368" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#bdc1c6" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#5f6368" d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"/></svg><div class="box">docs.google.com/spreadsheets/d/1qR7xPricingRaw/edit</div></div>
+  <div class="gh"><img src="${A.l_sheets}" style="width:30px;height:30px;margin:0 6px 0 2px">
+    <div><div style="display:flex;align-items:center;gap:10px"><span class="ttl">spotify_pricing_raw</span>${gsIcons.star}</div>
+    <div class="mn"><span>File</span><span>Edit</span><span>View</span><span>Insert</span><span>Format</span><span>Data</span><span>Tools</span><span>Extensions</span><span>Help</span></div></div>
+    <div class="share">${gsIcons.lock}Share</div></div>
+  <div class="tb">${gsIcons.menu}<span class="t">Menus</span><span class="sep"></span>${gsIcons.undo}${gsIcons.redo}${gsIcons.print}${gsIcons.paint}<span class="sep"></span><span class="t">100%</span><span class="sep"></span><span class="t">$</span><span class="t">%</span><span class="t">.0</span><span class="t">.00</span><span class="t">123</span><span class="sep"></span><span class="t">Defaul...</span><span class="sep"></span><span class="t">10</span><span class="sep"></span>${gsIcons.bold}${gsIcons.ital}${gsIcons.fill}</div>
+  <div class="fx"><div class="nb" id="nb">A1</div><div class="fi2">fx</div><div class="fv" id="fv">customer_id</div></div>
+  <div class="grid" id="grid">
+    <div class="row hd"><div class="c rh"></div>${GCOLS.map(c => `<div class="c" style="width:${c[2]}px">${c[0]}</div>`).join('')}<div class="c" style="width:60px">K</div></div>
+    <div class="row"><div class="c rh">1</div>${GCOLS.map(c => `<div class="c" style="width:${c[2]}px">${c[1]}</div>`).join('')}<div class="c" style="width:60px"></div></div>
+    ${GROWS.map((r, i) => `<div class="row"><div class="c rh">${i + 2}</div>${r.map((v, j) => `<div class="c ${GCOLS[j][3] ? 'r' : ''}" id="g${i}_${j}" style="width:${GCOLS[j][2]}px">${v}</div>`).join('')}<div class="c" style="width:60px"></div></div>`).join('')}
+    <div class="sel" id="gsel"><i></i></div>
+  </div>
+  <div class="sh"><span style="font-size:18px">+</span><span style="font-size:16px">≡</span><span class="act">spotify_pricing_raw</span></div>
+</div>`;
+// the wrong room: 100 seats, 3 test accounts counted as people
+const WX = 2150, WY = 2280;
+H.push(`
+  ${el('L16+0.35', GX, GY, gsWin(), { id: 'gsw' })}
+  ${el('L17@.55', 1620, GY + 20, `<div class="line" style="width:200px;padding:26px 28px"><div class="num" style="font-size:80px;font-weight:600;letter-spacing:-.04em;line-height:1">10</div><div class="l" style="margin-top:8px">problems</div></div>`, { m: 'pop' })}
+  ${el('L21@.3', WX, WY - 120, `<div style="display:flex;align-items:baseline;gap:16px"><div class="num" style="font-size:96px;font-weight:600;letter-spacing:-.04em;line-height:1">103</div><div class="l nw">people counted</div></div>`)}
+  ${el('L21@.3', WX, WY, `<svg width="480" height="560" viewBox="0 0 480 560" style="display:block"><rect x="1" y="1" width="478" height="558" rx="32" fill="none" stroke="rgba(236,236,239,.34)" stroke-width="2"/><rect x="40" y="40" width="400" height="400" fill="url(#crowd)"/><g opacity=".9"><use href="#pgd" x="40" y="460" width="40" height="40"/><use href="#pgd" x="80" y="460" width="40" height="40"/><use href="#pgd" x="120" y="460" width="40" height="40"/></g></svg>`)}`);
+
+/* ============ 5. what good looks like (frame 2800,2000) ============ */
+const GOODX = 2800, GOODY = 2000;
+const OPTS = [['Raise everywhere', 140], ['Wait a year', 620], ['Maybe Brazil?', 1100]];
+H.push(OPTS.map(([t, x]) => el('L22@.3', GOODX + x, GOODY + 380, `<div class="dash" style="width:420px;height:260px;padding:34px 36px"><div class="s">Option</div><div class="h3" style="margin-top:12px;color:var(--t2)">${t}</div></div>`, { out: 'L23', m: 'merge', dx: 450 - x })).join('') + `
+  ${el('L23+0.15', GOODX + 260, GOODY + 250, `<div class="line" style="width:940px;min-height:560px;padding:44px 48px;position:relative">
+      <div style="display:flex;align-items:center;gap:16px">${logo('spotify', 44)}<div class="h3">Recommendation</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:36px">
+        <div class="a" data-in="L25+0.05" style="position:relative;left:0;top:0"><div class="line" style="border-radius:22px;padding:26px 28px;height:150px"><div class="l">One market</div><div style="display:flex;align-items:center;gap:14px;margin-top:16px"><div style="width:56px;height:42px;border-radius:6px;border:2px dashed var(--ln2)"></div><div class="h3" style="color:var(--t3)">Your call</div></div></div></div>
+        <div class="a" data-in="L25@.28" style="position:relative;left:0;top:0"><div class="line" style="border-radius:22px;padding:26px 28px;height:150px"><div class="l">One new price</div><div class="h3 num" style="margin-top:16px;color:var(--t3)">$ ?</div></div></div>
+      </div>
+      <div class="a" data-in="L25@.55" style="position:relative;left:0;top:0;margin-top:18px"><div class="line" style="border-radius:22px;padding:26px 28px;height:270px;display:grid;grid-template-columns:1fr 1fr;gap:36px">
+        <div><div class="l">Revenue</div><div style="display:flex;align-items:flex-end;gap:18px;height:150px;margin-top:22px">
+          <div style="width:90px;height:110px;border-radius:12px;box-shadow:inset 0 0 0 2px var(--ln2)"></div><div style="width:90px;height:146px;border-radius:12px;background:var(--up)"></div></div></div>
+        <div><div class="l">People who walk</div><div style="position:relative;height:150px;margin-top:22px">
+          <div style="position:absolute;left:0;top:66px;width:${7.5 / 12 * 330}px;height:4px;border-radius:2px;background:var(--up)"></div>
+          <div style="position:absolute;left:${7.5 / 12 * 330}px;top:66px;width:${4.5 / 12 * 330}px;height:4px;border-radius:2px;background:var(--dn)"></div>
+          <div style="position:absolute;left:${3 / 12 * 330 - 11}px;top:57px;width:22px;height:22px;border-radius:11px;background:var(--t1);box-shadow:0 0 0 5px #000"></div></div></div>
+      </div></div>
+    </div>`)}
+  ${el('L26@.3', GOODX + 1290, GOODY + 400, `<div class="line" style="width:400px;padding:40px 40px 34px"><div style="display:flex;gap:12px">${[0, 1, 2].map(() => '<svg width="96" height="96" style="display:block"><use href="#pg"/></svg>').join('')}</div><div class="b" style="margin-top:22px">Leadership</div></div>`, { m: 'scale' })}`);
+
+/* ============ 6. the plan (frame 5000,2000) ============ */
+const PX = 5000, PY = 2000, NX = i => PX + 200 + i * 380;
+const STG = [['Clean the dataset', 'CSV', '#0f9d58', '15 min'], ['Build the revenue model', 'CSV', '#0f9d58', '25 min'], ['Make the recommendation', 'PDF', '#e5332a', '15 min'], ['Write the pricing memo', 'PDF', '#e5332a', '15 min'], ['Present it', 'PPTX', '#d24726', '12 min']];
+const docIc = (ext, col) => `<svg width="52" height="64" viewBox="0 0 46 56"><path d="M4 0h28l14 14v38a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z" fill="#f5f5f7"/><path d="M32 0l14 14H36a4 4 0 0 1-4-4z" fill="#c7c7cc"/><rect x="0" y="30" width="${ext.length > 3 ? 40 : 34}" height="16" rx="3" fill="${col}"/><text x="${ext.length > 3 ? 20 : 17}" y="42" font-family="-apple-system,Inter,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${ext}</text></svg>`;
+const clWin = () => `<div class="cl">
+  <div class="sb"><div class="wm">Claude</div>
+    ${[['New chat', '<path d="M12 5v14M5 12h14"/>'], ['Search', '<circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/>'], ['Customize', '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/>'], ['Chats', '<path d="M5 6h14v9H9l-4 3z"/>'], ['Projects', '<path d="M4 7h6l2 2h8v9H4z"/>'], ['Artifacts', '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>'], ['Code', '<path d="m9 8-4 4 4 4M15 8l4 4-4 4"/>']].map(([t, p]) => `<div class="it"><svg viewBox="0 0 24 24">${p}</svg>${t}</div>`).join('')}
+    <div class="rc">Recents</div><div class="it on">Fix the Spotify pricing export</div><div class="it">Pricing memo outline</div></div>
+  <div class="mainc"><div class="tt">Fix the Spotify pricing export <svg width="12" height="12" viewBox="0 0 24 24" style="margin-left:6px"><path d="m6 9 6 6 6-6" stroke="#3d3d3a" stroke-width="2" fill="none"/></svg></div>
+    <div class="th"><div class="col">
+      <div class="att"><div class="ic">CSV</div><div><div>spotify_pricing_raw.csv</div><div class="m">Spreadsheet · 64 rows</div></div></div>
+      <div class="ub">Here are the 10 problems I found in this export. Fix every one and send me back a clean CSV.</div>
+      <div class="rp" id="clrp"></div>
+      <div class="art" id="clart"><div class="ic" style="width:34px;height:40px;border-radius:6px;background:#0f9d58;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">CSV</div><div style="flex:1"><div style="font-weight:600">spotify_pricing_clean.csv</div><div style="font-size:11.5px;color:#83827d">Spreadsheet · 58 rows</div></div><div style="font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid #e8e6dc">Download</div></div>
+    </div></div>
+    <div class="comp">Reply...<div class="row2"><span style="font-size:20px;color:#3d3d3a">+</span><span style="display:flex;align-items:center;gap:12px">Opus 5.5 <span style="color:#83827d">Extended</span><span class="send"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span></span></div></div>
+    <div class="disc">Claude can make mistakes. Please double-check responses.</div></div></div>`;
+const CL_TEXT = `Got it. Here's what I changed:<ul><li><b>Prices</b>: negatives and zeros, text like $19.99, and 1199 that should be 11.99</li><li><b>Plans</b>: PREM_IND, premium indiv and Family Plan, now one name each</li><li><b>Dates</b>: three formats, now one</li><li><b>Gaps</b>: blank names and currencies filled from the city</li><li><b>Duplicates and test rows</b>: 3 repeated customers and 3 QA accounts, removed</li></ul>Here's the clean file.`;
+H.push(`
+  ${el('L27', PX, PY, `<div style="position:relative;width:1920px;height:1080px">
+      <div class="h2" style="position:absolute;left:200px;top:150px">The plan</div>
+      <div style="position:absolute;left:200px;top:560px;width:1520px;height:2px;background:var(--ln3)"></div>
+      <div id="pfill" style="position:absolute;left:200px;top:559px;width:0;height:4px;border-radius:2px;background:var(--t1)"></div>
+      ${STG.map(([t, ext, col, min], i) => `
+        <div style="position:absolute;left:${200 + i * 380 - 26}px;top:420px">${docIc(ext, col)}</div>
+        <div class="pnode" id="pn${i}" style="position:absolute;left:${200 + i * 380 - 15}px;top:546px;width:30px;height:30px;border-radius:15px;background:#000;box-shadow:inset 0 0 0 2px var(--ln2)"></div>
+        <div style="position:absolute;left:${200 + i * 380 - 26}px;top:612px;width:300px"><div class="s">Stage ${i + 1}</div><div class="b" id="pt${i}" style="margin-top:8px;color:var(--t2);line-height:1.2">${t}</div><div class="l num" style="margin-top:10px">${min}</div></div>`).join('')}
+    </div>`)}
+  ${el('L33', PX + 1430, PY + 158, `<div class="chip num" style="height:56px;font-size:24px">5 stages · 82 min</div>`, { m: 'pop' })}
+  ${el('L28@.5', PX + 400, PY + 180, clWin(), { out: 'L29+0.3', m: 'scale', id: 'clw' })}`);
+
+/* ============ 7. close (frame 7200,2000) ============ */
+const CX = 7200, CY = 2000;
+H.push(`
+  ${el('L34', CX + 840, CY + 170, `<img src="${A.face}" style="width:240px;height:240px;border-radius:120px;object-fit:cover;display:block" alt="">`, { m: 'pop' })}
+  ${el('L34+0.15', CX + 840, CY + 440, `<div class="b" style="width:240px;text-align:center">Eryn</div>`)}
+  ${el('L34@.45', CX + 510, CY + 600, `<div style="width:900px;height:132px;border-radius:30px;box-shadow:inset 0 0 0 2px var(--ln2);position:relative"><div id="ask" class="b" style="position:absolute;left:30px;top:24px;color:var(--t3)">Ask Eryn</div><div style="position:absolute;left:18px;right:18px;bottom:16px;display:flex;align-items:center;gap:10px"><div style="width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#ececef" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div><div style="width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ececef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div id="stuck" class="chip" style="height:40px;font-size:18px;padding:0 16px">I&#39;m stuck</div><div style="flex:1"></div><div style="width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ececef" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><div id="send" style="width:48px;height:48px;border-radius:24px;background:var(--s3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" stroke="#ececef" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>`, { out: 'L36-0.2', m: 'scale' })}
+  ${el('L36', CX + 510, CY + 600, `<div class="line" style="width:900px;height:96px;border-radius:24px;display:flex;align-items:center;gap:20px;padding:0 24px">${docIc('CSV', '#0f9d58')}<div style="flex:1"><div class="b">spotify_pricing_raw.csv</div><div class="s" style="margin-top:2px">64 rows · 10 columns</div></div><div class="chip" style="background:var(--t1);color:#000;box-shadow:none">Open</div></div>`)}`);
+
+/* ============ camera ============ */
+// [cue, centre x, centre y, zoom]; each move glides from wherever the camera is
+const CAM = [
+  [0, 1280, 500, 1],
+  ['L6-0.2', 3260, 560, 1],
+  ['L11', 3360, 900, .66],
+  ['L16', 960, 2540, 1],
+  ['L21', 1500, 2560, .66],
+  ['L22-0.1', GOODX + 960, 2540, 1],
+  ['L27-0.1', PX + 960, 2540, 1],
+  ['L34-0.2', CX + 960, 2540, 1],
+].map(([c, x, y, z]) => [T(c), x, y, z]);
+const CAMDUR = 1.5;
+function camAt(t) {
+  let [, x, y, z] = CAM[0];
+  for (let k = 1; k < CAM.length; k++) {
+    const [t0, x1, y1, z1] = CAM[k]; if (t < t0) break;
+    const p = ease((t - t0) / CAMDUR), far = Math.hypot(x1 - x, y1 - y) > 1200;
+    const zl = Math.exp(lerp(Math.log(z), Math.log(z1), p)) * (far ? 1 - .16 * Math.sin(Math.PI * p) : 1);
+    x = lerp(x, x1, p); y = lerp(y, y1, p); z = p >= 1 ? z1 : zl;
+  }
+  return [x, y, z];
+}
+
+/* ============ render ============ */
+const world = $('#world');
+world.innerHTML = H.join('');
+$$('[data-a]').forEach(i => i.src = A[i.dataset.a]);
+const ELS = $$('.a', world).map(e => ({ e, tin: T(e.dataset.in), tout: T(e.dataset.out), m: e.dataset.m || 'rise', dx: +e.dataset.dx || 0, last: '' }));
+const ENTER = .9, EXIT = .7;
+function styleOf(o, t) {
+  if (o.tin == null) return 'visible|';
+  const p = ease((t - o.tin) / ENTER); if (p <= 0) return 'hidden|';
+  let tr = '', f = (1 - p) * 12, op = Math.min(1, p * 1.4);
+  if (o.m === 'pop') tr = `scale(${.9 + .1 * p})`;
+  else if (o.m === 'scale') tr = `scale(${.95 + .05 * p}) translateY(${(1 - p) * 24}px)`;
+  else tr = `translateY(${(1 - p) * 30}px)`;
+  if (o.tout != null && t >= o.tout) {
+    const q = ease((t - o.tout) / EXIT); if (q >= .999) return 'hidden|';
+    if (o.m === 'merge') tr += ` translateX(${q * o.dx}px) scale(${1 - .1 * q})`; else if (o.m === 'scale') tr += ` scale(${1 - .05 * q})`; else tr += ` translateY(${-q * 24}px)`;
+    f += q * 14; op *= 1 - q;
+  }
+  return `visible|${tr}|${f > .05 ? `blur(${f.toFixed(1)}px)` : 'none'}|${op.toFixed(3)}`;
+}
+const UPD = [];
+function render(t) {
+  const [x, y, z] = camAt(t);
+  world.style.transform = `translate(960px,540px) scale(${z.toFixed(5)}) translate(${(-x).toFixed(2)}px,${(-y).toFixed(2)}px)`;
+  ELS.forEach(o => {
+    const s = styleOf(o, t); if (s === o.last) return; o.last = s;
+    const [v, tr, f, op] = s.split('|'); o.e.style.visibility = v;
+    if (tr) { o.e.style.transform = tr; o.e.style.filter = f; o.e.style.opacity = op; }
+    else { o.e.style.transform = ''; o.e.style.filter = ''; o.e.style.opacity = v === 'hidden' ? '0' : ''; }   // a hidden parent also hides what it holds
+  });
+  UPD.forEach(f => f(t));
+}
+const sm = (a, b, t) => ease(clamp((t - a) / (b - a), 0, 1));
+const setText = (n, v) => { if (n && n.textContent !== v) n.textContent = v; };
+const C = new Proxy({}, { get: (_, k) => T(k) });
+
+// hook: one more dollar, and one person in ten slides away
+UPD.push(t => {
+  if (t > C.L6 + 2) return;
+  setText($('#hprice'), '$' + (11.99 + sm(C['L3@.5'], C['L3@.5'] + .8, t)).toFixed(2));
+  const k = sm(C['L4@.55'], C['L4@.55'] + .9, t), h = $('#hleave');
+  h.style.transform = `translateX(${(k * 90).toFixed(1)}px)`; h.style.opacity = (1 - .7 * k).toFixed(3);
+});
+// the room: price up, people walk out through the door, the money moves with them
+const seats = $$('#room0 .seat');
+UPD.push(t => {
+  if (t < C.L6 - 1 || t > C.L16) return;
+  const back = sm(C.L11 + .2, C.L11 + 1.2, t), price = 11.99 + sm(C.L7 + .1, C.L7 + .9, t) * (1 - back), g5 = sm(C.L8 + .2, C.L8 + 1.2, t) * (1 - back), g3 = sm(C.L9 + .4, C.L9 + 1.4, t) * (1 - back);
+  seats.forEach(s => { const r = +s.dataset.r, k = LEAVE5.includes(r) ? g5 : LEAVE3.includes(r) ? g3 : 0; s.setAttribute('transform', k ? `translate(${(k * 120).toFixed(1)} 0)` : ''); s.style.opacity = (1 - .72 * k).toFixed(3); });
+  const left = 5 * g5 + 3 * g3, rev = (100 - left) * price;
+  setText($('#rn'), String(Math.round(100 - left)));
+  setText($('#rrev'), money(rev)); setText($('#rprice'), '$' + price.toFixed(2));
+  const r = $('#rrev'), c = rev > 1200 ? 'var(--up)' : rev < 1198 ? 'var(--dn)' : ''; if (r.style.color !== c) r.style.color = c;
+  const w = $('#rwas'), wv = t >= C.L7 + .6 ? 'visible' : 'hidden'; if (w.style.visibility !== wv) w.style.visibility = wv;
+  $('#rmark').style.transform = `translateX(${(left / 12 * 560).toFixed(1)}px)`;
+});
+// which room: the ring glides across all six, the "how far" chip rides on it
+UPD.push(t => {
+  if (t < C.L15 - .2 || t > C.L16 + 2) return;
+  const f = clamp((t - C.L15) / (C.L16 + 1 - C.L15), 0, 1) * 5, i = Math.floor(Math.min(f, 4.999)), fr = ease(clamp((f - i) * 1.25, 0, 1));
+  const [x0, y0] = RP(i), [x1, y1] = RP(Math.min(5, i + 1)), x = lerp(x0, x1, fr), y = lerp(y0, y1, fr);
+  const r = $('#ring'); r.style.left = (x - 30) + 'px'; r.style.top = (y - 30) + 'px';
+  const h = $('#howfar'); h.style.left = (x + 400) + 'px'; h.style.top = (y - 58) + 'px';
+});
+// Sheets: every broken cell turns red at once, then the selection glides to what she names
+const GW = [46, ...GCOLS.map(c => c[2])];
+const colX = j => GW.slice(0, j + 1).reduce((a, b) => a + b, 0), rowY = i => 21 * (i + 2);
+const rect = (i0, j0, i1, j1) => [colX(j0) - 1, rowY(i0) - 1, colX(j1) + GCOLS[j1][2] - colX(j0) + 1, rowY(i1) + 22 - rowY(i0)];
+const SELK = [['L18', rect(0, 4, 0, 4), 'E2', '-11.99'], ['L18@.55', rect(4, 4, 4, 4), 'E6', '-139'], ['L19', rect(17, 0, 17, 9), 'A19', 'SP-99001'], ['L20', rect(0, 7, 18, 7), 'H2', '2024-07-01']].map(([c, r, nb, fv]) => [T(c), r, nb, fv]);
+UPD.push(t => {
+  if (t < C.L16 - .5 || t > C.L23) return;
+  const on = t >= C['L17@.55'];
+  GBAD.forEach(([i, j]) => { const c = $(`#g${i}_${j}`); if (c.classList.contains('bad') !== on) c.classList.toggle('bad', on); });
+  const sel = $('#gsel');
+  if (t < SELK[0][0]) { if (sel.style.visibility !== 'hidden') sel.style.visibility = 'hidden'; setText($('#nb'), 'A1'); setText($('#fv'), 'customer_id'); return; }
+  let r = SELK[0][1].slice(), k0 = 0;
+  for (let k = 1; k < SELK.length; k++) { if (t < SELK[k][0]) break; const p = ease((t - SELK[k][0]) / .7); r = r.map((v, n) => lerp(v, SELK[k][1][n], p)); k0 = k; }
+  sel.style.visibility = 'visible'; sel.style.left = r[0] + 'px'; sel.style.top = r[1] + 'px'; sel.style.width = r[2] + 'px'; sel.style.height = r[3] + 'px';
+  setText($('#nb'), SELK[k0][2]); setText($('#fv'), SELK[k0][3]);
+  const d = sm(C.L21, C.L21 + .9, t), w = $('#gs'), fl = d > .01 ? `brightness(${(1 - .55 * d).toFixed(3)})` : 'none'; if (w.style.filter !== fl) w.style.filter = fl;
+});
+// the plan: the line fills to the stage she's on, Claude streams its answer during stage one
+const PCUE = ['L28', 'L29', 'L30', 'L31', 'L32'];
+const clPlain = CL_TEXT.replace(/<[^>]+>/g, '');
+UPD.push(t => {
+  if (t < C.L27 - .5 || t > C.L34 + 2) return;
+  let pos = 0; PCUE.forEach((c, i) => { if (i) pos += sm(C[c] - .1, C[c] + .8, t); });
+  pos += sm(C.L33, C.L33 + .9, t) * 0;                               // the line stops at the last stage
+  const lit = PCUE.reduce((n, c, i) => t >= C[c] - .1 ? i : n, -1);
+  $('#pfill').style.width = (t >= C.L28 - .1 ? pos * 380 : 0).toFixed(1) + 'px';
+  PCUE.forEach((c, i) => {
+    const n = $('#pn' + i), done = i <= lit, bg = done ? 'var(--t1)' : '#000', sh = done ? 'none' : 'inset 0 0 0 2px var(--ln2)';
+    if (n.style.background !== bg) { n.style.background = bg; n.style.boxShadow = sh; }
+    const tt = $('#pt' + i), col = i === lit ? 'var(--t1)' : done ? 'var(--t2)' : 'var(--t3)'; if (tt.style.color !== col) tt.style.color = col;
+  });
+  const k = clamp((t - C['L28@.5'] - .6) / Math.max(1, C.L28e - C['L28@.5'] - .4), 0, 1), n = Math.floor(k * clPlain.length);
+  let out = '', seen = 0; for (const part of CL_TEXT.split(/(<[^>]+>)/)) { if (part.startsWith('<')) { out += part; continue; } const take = Math.max(0, Math.min(part.length, n - seen)); out += part.slice(0, take); seen += part.length; if (take < part.length) break; }
+  const rp = $('#clrp'); if (rp.dataset.n !== String(n)) { rp.innerHTML = out; rp.dataset.n = n; }
+  const a = $('#clart'), v = t >= C.L28e - .2 && t < C.L29 + 1.2 ? 'visible' : 'hidden'; if (a.style.visibility !== v) a.style.visibility = v;
+});
+// close: she's right there, you can ask
+UPD.push(t => {
+  if (t < C.L34) return;
+  const typed = "I'm stuck on the revenue model", k = clamp((t - C['L34@.7']) / 1.4, 0, 1), s = typed.slice(0, Math.floor(k * typed.length)), a = $('#ask');
+  setText(a, s || 'Ask Eryn'); const c = s ? 'var(--t1)' : 'var(--t3)'; if (a.style.color !== c) a.style.color = c;
+  const sb = $('#send'), bg = k >= 1 ? 'var(--t1)' : 'var(--s3)'; if (sb.style.background !== bg) { sb.style.background = bg; sb.querySelector('path').setAttribute('stroke', k >= 1 ? '#000' : '#ececef'); }
+});
+
+/* ============ driven from outside ============ */
+function fit() {
+  const W = innerWidth, Hh = innerHeight, k = Math.min(W / 1920, Hh / 1080), v = $('#view');
+  v.style.width = 1920 * k + 'px'; v.style.height = 1080 * k + 'px'; v.style.left = (W - 1920 * k) / 2 + 'px'; v.style.top = (Hh - 1080 * k) / 2 + 'px';
+  $('#stage').style.transform = `scale(${k})`;
+}
+addEventListener('resize', fit); fit();
+let last = -1;
+window.__v4 = { render: t => { if (Math.abs(t - last) < 1e-4) return; last = t; render(t); }, dur: DATA.dur };
+render(LN[1].t - .14);
+</script>
+</body>
+</html>

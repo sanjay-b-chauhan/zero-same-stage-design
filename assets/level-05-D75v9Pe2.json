@@ -1,0 +1,85 @@
+{
+  "n": 5,
+  "badge": "b5",
+  "startsAtXp": 4000,
+  "rolesAtLevel": 7,
+  "rolesOpenByNow": 66,
+  "rolesDeltaVsPrev": 7,
+  "pay": { "est": "$121k", "deltaYear": "+$63k a year" },
+  "scenariosToUnlock": 4,
+  "scenario": { "name": "Meeting prep agent", "company": "Okta", "domain": "okta.com" },
+  "work": "Ship AI workflows that sell, end to end",
+  "wantToSee": "AI output you would put your name on",
+  "demonstrated": [
+    "Built an agent that preps a rep before every call",
+    "Checked every fact it writes against the source",
+    "Shipped early, then improved it from rep feedback"
+  ],
+  "companies": {
+    "stage": "Mostly Series A to C startups and late stage private companies",
+    "size": "Most have 300 to 1,200 people",
+    "remote": "Hybrid for 5 of 7 roles, US",
+    "line": "AI first companies where GTM engineers ship like product engineers"
+  },
+  "roles": [
+    {
+      "title": "GTM Engineer",
+      "company": "Adyen",
+      "domain": "adyen.com",
+      "pay": "$169k to 222k",
+      "mode": "On site"
+    },
+    {
+      "title": "Growth Engineer",
+      "company": "ClickHouse",
+      "domain": "clickhouse.com",
+      "pay": "$147k to 238k",
+      "mode": "Remote"
+    },
+    {
+      "title": "GTM Engineer - Marketing",
+      "company": "Clay",
+      "domain": "clay.com",
+      "pay": "$150k to 220k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Revenue Operations Analyst",
+      "company": "Perplexity",
+      "domain": "perplexity.ai",
+      "pay": "$160k to 200k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Forward Deployed GTM Engineer",
+      "company": "Attio",
+      "domain": "attio.com",
+      "pay": "$150k to 200k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "GTM Engineer",
+      "company": "LangChain",
+      "domain": "langchain.com",
+      "pay": "$160k to 180k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "GTM Technology Engineer",
+      "company": "Plaid",
+      "domain": "plaid.com",
+      "pay": "$145k to 173k",
+      "mode": "Hybrid"
+    }
+  ],
+  "moreRoles": 0,
+  "moreRolesBeyondRow": 4,
+  "logos": [
+    "adyen.com",
+    "clickhouse.com",
+    "clay.com",
+    "perplexity.ai",
+    "attio.com",
+    "langchain.com"
+  ]
+}

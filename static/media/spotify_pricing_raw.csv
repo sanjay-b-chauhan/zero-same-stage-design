@@ -1,0 +1,65 @@
+customer_id,customer_name,email,plan,monthly_price,currency,billing_city,signup_date,status,months_active
+SP-10401,Hannah Cole,hannah.cole@example.com,Premium Individual,-11.99,USD,New York,2024-07-01,active,14
+SP-10404,Liam Mehta,liam.mehta@example.com,PREM_IND,11.99,USD,Austin,2022-10-24,churned,38
+SP-10407,Sofia Costa,sofia.costa@example.com,Premium Family,$19.99,USD,Chicago,06/19/23,churned,4
+SP-10410,Leo Cole,leo.cole@example.com,Premium Individual,139,,Mexico City,15 Dec 2023,active,25
+SP-10413,Liam Cole,liam.cole@example.com,Premium Individual,-139,MXN,Monterrey,2024-10-05,active,2
+SP-10416,,nina.costa@example.com,Premium Individual,23.9,BRL,São Paulo,2022-04-26,active,39
+SP-10419,Priya Reed,priya.reed@example.com,Premium Individual,0.00,BRL,Rio de Janeiro,2022-04-08,active,11
+SP-10422,Hannah Silva,hannah.silva@example.com,Premium Individual,£11.99,GBP,London,10/12/22,active,26
+SP-10425,Mateo Silva,mateo.silva@example.com,Premium Individual,11.99,GBP,Manchester,2021-09-13,active,35
+SP-10428,Nina Moreno,nina.moreno@example.com,premium indiv,11.99,EUR,Berlin,2024-09-20,active,1
+SP-10431,Riya Becker,riya.becker@example.com,Premium Family,20.99,,Munich,11 Feb 2021,active,8
+SP-10434,Hannah Nair,hannah.nair@example.com,Premium Individual,119,USD,Mumbai,2024-09-16,active,30
+SP-10437,Jordan Becker,jordan.becker@example.com,Premium Student,₹59,INR,Delhi,11/04/22,churned,31
+SP-10440,Carlos Klein,carlos.klein@example.com,Family Plan,179,INR,Bengaluru,2024-11-20,active,32
+SP-10443,,arjun.walsh@example.com,Premium Individual,11.99,USD,New York,2023-02-21,churned,31
+SP-10446,Ananya Reyes,ananya.reyes@example.com,Premium Individual,1199,USD,Austin,2023-08-07,active,5
+SP-10449,Priya Mehta,priya.mehta@example.com,Premium Individual,1199,USD,Chicago,2024-02-26,active,13
+SP-99001,QA Test,qa+1@spotify-internal.example,Premium Individual,0.00,USD,New York,2024-01-15,active,1
+SP-10452,Max Becker,max.becker@example.com,Premium Individual,139,,Mexico City,12/09/22,active,19
+SP-10455,Sofia Becker,sofia.becker@example.com,Premium Family,229,MXN,Monterrey,2023-08-01,active,8
+SP-10458,Julia Cole,julia.cole@example.com,Premium Individual,23.9,BRL,São Paulo,2022-09-13,active,34
+SP-10461,Maya Costa,maya.costa@example.com,Premium Family,40.9,BRL,Rio de Janeiro,2024-10-12,active,7
+SP-10464,Grace Ward,grace.ward@example.com,premium indiv,11.99,GBP,London,2021-05-01,active,35
+SP-10467,Mateo Vargas,mateo.vargas@example.com,Premium Individual,£11.99,GBP,Manchester,04/10/23,churned,39
+SP-10470,,aisha.brooks@example.com,Premium Individual,11.99,EUR,Berlin,2024-03-05,active,10
+SP-10473,Liam Cole,liam.cole@example.com,Premium Student,6.49,,Munich,18 Aug 2021,active,33
+SP-10476,Rafael Fischer,rafael.fischer@example.com,student,59,INR,Mumbai,2024-01-20,active,31
+SP-10479,Jordan Silva,jordan.silva@example.com,Premium Duo,149,INR,Delhi,2021-02-16,active,2
+SP-10482,Hannah Klein,hannah.klein@example.com,Premium Duo,₹149,INR,Bengaluru,12/18/24,active,14
+SP-10485,Rafael Patel,rafael.patel@example.com,Premium Student,5.99,USD,New York,2024-06-15,active,3
+SP-10488,Julia Reyes,julia.reyes@example.com,PREM_IND,11.99,USD,Austin,2024-08-05,active,1
+SP-10491,Zoe Becker,zoe.becker@example.com,Premium Individual,11.99,USD,Chicago,2023-11-10,active,21
+SP-10494,Emma Vargas,emma.vargas@example.com,Premium Student,69,,Mexico City,7 Nov 2022,active,11
+SP-99002,test_user_02,qa+2@spotify-internal.example,Premium Individual,0.00,USD,London,2024-01-15,active,1
+SP-10497,,julia.reed@example.com,Premium Individual,139,MXN,Monterrey,07/14/22,active,4
+SP-10500,Julia Sharma,julia.sharma@example.com,prem family,40.9,BRL,São Paulo,2023-12-08,active,20
+SP-10503,Noah Nair,noah.nair@example.com,Premium Individual,23.9,BRL,Rio de Janeiro,2021-01-04,active,27
+SP-10506,Max Iyer,max.iyer@example.com,Premium Student,5.99,GBP,London,2024-09-20,churned,19
+SP-10434,Hannah Nair,hannah.nair@example.com,Premium Individual,119,USD,Mumbai,2024-09-16,active,30
+SP-10509,Leo Mehta,leo.mehta@example.com,Premium Student,5.99,GBP,Manchester,2022-10-22,active,14
+SP-10512,Jordan Santos,jordan.santos@example.com,Premium Individual,"€11,99",EUR,Berlin,01/09/23,active,24
+SP-10515,Arjun Iyer,arjun.iyer@example.com,Premium Individual,11.99,,Munich,15 Jun 2023,active,1
+SP-10518,Grace Vargas,grace.vargas@example.com,Premium Individual,119,USD,Mumbai,2022-06-22,active,22
+SP-10521,Hannah Silva,hannah.silva@example.com,Premium Family,179,INR,Delhi,2024-12-13,active,29
+SP-10524,Felix Iyer,felix.iyer@example.com,Premium Individual,119,USD,Bengaluru,2023-06-22,active,14
+SP-10527,Ananya Nair,ananya.nair@example.com,Premium Individual,$11.99,USD,New York,09/19/21,active,10
+SP-10530,Lucas Costa,lucas.costa@example.com,Premium Duo,16.99,USD,Austin,2021-11-08,active,6
+SP-10533,Clara Reyes,clara.reyes@example.com,Premium Individual,11.99,USD,Chicago,2022-11-18,churned,34
+SP-10536,Riya Klein,riya.klein@example.com,prem family,229,MXN,Mexico City,3 May 2022,active,19
+SP-10461,Maya Costa,maya.costa@example.com,Premium Family,40.9,BRL,Rio de Janeiro,2024-10-12,active,7
+SP-10539,Max Fischer,max.fischer@example.com,Premium Individual,139,MXN,Monterrey,2023-05-10,active,20
+SP-10542,Ethan Becker,ethan.becker@example.com,Premium Student,"R$12,90",BRL,São Paulo,11/08/23,active,35
+SP-99003,QA Test,qa+3@spotify-internal.example,Premium Individual,0.00,USD,Berlin,2024-01-15,active,1
+SP-10545,Grace Santos,grace.santos@example.com,Premium Individual,23.9,BRL,Rio de Janeiro,2023-05-12,active,31
+SP-10548,Grace Fischer,grace.fischer@example.com,Individual,11.99,GBP,London,2024-10-13,active,9
+SP-10551,,priya.becker@example.com,Premium Individual,11.99,GBP,Manchester,2022-05-12,active,36
+SP-10554,Max Moreno,max.moreno@example.com,Premium Individual,11.99,EUR,Berlin,2022-02-23,active,6
+SP-10557,Oliver Hughes,oliver.hughes@example.com,Premium Student,6.49,EUR,Munich,10/27/21,active,30
+SP-10488,Julia Reyes,julia.reyes@example.com,PREM_IND,11.99,USD,Austin,2024-08-05,active,1
+SP-10560,Diego Reyes,diego.reyes@example.com,Family Plan,179,INR,Mumbai,2024-08-13,active,20
+SP-10563,Clara Santos,clara.santos@example.com,Premium Individual,119,INR,Delhi,2023-08-21,active,31
+SP-10566,Diego Patel,diego.patel@example.com,Premium Individual,119,INR,Bengaluru,2023-09-07,active,7
+SP-10569,Nina Hughes,nina.hughes@example.com,Premium Student,5.99,USD,New York,2022-07-03,churned,23
+SP-10572,Noah Reyes,noah.reyes@example.com,Premium Family,19.99,USD,Austin,06/01/23,churned,14

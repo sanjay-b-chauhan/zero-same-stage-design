@@ -1,0 +1,71 @@
+{
+  "n": 7,
+  "badge": "b7",
+  "startsAtXp": 6000,
+  "rolesAtLevel": 6,
+  "rolesOpenByNow": 78,
+  "rolesDeltaVsPrev": 6,
+  "pay": { "est": "$123k", "deltaYear": "+$65k a year" },
+  "scenariosToUnlock": 6,
+  "scenario": { "name": "Lead routing rules", "company": "DocuSign", "domain": "docusign.com" },
+  "work": "Run the systems behind hundreds of reps",
+  "wantToSee": "Every edge case covered on the first pass",
+  "demonstrated": [
+    "Designed routing rules for a large sales team",
+    "Covered every case: territories, leave, no match",
+    "Got sales ops to sign off on the first pass"
+  ],
+  "companies": {
+    "stage": "Mostly public companies and Series D and later startups",
+    "size": "Most have 370 to 3,900 people",
+    "remote": "Hybrid for 5 of 6 roles, US and Canada",
+    "line": "Large companies where your systems run hundreds of reps"
+  },
+  "roles": [
+    {
+      "title": "Senior Sales Operations Analyst",
+      "company": "Braze",
+      "domain": "braze.com",
+      "pay": "$84k to 132k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Salesforce Architect",
+      "company": "Lyft",
+      "domain": "lyft.com",
+      "pay": "CA$129k to 161k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Marketing Automation Manager, AI Journey",
+      "company": "Okta",
+      "domain": "okta.com",
+      "pay": "CA$116k to 160k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Business Systems Engineer, Intelligent Automation",
+      "company": "Lyft",
+      "domain": "lyft.com",
+      "pay": "CA$102k to 128k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Senior Data Analyst",
+      "company": "Clutch",
+      "domain": "clutch.ca",
+      "pay": "CA$100k to 125k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Senior Marketing Automation Specialist",
+      "company": "Wave",
+      "domain": "waveapps.com",
+      "pay": "CA$85k to 105k",
+      "mode": "Remote"
+    }
+  ],
+  "moreRoles": 0,
+  "moreRolesBeyondRow": 3,
+  "logos": ["braze.com", "lyft.com", "okta.com", "clutch.ca", "waveapps.com"]
+}

@@ -1,0 +1,31 @@
+{
+  "developing": [
+    [
+      "Three rounds of feedback on one plan. Find the gaps before Jay does: check your work",
+      "against the brief, line by line."
+    ],
+    [
+      "Every claim needs a number. “It works” means nothing. “Median reply time 1 min 50 on",
+      "1,200 leads” gets a yes."
+    ],
+    [
+      "Say what happens when it breaks: a rep is away, no rep matches. That’s where plans get",
+      "sent back."
+    ]
+  ],
+  "good": [
+    "Your plan covers the asks. Now test it on real leads before Jay sees it.",
+    "Read it once as leadership. Anything they’d question, answer on the page.",
+    "One page per idea: the problem, the cause, the fix. Don’t make Jay hunt."
+  ],
+  "great": [
+    "Cover the cases nobody asked for: a rep on leave, a lead with no region.",
+    "Show the before and after on one chart: three hours ten, down to under two minutes.",
+    "Send it once. Exceptional work goes up without a second round."
+  ],
+  "exceptional": [
+    "Your plans go up with zero edits. Keep checking every number, even when you’re sure.",
+    "Add what to watch after launch: the number, who owns it, and when to check.",
+    "Turn your plan into the template the next person starts from."
+  ]
+}

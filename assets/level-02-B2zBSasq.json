@@ -1,0 +1,85 @@
+{
+  "n": 2,
+  "badge": "b2",
+  "startsAtXp": 1000,
+  "rolesAtLevel": 15,
+  "rolesOpenByNow": 25,
+  "rolesDeltaVsPrev": 15,
+  "pay": { "est": "$86k", "deltaYear": "+$28k a year" },
+  "scenariosToUnlock": 1,
+  "scenario": { "name": "Renewal risk agent", "company": "Zendesk", "domain": "zendesk.com" },
+  "work": "Qualify leads, keep the CRM clean, report what works",
+  "wantToSee": "Updates your manager can forward, and good questions",
+  "demonstrated": [
+    "Built an agent that flags accounts about to churn",
+    "Showed a CSM why each account is at risk",
+    "Asked clear questions, then made the small calls yourself"
+  ],
+  "companies": {
+    "stage": "Mostly late stage private companies and Series D and later startups",
+    "size": "Most have 650 to 1,600 people",
+    "remote": "Remote for 8 of 15 roles, US and Canada",
+    "line": "Sales and success teams that run on clean data"
+  },
+  "roles": [
+    {
+      "title": "Business Development Representative",
+      "company": "Cohere",
+      "domain": "cohere.com",
+      "pay": "CA$115k to 170k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Sales Systems Analyst",
+      "company": "Calendly",
+      "domain": "calendly.com",
+      "pay": "$82k to 100k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Product Led Sales Analyst",
+      "company": "Miro",
+      "domain": "miro.com",
+      "pay": "$80k to 98k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Customer Success Operations Analyst",
+      "company": "Loom",
+      "domain": "loom.com",
+      "pay": "$78k to 95k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Marketing Operations Analyst",
+      "company": "Webflow",
+      "domain": "webflow.com",
+      "pay": "$76k to 94k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Deal Desk Analyst",
+      "company": "Calendly",
+      "domain": "calendly.com",
+      "pay": "$75k to 92k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Business Development Representative",
+      "company": "Ramp",
+      "domain": "ramp.com",
+      "pay": "CA$90k to 100k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Sales Development Representative",
+      "company": "Bazaarvoice",
+      "domain": "bazaarvoice.com",
+      "pay": "$50k to 80k",
+      "mode": "Hybrid"
+    }
+  ],
+  "moreRoles": 7,
+  "moreRolesBeyondRow": 12,
+  "logos": ["cohere.com", "calendly.com", "miro.com", "loom.com", "webflow.com", "ramp.com"]
+}

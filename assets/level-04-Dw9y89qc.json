@@ -1,0 +1,85 @@
+{
+  "n": 4,
+  "badge": "b4",
+  "startsAtXp": 3000,
+  "rolesAtLevel": 9,
+  "rolesOpenByNow": 59,
+  "rolesDeltaVsPrev": 9,
+  "pay": { "est": "$114k", "deltaYear": "+$56k a year" },
+  "scenariosToUnlock": 3,
+  "scenario": { "name": "Enrichment pipeline", "company": "Twilio", "domain": "twilio.com" },
+  "work": "Build the GTM tools reps use every day",
+  "wantToSee": "Tools that hold up on real, messy data",
+  "demonstrated": [
+    "Built a pipeline that fills in missing lead data",
+    "Handled the mess: duplicates, bad emails, no company",
+    "Wrote it up so leadership got it without a call"
+  ],
+  "companies": {
+    "stage": "Mostly late stage private companies and teams inside bigger companies",
+    "size": "Most have 720 to 1,200 people",
+    "remote": "Remote for 5 of 9 roles, US and Canada",
+    "line": "GTM teams that build their own tools instead of buying them"
+  },
+  "roles": [
+    {
+      "title": "GTM Business Systems Analyst, Post Sales",
+      "company": "Ramp",
+      "domain": "ramp.com",
+      "pay": "$134k to 209k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "GTM Engineer",
+      "company": "Maple",
+      "domain": "maple.inc",
+      "pay": "$100k to 200k",
+      "mode": "On site"
+    },
+    {
+      "title": "GTM Engineer",
+      "company": "Vercel",
+      "domain": "vercel.com",
+      "pay": "$110k to 140k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Growth Platform, Marketing Engineer",
+      "company": "Faire",
+      "domain": "faire.com",
+      "pay": "CA$140k to 192k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "GTM Engineer",
+      "company": "Ramp",
+      "domain": "ramp.com",
+      "pay": "$105k to 135k",
+      "mode": "Remote"
+    },
+    {
+      "title": "GTM Engineer, Outbound",
+      "company": "Brex",
+      "domain": "brex.com",
+      "pay": "$102k to 130k",
+      "mode": "Remote"
+    },
+    {
+      "title": "RevOps Engineer",
+      "company": "Webflow",
+      "domain": "webflow.com",
+      "pay": "$100k to 128k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Marketing Operations Manager",
+      "company": "Cockroach Labs",
+      "domain": "cockroachlabs.com",
+      "pay": "$95k to 125k",
+      "mode": "Hybrid"
+    }
+  ],
+  "moreRoles": 1,
+  "moreRolesBeyondRow": 6,
+  "logos": ["ramp.com", "maple.inc", "vercel.com", "faire.com", "brex.com", "webflow.com"]
+}

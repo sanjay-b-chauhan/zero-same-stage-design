@@ -1,0 +1,92 @@
+{
+  "n": 3,
+  "badge": "b3",
+  "startsAtXp": 2000,
+  "rolesAtLevel": 25,
+  "rolesOpenByNow": 50,
+  "rolesDeltaVsPrev": 25,
+  "pay": { "est": "$98k", "deltaYear": "+$40k a year" },
+  "scenariosToUnlock": 2,
+  "scenario": { "name": "Lead scoring model", "company": "Asana", "domain": "asana.com" },
+  "work": "Automate the sales process: scoring, routing, handoffs",
+  "wantToSee": "A plan with a test behind it",
+  "demonstrated": [
+    "Scored leads so reps call the best ones first",
+    "Tested the model on real past leads before shipping",
+    "Tied the score to pipeline, not clicks"
+  ],
+  "companies": {
+    "stage": "Mostly late stage private companies and Series A to C startups",
+    "size": "Most have 290 to 1,500 people",
+    "remote": "Hybrid for 13 of 25 roles, US and Canada",
+    "line": "Revenue teams starting to automate their own work"
+  },
+  "roles": [
+    {
+      "title": "GTM Engineer - Sales Workflow Automation, Revenue Intelligence",
+      "company": "Toast",
+      "domain": "toasttab.com",
+      "pay": "$94k to 192k",
+      "mode": "Remote"
+    },
+    {
+      "title": "GTM Strategy/Operations Associate - New York",
+      "company": "Datadog",
+      "domain": "datadoghq.com",
+      "pay": "$100k to 133k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Sales Development Representative",
+      "company": "Unify",
+      "domain": "unifygtm.com",
+      "pay": "$110k to 120k",
+      "mode": "On site"
+    },
+    {
+      "title": "Pricing & Order Operations Analyst",
+      "company": "Fivetran",
+      "domain": "fivetran.com",
+      "pay": "$104k to 125k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "AI Automation Specialist",
+      "company": "Gong",
+      "domain": "gong.io",
+      "pay": "$98k to 125k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Sales development representative",
+      "company": "Writer",
+      "domain": "writer.com",
+      "pay": "$90k to 110k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Data Analyst (GTM)",
+      "company": "Clari",
+      "domain": "clari.com",
+      "pay": "$88k to 110k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Business Development Representative",
+      "company": "DataSnipper",
+      "domain": "datasnipper.com",
+      "pay": "$95k to 100k",
+      "mode": "Hybrid"
+    }
+  ],
+  "moreRoles": 17,
+  "moreRolesBeyondRow": 22,
+  "logos": [
+    "toasttab.com",
+    "datadoghq.com",
+    "unifygtm.com",
+    "fivetran.com",
+    "gong.io",
+    "writer.com"
+  ]
+}

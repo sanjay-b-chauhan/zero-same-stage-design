@@ -1,0 +1,85 @@
+{
+  "n": 10,
+  "badge": "b10",
+  "startsAtXp": 9000,
+  "rolesAtLevel": 9,
+  "rolesOpenByNow": 99,
+  "rolesDeltaVsPrev": 9,
+  "pay": { "est": "$172k", "deltaYear": "+$114k a year" },
+  "scenariosToUnlock": 9,
+  "scenario": { "name": "Agent eval suite", "company": "Dropbox", "domain": "dropbox.com" },
+  "work": "Lead the team that builds the GTM machine",
+  "wantToSee": "A bar other people build to",
+  "demonstrated": [
+    "Wrote the tests that catch a sales agent before it goes wrong",
+    "Set the bar other people build to",
+    "Brought the next project before anyone asked"
+  ],
+  "companies": {
+    "stage": "Mostly late stage private companies and teams inside bigger companies",
+    "size": "Most have 170 to 1,300 people",
+    "remote": "Hybrid for 6 of 9 roles, US and Canada",
+    "line": "You set the bar, and lead the people who build to it"
+  },
+  "roles": [
+    {
+      "title": "Director, Revenue Operations",
+      "company": "Brex",
+      "domain": "brex.com",
+      "pay": "$258k to 322k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Engineering Manager, GTM Engineering",
+      "company": "Brex",
+      "domain": "brex.com",
+      "pay": "$240k to 300k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Director Analytics Engineering",
+      "company": "1Password",
+      "domain": "1password.com",
+      "pay": "$204k to 306k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Director of Marketing Operations",
+      "company": "Rogo",
+      "domain": "rogo.ai",
+      "pay": "$180k to 230k",
+      "mode": "On site"
+    },
+    {
+      "title": "Revenue Operations Manager and Business Systems Team Lead",
+      "company": "Hyperproof",
+      "domain": "hyperproof.io",
+      "pay": "$131k to 187k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Manager, Sales Development",
+      "company": "Elastic",
+      "domain": "elastic.co",
+      "pay": "$90k to 142k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Manager, Customer Analytics (Sales & Marketing)",
+      "company": "Jobber",
+      "domain": "getjobber.com",
+      "pay": "CA$100k to 185k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "BDR Manager",
+      "company": "Float",
+      "domain": "floatfinancial.com",
+      "pay": "CA$90k to 110k",
+      "mode": "Hybrid"
+    }
+  ],
+  "moreRoles": 1,
+  "moreRolesBeyondRow": 6,
+  "logos": ["brex.com", "1password.com", "rogo.ai", "hyperproof.io", "elastic.co", "getjobber.com"]
+}

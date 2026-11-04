@@ -1,0 +1,75 @@
+{
+  "id": "intro",
+  "kind": "brief",
+  "title": "The bar",
+  "hook": "Before you start",
+  "notices": "Scenario one opens. Level 1, goal GTM Engineer roles.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "intro.r1",
+        "text": "Hey Sanjay, I'm Navid. I'll be your coach from here.",
+        "after": null
+      },
+      { "lineId": "intro.r2", "text": "Jay runs this project; I'm on your side.", "after": null },
+      {
+        "lineId": "intro.r3",
+        "text": "I'll help you get to GTM Engineer roles faster,",
+        "after": null
+      },
+      { "lineId": "intro.r4", "text": "and I'll only speak up when it matters.", "after": null },
+      {
+        "lineId": "intro.r5",
+        "text": "Three things decide your grade here.",
+        "after": "what_watch"
+      },
+      {
+        "lineId": "intro.r6",
+        "text": "Your notes, how you update Jay, and whether you test before you send.",
+        "after": "what_watch"
+      },
+      {
+        "lineId": "intro.r7",
+        "text": "Nail those, and this one is exceptional.",
+        "after": "what_watch"
+      }
+    ],
+    "new": [
+      {
+        "lineId": "intro.n1",
+        "text": "Hey Sanjay, I'm Navid. I'm your coach, not your answer key.",
+        "after": null
+      },
+      {
+        "lineId": "intro.n2",
+        "text": "When I step in, it's one question, and the answer is yours to find.",
+        "after": null
+      },
+      {
+        "lineId": "intro.n3",
+        "text": "Three things decide your grade here.",
+        "after": "what_watch"
+      },
+      {
+        "lineId": "intro.n4",
+        "text": "Your notes, your updates to Jay, and testing before you send.",
+        "after": "what_watch"
+      },
+      {
+        "lineId": "intro.n5",
+        "text": "Which of those three do you usually skip?",
+        "after": "what_watch"
+      }
+    ]
+  },
+  "stake": { "points": 3000, "label": "Up to 3,000: Level 1 to Level 4" },
+  "why": null,
+  "actions": [
+    { "id": "what_watch", "label": "What will you watch?", "primary": false },
+    { "id": "got_it", "label": "Got it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "Sanjay asks \"What will you watch?\"",
+  "points": null
+}

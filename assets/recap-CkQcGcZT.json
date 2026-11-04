@@ -1,0 +1,81 @@
+{
+  "id": "recap",
+  "kind": "win",
+  "title": "Recap",
+  "hook": "Your day",
+  "notices": "Back home. Scenario two is open.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      { "lineId": "recap.r1", "text": "Here's what you fixed today.", "after": null },
+      {
+        "lineId": "recap.r2",
+        "text": "Your notes, your first message, the file, and the plan.",
+        "after": null
+      },
+      {
+        "lineId": "recap.r3",
+        "text": "Four habits in one day. That's real progress.",
+        "after": null
+      },
+      {
+        "lineId": "recap.r4",
+        "text": "Fewer fixes. Every time I don't have to step in, that's points you keep.",
+        "after": "question"
+      },
+      { "lineId": "recap.r5", "text": "Next scenario, aim for zero holds.", "after": "question" }
+    ],
+    "new": [
+      {
+        "lineId": "recap.n1",
+        "text": "Four habits fixed today. Your notes, your first message, the file, and the plan.",
+        "after": null
+      },
+      {
+        "lineId": "recap.n2",
+        "text": "Which one will you do next time without me?",
+        "after": null
+      },
+      {
+        "lineId": "recap.n3",
+        "text": "Fewer fixes. Every time I don't have to step in, that's points you keep.",
+        "after": "question"
+      },
+      { "lineId": "recap.n4", "text": "Next scenario, aim for zero holds.", "after": "question" }
+    ]
+  },
+  "stake": null,
+  "why": null,
+  "actions": [
+    { "id": "question", "label": "I have a question", "primary": false },
+    { "id": "got_it", "label": "Got it", "primary": true }
+  ],
+  "feedback": {
+    "ask": [{ "lineId": "recap.f1", "text": "Quick one. How did today feel?" }],
+    "options": [
+      {
+        "id": "feel_good",
+        "label": "Loving it",
+        "reply": [{ "lineId": "recap.f2", "text": "Thanks. I read every one of these." }]
+      },
+      {
+        "id": "feel_hard",
+        "label": "Hard, but clearer",
+        "reply": [
+          {
+            "lineId": "recap.f3",
+            "text": "Thanks. Hard, but clearer, is exactly how day one should feel."
+          },
+          { "lineId": "recap.f4", "text": "See you in the next one." }
+        ]
+      },
+      {
+        "id": "feel_broken",
+        "label": "Something broke",
+        "reply": [{ "lineId": "recap.f5", "text": "Thanks. I read every one of these." }]
+      }
+    ]
+  },
+  "then": "The day ends on progress he can count.",
+  "points": null
+}

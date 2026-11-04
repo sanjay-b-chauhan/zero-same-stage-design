@@ -1,0 +1,78 @@
+{
+  "n": 9,
+  "badge": "b9",
+  "startsAtXp": 8000,
+  "rolesAtLevel": 7,
+  "rolesOpenByNow": 90,
+  "rolesDeltaVsPrev": 7,
+  "pay": { "est": "$170k", "deltaYear": "+$112k a year" },
+  "scenariosToUnlock": 8,
+  "scenario": { "name": "Account research agent", "company": "Datadog", "domain": "datadoghq.com" },
+  "work": "Build the AI that runs the sales motion",
+  "wantToSee": "Agents that are right, checked against the source",
+  "demonstrated": [
+    "Built an agent that writes the three things a rep needs before a call",
+    "Shipped AI output you would put your name on",
+    "Explained the system to someone new in two minutes"
+  ],
+  "companies": {
+    "stage": "Mostly late stage private companies and Series D and later startups",
+    "size": "Most have 420 to 3,600 people",
+    "remote": "Remote for 4 of 7 roles, US",
+    "line": "Frontier AI labs and the fastest growing startups"
+  },
+  "roles": [
+    {
+      "title": "Staff Software Engineer, GTM AI Engineering",
+      "company": "Anthropic",
+      "domain": "anthropic.com",
+      "pay": "$320k to 405k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Analytics Engineer, GTM",
+      "company": "OpenAI",
+      "domain": "openai.com",
+      "pay": "$220k to 335k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Sales Engineer, Enterprise",
+      "company": "Hex",
+      "domain": "hex.tech",
+      "pay": "$210k to 265k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Sr. AI GTM Engineer",
+      "company": "Vanta",
+      "domain": "vanta.com",
+      "pay": "$195k to 229k",
+      "mode": "Remote"
+    },
+    {
+      "title": "GTM Analytics Engineer",
+      "company": "Decagon",
+      "domain": "decagon.ai",
+      "pay": "$190k to 230k",
+      "mode": "On site"
+    },
+    {
+      "title": "Senior Analytics Engineer",
+      "company": "Mercury",
+      "domain": "mercury.com",
+      "pay": "$167k to 208k",
+      "mode": "Remote"
+    },
+    {
+      "title": "Revenue Operations Manager",
+      "company": "Sigma Computing",
+      "domain": "sigmacomputing.com",
+      "pay": "$150k to 210k",
+      "mode": "On site"
+    }
+  ],
+  "moreRoles": 0,
+  "moreRolesBeyondRow": 4,
+  "logos": ["anthropic.com", "openai.com", "hex.tech", "vanta.com", "decagon.ai", "mercury.com"]
+}

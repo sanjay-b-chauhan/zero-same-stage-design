@@ -1,0 +1,22 @@
+{
+  "developing": [
+    "Send a rough plan in the first hour. A finished one in the third hour is already late.",
+    "Give the hard step twenty minutes. Then ask Jay, or move on.",
+    "Start with the part you’re sure of. Momentum makes the hard part smaller."
+  ],
+  "good": [
+    "Say your deadline out loud, “full plan by 2pm”, then hit it.",
+    "Do the riskiest part first, so a surprise costs minutes, not the day.",
+    ["Fast only counts when it’s right. Test before you send, so speed never turns into a", "redo."]
+  ],
+  "great": [
+    "Beat your own deadline and spend the time you won on the test.",
+    "Skip the steps that don’t change the answer. Speed is mostly what you leave out.",
+    "Keep a two line update ready, so Jay never waits on you."
+  ],
+  "exceptional": [
+    "You ship early and right. Never trade the test for the clock.",
+    "Use the time you save to go one step past the ask.",
+    "Your speed is a process. Write it down and share it with the team."
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "level_up",
+  "kind": "win",
+  "title": "Level up",
+  "hook": "Level 2",
+  "notices": "Meeting Expectations: 1,000 skill points. Level 1 to Level 2.",
+  "needsRerecord": true,
+  "lines": {
+    "recorded": [
+      { "lineId": "level_up.r1", "text": "Rank two.", "after": null },
+      { "lineId": "level_up.r2", "text": "You kept a thousand points today,", "after": null },
+      {
+        "lineId": "level_up.r3",
+        "text": "and nine hundred came from fixes you made yourself.",
+        "after": null
+      },
+      {
+        "lineId": "level_up.r4",
+        "text": "Add a test next time, and Exceeding is yours.",
+        "after": null
+      }
+    ],
+    "new": [
+      { "lineId": "level_up.n1", "text": "Level two. You kept a thousand points,", "after": null },
+      {
+        "lineId": "level_up.n2",
+        "text": "and nine hundred came from your own fixes.",
+        "after": null
+      },
+      {
+        "lineId": "level_up.n3",
+        "text": "So what would make the next one Exceeding?",
+        "after": null
+      }
+    ]
+  },
+  "stake": null,
+  "why": {
+    "lines": [
+      {
+        "lineId": "level_up.w1",
+        "text": "Because you can get to GTM roles, and these habits are the whole gap."
+      },
+      { "lineId": "level_up.w2", "text": "I push this hard because I know you can do it." }
+    ],
+    "good": null
+  },
+  "actions": [
+    { "id": "why", "label": "Why so many nudges?", "primary": false },
+    { "id": "got_it", "label": "Got it", "primary": true }
+  ],
+  "feedback": null,
+  "then": "Sanjay asks \"Why so many nudges?\"",
+  "points": null
+}

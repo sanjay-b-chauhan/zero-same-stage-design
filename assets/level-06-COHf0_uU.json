@@ -1,0 +1,78 @@
+{
+  "n": 6,
+  "badge": "b6",
+  "startsAtXp": 5000,
+  "rolesAtLevel": 6,
+  "rolesOpenByNow": 72,
+  "rolesDeltaVsPrev": 6,
+  "pay": { "est": "$123k", "deltaYear": "+$65k a year" },
+  "scenariosToUnlock": 5,
+  "scenario": { "name": "Outbound list builder", "company": "Gusto", "domain": "gusto.com" },
+  "work": "Own a GTM problem start to finish, no steps handed to you",
+  "wantToSee": "Calls you made yourself, and why",
+  "demonstrated": [
+    "Built target lists from real signals, not guesses",
+    "Chose who not to email, and said why",
+    "Owned the result: reply rate, before and after"
+  ],
+  "companies": {
+    "stage": "Mostly public companies and Series A to C startups",
+    "size": "Most have 220 to 5,200 people",
+    "remote": "Hybrid for 3 of 6 roles, US and Canada",
+    "line": "Teams that hand you a problem, not a ticket"
+  },
+  "roles": [
+    {
+      "title": "GTM Engineer",
+      "company": "Baseten",
+      "domain": "baseten.co",
+      "pay": "$175k to 200k",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Senior Systems Engineer - Go-To-Market Data Team",
+      "company": "Cloudflare",
+      "domain": "cloudflare.com",
+      "pay": "Pay not posted",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Deployed Engineer, Pre-Sales (Dallas)",
+      "company": "LangChain",
+      "domain": "langchain.com",
+      "pay": "Pay not posted",
+      "mode": "Remote"
+    },
+    {
+      "title": "Principal Analyst, Revenue Operations Strategy",
+      "company": "Qualtrics",
+      "domain": "qualtrics.com",
+      "pay": "Pay not posted",
+      "mode": "Hybrid"
+    },
+    {
+      "title": "Senior Analytics Engineer",
+      "company": "ZoomInfo",
+      "domain": "zoominfo.com",
+      "pay": "Pay not posted",
+      "mode": "Remote"
+    },
+    {
+      "title": "Analytics Engineer",
+      "company": "Linear",
+      "domain": "linear.app",
+      "pay": "Pay not posted",
+      "mode": "Remote"
+    }
+  ],
+  "moreRoles": 0,
+  "moreRolesBeyondRow": 3,
+  "logos": [
+    "baseten.co",
+    "cloudflare.com",
+    "langchain.com",
+    "qualtrics.com",
+    "zoominfo.com",
+    "linear.app"
+  ]
+}

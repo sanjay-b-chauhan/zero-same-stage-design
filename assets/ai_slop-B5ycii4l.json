@@ -1,0 +1,34 @@
+{
+  "developing": [
+    [
+      "Your plan opened with “Great question! Lead routing is a critical part of any modern",
+      "revenue organization.” Jay stopped reading there."
+    ],
+    [
+      "Write the first draft yourself, even if it’s rough. Use AI to check your thinking, not",
+      "to do it."
+    ],
+    [
+      "Delete any line that could sit in anyone’s plan. Keep the ones only you could write:",
+      "your numbers, your leads, your test."
+    ]
+  ],
+  "good": [
+    "Your drafts sound like you now. Keep AI on the checks: numbers, typos, gaps.",
+    "Read anything AI touched out loud. If you wouldn’t say it to Jay, cut it.",
+    [
+      "Swap every buzzword for a fact. Not “efficient routing”, but “every lead to a rep in",
+      "under two minutes.”"
+    ]
+  ],
+  "great": [
+    "You think first and use AI to go faster. That’s the right order.",
+    "Say how you checked what AI gave you. One line on it builds trust.",
+    "Keep your own voice where it counts: the cause and the call."
+  ],
+  "exceptional": [
+    "Nobody can tell where AI helped, because the thinking is all yours. Keep it that way.",
+    "Save the prompts that save you time, and share them with the team.",
+    "Review AI output like Jay would. Your name is on it, not the model’s."
+  ]
+}

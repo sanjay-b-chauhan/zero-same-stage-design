@@ -1,0 +1,57 @@
+{
+  "id": "coach_pick",
+  "kind": "brief",
+  "title": "Your coach",
+  "hook": "Your coach",
+  "notices": "Stage one is done: the kickoff and the check.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "coach_pick.r1",
+        "text": "Stage one is done, so you know how I work.",
+        "after": null
+      },
+      { "lineId": "coach_pick.r2", "text": "From here I get more direct.", "after": null },
+      {
+        "lineId": "coach_pick.r3",
+        "text": "If you'd rather learn with someone else, pick them now.",
+        "after": null
+      },
+      {
+        "lineId": "coach_pick.r4",
+        "text": "Good. Then I won't go easy on you.",
+        "after": "keep_coach"
+      }
+    ],
+    "new": [
+      {
+        "lineId": "coach_pick.n1",
+        "text": "Stage one is done, so you know how I work.",
+        "after": null
+      },
+      { "lineId": "coach_pick.n2", "text": "From here I get more direct.", "after": null },
+      {
+        "lineId": "coach_pick.n3",
+        "text": "If you'd rather learn with someone else, pick them now.",
+        "after": null
+      },
+      {
+        "lineId": "coach_pick.n4",
+        "text": "Good. Then I won't go easy on you.",
+        "after": "keep_coach"
+      }
+    ]
+  },
+  "stake": null,
+  "why": null,
+  "actions": [
+    { "id": "keep_coach", "label": "Keep Navid", "primary": true },
+    { "id": "pick_coach", "label": "Jenna", "primary": false, "coachId": "jenna" },
+    { "id": "pick_coach", "label": "Ian", "primary": false, "coachId": "ian" },
+    { "id": "pick_coach", "label": "Jessica", "primary": false, "coachId": "jessica" }
+  ],
+  "feedback": null,
+  "then": "Keep Navid and he gets more direct. Pick another and they coach from here.",
+  "points": null
+}

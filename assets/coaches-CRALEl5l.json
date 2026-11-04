@@ -1,0 +1,33 @@
+{
+  "current": "navid",
+  "coaches": [
+    {
+      "id": "navid",
+      "name": "Navid",
+      "style": "Direct",
+      "face": "navid",
+      "pickLine": "Tells you what is costing you, plainly."
+    },
+    {
+      "id": "jenna",
+      "name": "Jenna",
+      "style": "Warm",
+      "face": "jenna",
+      "pickLine": "Notices what is going well, not just what is missing."
+    },
+    {
+      "id": "ian",
+      "name": "Ian",
+      "style": "Motivational",
+      "face": "ian",
+      "pickLine": "Picks the one thing that gets you a jump."
+    },
+    {
+      "id": "jessica",
+      "name": "Jessica",
+      "style": "Strategic",
+      "face": "jessica",
+      "pickLine": "Finds the habit behind the pattern."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "hold_no_words",
+  "kind": "fix",
+  "title": "Hold: no words",
+  "hook": "Hold on",
+  "notices": "A CSV going to Jay with no message.",
+  "needsRerecord": false,
+  "lines": {
+    "recorded": [
+      {
+        "lineId": "hold_no_words.r1",
+        "text": "Hold on. You're sending Jay a file with no words.",
+        "after": null
+      },
+      {
+        "lineId": "hold_no_words.r2",
+        "text": "Tell him what it is, and what you need from him.",
+        "after": null
+      }
+    ],
+    "new": [
+      {
+        "lineId": "hold_no_words.n1",
+        "text": "Hold on. Jay opens this file with no words.",
+        "after": null
+      },
+      {
+        "lineId": "hold_no_words.n2",
+        "text": "What will he think you need? Say it in one line.",
+        "after": null
+      }
+    ]
+  },
+  "stake": { "points": 100, "label": "+100 if you add the words" },
+  "why": {
+    "lines": [
+      { "lineId": "hold_no_words.w1", "text": "Because a file with no words makes Jay guess." },
+      {
+        "lineId": "hold_no_words.w2",
+        "text": "One line on what it is and what you need, and he answers in one reply."
+      }
+    ],
+    "good": {
+      "kind": "message",
+      "question": null,
+      "file": "Lead export, September.csv",
+      "lines": [
+        "Here is the September lead export I am testing on.",
+        "Is September the right month to test with?"
+      ]
+    }
+  },
+  "actions": [
+    { "id": "why", "label": "Why?", "primary": false },
+    { "id": "add_words", "label": "Add the words", "primary": true }
+  ],
+  "feedback": null,
+  "then": "He adds the line. Jay: \"Yes, September is the right month. Good question.\"",
+  "points": { "n": 100, "label": "+100 Updates" }
+}

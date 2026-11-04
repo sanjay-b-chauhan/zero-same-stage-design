@@ -1,0 +1,1 @@
+import{g as i}from"./coachProfiles-CrOQqU4b.js";const r=80,l=80,m=600;function f(a){const o=i(a);if(!o)return{};const t=[o.description,o.quote].map(s=>(s??"").trim()).filter(Boolean).join(" ").slice(0,m),c={},e=(o.name??"").trim().slice(0,r);e&&(c.coach_name=e),t&&(c.coach_persona=t);const n=(o.style??"").trim().slice(0,l);return n&&(c.coach_style=n),c}export{f as c};

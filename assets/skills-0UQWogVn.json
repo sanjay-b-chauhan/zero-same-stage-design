@@ -1,0 +1,26 @@
+{
+  "state": "sure",
+  "bubble": {
+    "title": "Navid · After you sent your plan",
+    "lines": [
+      [
+        "Based on what I’m seeing so far, you’re doing a really good job engaging with",
+        "your manager and asking good questions."
+      ],
+      "But the way you communicate feels like you’re sending text messages to a friend."
+    ]
+  },
+  "stats": [
+    { "id": "ai_slop", "score": 24, "band": "developing" },
+    { "id": "understanding", "score": 36, "band": "developing" },
+    { "id": "communication", "score": 34, "band": "developing" },
+    { "id": "independence", "score": 52, "band": "good" },
+    { "id": "quality", "score": 36, "band": "developing" },
+    { "id": "speed", "score": 66, "band": "great" }
+  ],
+  "focus": {
+    "statId": "communication",
+    "targetBand": "good",
+    "goal": "Get Communication to Good"
+  }
+}
