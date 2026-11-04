@@ -1,1 +1,0 @@
-import{z as t}from"./index-DC8Uwrmp.js";const l=t((c,r)=>({cache:null,setCache:e=>c({cache:e}),setFeedbackData:e=>{const a=r().cache;a&&c({cache:{...a,feedbackData:e}})},clearCache:()=>c({cache:null}),reset:()=>c({cache:null})}));export{l as useMicroSimulationCacheStore};
