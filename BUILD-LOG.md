@@ -2,6 +2,9 @@
 
 The working notes kept while building, newest first: what each round changed, why, and which note from the reviews it answers.
 
+## ds b40 (4 Nov 2026), not yet reviewed
+- His note: "if there are five issues to identify now, there should be five dashes ... As soon as the user types, it just prefills that". Todos ask mode renders ISSUE_ENOUGH (5) dash rows from the start (the b36 "only what you named" rule is replaced); rows fill top down in the order found. Requirements mode already had one dash per requirement.
+
 ## ds b39 (4 Nov 2026), zero-same-stage-design.vercel.app + GitHub Pages, not yet reviewed
 - Stage 4 grade (same/stages.ts grade, store.ts gradeV/docV, StageSame.tsx ReviewCard, GradePin, ResubmitKey, DocPane pins): PDF upload box, scan line over the PDF, numbered pins, review card in the chat with the band, Content and Style notes (why, how), pinned bar when the card is out of view, lock tooltip on Resubmit. No manager name or face inside the review: one manager on screen.
 - Band colours on the dashes only (ds.css .ds-band[data-band]): Below red, Meets yellow, Exceeds green, Exceptional purple.

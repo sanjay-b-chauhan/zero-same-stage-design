@@ -549,12 +549,14 @@ function Todos({ s }: { s: D1 }) {
   return (
     <div className="ds-tds">
       <TodoPart title={ASK_GROUPS[0].title} state={st(0)}>
-        {/* b36 (his note: "why do we have an empty space at the bottom ... if we are not identifying that, it should not be
-            there"): only the issues you have named, one blank line until the first */}
-        {ISSUES.filter((it) => s.found.includes(it.id)).map((it) => (
-          <TodoRow key={it.id} on text={it.label} pop={s.pop?.id === it.id ? s.pop.n : undefined} />
-        ))}
-        {!ISSUES.some((it) => s.found.includes(it.id)) && <TodoRow on={false} />}
+        {/* b40 (his note: "if there are five issues to identify now, there should be five dashes ... As soon as the user
+            types, it just prefills that"): one dash line per issue from the start. Each issue you name fills the next line
+            from the top, in the order you found them, so a line never gives away which issue sits where */}
+        {Array.from({ length: ISSUE_ENOUGH }, (_, k) => {
+          const id = s.found[k];
+          const it = id ? ISSUES.find((x) => x.id === id) : undefined;
+          return <TodoRow key={k} on={!!it} text={it?.label} pop={it && s.pop?.id === it.id ? s.pop.n : undefined} />;
+        })}
       </TodoPart>
       <TodoPart title={ASK_GROUPS[1].title} state={st(1)}>
         <TodoRow on={!!s.prompt} text={s.prompt} copy />
