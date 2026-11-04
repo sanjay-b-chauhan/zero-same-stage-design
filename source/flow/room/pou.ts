@@ -30,11 +30,9 @@ let project: ProjectId = 'spotify';
 
 const wait = (ms: number) => new Promise<void>((r) => timers.after(ms, r));
 /* each of her notes is recorded first, a quick beat (b11: "it records the voice note and sends it") */
-/* b31: her recording counts down 3, 2, 1 sec (REC_TICK_MS each), trims for a beat, then the note lands */
-export const REC_FROM = 3;
-export const REC_TICK_MS = 400;
-const TRIM_MS = 500;
-const RECORD_MS = REC_FROM * REC_TICK_MS + TRIM_MS;
+/* b38 (his note: "It should only be like recording... and a shimmer effect. Remove the 2-second and 1-second ones ... We
+   don't need trimming"): her recording is one beat of the word Recording, then the note lands */
+const RECORD_MS = 1700;
 /* b37 (his note: "The one voice note from the manager comes. That's it"): in a stage check-in each of her turns is one
    voice note, the lines of that turn said as one */
 let oneNote = false;

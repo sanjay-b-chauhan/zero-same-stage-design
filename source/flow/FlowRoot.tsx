@@ -25,7 +25,7 @@ export default function FlowRoot() {
       </div>
       <StageTurn />
       <LiveRun onDone={() => void leaveStage('deck')} />
-      <span className="z-stamp">{import.meta.env.VITE_DS === '2' ? 'ds b37' : import.meta.env.VITE_DS === '1' ? 'ds b1' : import.meta.env.VITE_D1 === '1' ? 'd1 b1' : 'b24'}</span>
+      <span className="z-stamp">{import.meta.env.VITE_DS === '2' ? 'ds b38' : import.meta.env.VITE_DS === '1' ? 'ds b1' : import.meta.env.VITE_D1 === '1' ? 'd1 b1' : 'b24'}</span>
     </div>
   );
 }

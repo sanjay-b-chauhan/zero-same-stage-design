@@ -252,3 +252,9 @@ LIVE zero-same-stage-design.vercel.app ds b31, b30 at /b30/. His notes on b30, a
 - Stage 1's old engine jumps (submit, feedback, approved, stage POU, done) restarted the stage at the brief under ds. They are on `playTo` now.
 - Dev Next (arrow key) presses Continue at a stage's end and waits on the objective while it plays its way to the next stage. Before, it stopped at Continue, or stepped the list from a stale `?step` and went back to stage 1. A full arrow walk from stage 1 reaches the call with no errors.
 - Control Option Command Space never reached the PiP: `pip/talk.ts` binds the combo on the window at load and stops it. The stage 1 PiP unbinds it while it is up and binds it back when it goes.
+
+## b38 (4 Nov 2026), not yet reviewed
+
+- "remove this audio visualization before recording. It should only be like recording... and a shimmer effect. Remove the 2-second and 1-second ones ... We don't need trimming": `Recording` in `room/pou/PouView.tsx` is her face and the word Recording in the listening shimmer (`pv-lsn-t`). The bars, the 3, 2, 1 sec count and Trimming are gone, and `room/pou.ts` holds one 1.7 s beat (`RECORD_MS`). Kickoff and stage check-ins share it.
+- "when I send the first voice note, the transcript also comes, and then Eryn is listening also comes": your own note no longer carries a Transcript key. Her notes keep theirs in the kickoff (the stage check-in already hides them).
+- GitHub Pages: the build is on the `gh-pages` branch, live at https://sanjay-b-chauhan.github.io/zero-same-stage-design/.

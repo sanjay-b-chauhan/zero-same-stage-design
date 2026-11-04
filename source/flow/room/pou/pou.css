@@ -902,3 +902,8 @@
   transition: transform 0.3s var(--b-soft);
 }
 .pv-recg { align-items: center; }
+
+/* b38: her recording is the word Recording in the listening shimmer, beside her face */
+.pv-rec-t {
+  margin-left: 4px;
+}

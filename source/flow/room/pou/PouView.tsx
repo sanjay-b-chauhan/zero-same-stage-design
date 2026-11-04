@@ -9,7 +9,7 @@ import { useFlow } from '../../engine/store';
 import { isTextEntry, prefersReduced, SPRING } from '../../stage/parts/util';
 import { canHear, holdCancel, holdEnd, holdStart, useHoldUi } from '../hold';
 import { usePeaks } from '../peaks';
-import { meterOf, pouAnswer, pouAnswerForMe, pouFaceHand, REC_FROM, REC_TICK_MS, usePou } from '../pou';
+import { meterOf, pouAnswer, pouAnswerForMe, pouFaceHand, usePou } from '../pou';
 import { sfx } from '../prefs';
 import { cycleRate, NOTE_BARS, noteSrc, replayNote, useNote, useRate, voiceOf, type Msg } from '../talk';
 import { mss } from '../timeline';
@@ -110,7 +110,9 @@ function Note({ m, busy, still = false }: { m: Msg; busy: () => boolean; still?:
             <Speed on={playing} />
           </span>
         </div>
-        {m.text && (
+        {/* b38 (his note: "when I send the first voice note, the transcript also comes, and then Eryn is listening also
+            comes"): your own note carries no transcript, only hers do */}
+        {m.text && m.from === 'her' && (
           <button
             type="button"
             className="pv-trb"
@@ -124,7 +126,7 @@ function Note({ m, busy, still = false }: { m: Msg; busy: () => boolean; still?:
             <ChevronDown size={14} strokeWidth={2} />
           </button>
         )}
-        {open && m.text && <p className="pv-trt">{m.text}</p>}
+        {open && m.text && m.from === 'her' && <p className="pv-trt">{m.text}</p>}
       </div>
     </div>
   );
@@ -156,35 +158,14 @@ function Face() {
   return <span className="pv-face">{face && <img src={face} alt="" draggable={false} />}</span>;
 }
 
-/* she records her next note: her face and her mic live for a beat, then the note lands in its place.
-   b31 (his note: "recording, trimming, and then sending ... 'Recording: 3 seconds, 2 seconds, 1 second' ... an estimated
-   time also begins to show"): the time she has left counts down, then she trims it, then it sends. REC_TICK_MS x REC_FROM
-   plus the trim beat is pou.ts RECORD_MS */
-function Recording({ first, live }: { first: boolean; live: boolean }) {
-  const [n, setN] = useState(REC_FROM);
-  useEffect(() => {
-    if (!live) return;
-    setN(REC_FROM);
-    const id = window.setInterval(() => setN((v) => Math.max(0, v - 1)), REC_TICK_MS);
-    return () => window.clearInterval(id);
-  }, [live]);
-  const trim = n <= 0;
+/* she records her next note: her face and the word Recording, shimmering, for a beat, then the note lands in its place.
+   b38 (his note: "remove this audio visualization before recording. It should only be like recording... and a shimmer
+   effect. Remove the 2-second and 1-second ones ... We don't need trimming"): no bars, no seconds, no trim */
+function Recording({ first }: { first: boolean }) {
   return (
-    <div className="pv-row pv-recg" data-from="her" data-first={first ? '1' : undefined} data-trim={trim ? '1' : undefined}>
+    <div className="pv-row pv-recg" data-from="her" data-first={first ? '1' : undefined}>
       <Face />
-      <span className="pv-rb" aria-label={trim ? 'Trimming' : 'Recording'}>
-        <span className="pv-rw" aria-hidden>
-          {Array.from({ length: 9 }, (_, i) => (
-            <i key={i} style={{ animationDelay: `${(i % 5) * -0.11}s` }} />
-          ))}
-        </span>
-      </span>
-      {live && (
-        <span key={trim ? 't' : 'r'} className="pv-rec-l">
-          {trim ? 'Trimming' : 'Recording'}
-          {!trim && <span className="pv-rec-n">{n} sec</span>}
-        </span>
-      )}
+      <span className="pv-lsn-t pv-rec-t">Recording</span>
     </div>
   );
 }
@@ -201,7 +182,6 @@ export function Thread() {
   const ended = usePou((s) => s.ended);
   /* before her first note she is already recording it: her face from the meeting lands here */
   const recording = usePou((s) => (!!s.recording && s.speaking) || (!s.ended && s.thread.length === 0));
-  const live = usePou((s) => !!s.recording && s.speaking);
   const name = useFlow((s) => s.project?.manager?.name ?? 'She');
   const holding = useHoldUi((s) => s.holding);
   const sending = useHoldUi((s) => s.sending);
@@ -265,7 +245,7 @@ export function Thread() {
             <span className="pv-lsn-t">{name} is listening</span>
           </div>
         )}
-        {recording && <Recording first={thread.length === 0} live={live} />}
+        {recording && <Recording first={thread.length === 0} />}
       </div>
     </div>
   );
