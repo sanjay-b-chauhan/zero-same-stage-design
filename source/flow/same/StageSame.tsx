@@ -67,8 +67,8 @@ import Desktop from '../pip/desktop/Desktop';
 import ClaudeApp from '../pip/desktop/ClaudeApp';
 import { parse } from '../data/csv';
 import { openDesktopApp, spot } from '../pip/desktop/deskStore';
-import { BRIEF_PARTS, d1, fixesOf, minutesIn, slotAt, useD1, type Item } from './store';
-import { specOf, workOf, type Slide, type Work } from './stages';
+import { BRIEF_PARTS, d1, fixesOf, minutesIn, REVIEW_AGAIN_MS, REVIEW_MS, slotAt, useD1, type Item } from './store';
+import { BANDS, BANDS_SHORT, specOf, workOf, type GradeItem, type Slide, type Work } from './stages';
 import { joinCall, openCall, useLive } from '../present/Live';
 import type { CallStep } from '../present/Call';
 import { bindTalkKeys } from '../pip/talk';
@@ -737,7 +737,13 @@ function SubmitKey() {
   const on = useSubmitting((s) => s.on);
   /* ask mode: you hand in only after her asks, never before */
   const gated = useD1((s) => (s.ask && s.stageId === 'clean' && s.phase === 'work' && s.askStep !== 'submit') || slotsLeft(s));
+  const graded = useD1((s) => !!specOf(s.stageId)?.grade);
+  const gradeV = useD1((s) => s.gradeV);
   const ready = (phase === 'work' && !gated) || phase === 'feedback';
+  /* b39 (his note: "whenever you hover on Submit, when you have feedback, there should be a thing like 'Complete all the
+     feedback changes' ... to unlock"): Resubmit waits for every note ticked, and says so on hover */
+  if (graded && phase === 'feedback' && gradeV === 1) return <ResubmitKey />;
+  if (graded && phase === 'feedback' && gradeV === 2) return null;
   /* b30 (his note: "the approved and this thing don't make sense"): once she has signed it off the key goes */
   if (phase === 'brief' || phase === 'approved' || phase === 'pou' || phase === 'done') return null;
   const label =
@@ -1334,13 +1340,44 @@ function DeckPane({ work }: { work: Extract<Work, { kind: 'deck' }> }) {
 }
 
 function DocPane({ work }: { work: Extract<Work, { kind: 'doc' }> }) {
+  /* b39: once you resubmit, the page is the one you sent */
+  const v2 = useD1((s) => s.docV === 2 && !!work.v2);
+  const blocks = v2 && work.v2 ? work.v2 : work.blocks;
+  /* b39 (his note: "It scans the PDF ... and then it has a lot of context, like 'Oh, okay, these are the problems'"): while
+     she reads, a line runs down the page and her notes land on the blocks they are about */
+  const g = useD1((s) => specOf(s.stageId)?.grade);
+  const scanning = useD1((s) => s.phase === 'review' && !!g);
+  const graded = useD1((s) => s.gradeV);
+  const fixed = useD1((s) => s.fixed);
+  const hot = useHot((s) => s.id);
+  const pins = g && !v2 && (scanning || graded === 1) ? g.items : [];
+  const dur = v2 ? REVIEW_AGAIN_SEC : REVIEW_SEC;
   return (
     <div className="ds-pv-doc">
-      <article className="ds-doc">
+      <article className="ds-doc" data-scan={scanning || undefined} style={{ ['--scan' as string]: `${dur}s` }}>
+        {scanning && <i className="ds-scan" aria-hidden />}
         {work.to && <p className="ds-doc-to">{work.to}</p>}
         <h3 className="ds-doc-t">{work.title}</h3>
-        {work.blocks.map((b, i) => (
-          <section key={i} className="ds-doc-b" data-lead={i === 0 || undefined}>
+        {blocks.map((b, i) => (
+          <section key={i} className="ds-doc-b" data-lead={i === 0 || undefined} data-hot={pins.some((x) => x.at === i && x.id === hot) || undefined}>
+            {pins
+              .filter((x) => x.at === i)
+              .map((x) => (
+                <button
+                  key={x.id}
+                  type="button"
+                  className="ds-dpin d1-num"
+                  data-done={fixed[x.id] || undefined}
+                  data-hot={x.id === hot || undefined}
+                  data-scan={scanning || undefined}
+                  style={scanning ? { animationDelay: `${((i + 0.6) / blocks.length) * dur}s` } : undefined}
+                  aria-label={x.title}
+                  title={x.title}
+                  onClick={() => openNote(x.id)}
+                >
+                  {fixed[x.id] ? <Check size={10} strokeWidth={2.8} /> : noteNo(g!.items, x)}
+                </button>
+              ))}
             {b.h && <h4 className="ds-doc-h">{b.h}</h4>}
             {b.p && <p className="ds-doc-p">{b.p}</p>}
             {b.rows && (
@@ -1439,7 +1476,7 @@ function Side() {
       <span className="ds-pv-grip" role="separator" aria-orientation="vertical" aria-label="Resize" onPointerDown={grip} onDoubleClick={() => useSide.setState({ w: 0 })} />
       {view === 'work' && work ? (
         <header className="ds-pv-h">
-          {work.logo ? <img className="ds-pv-ico" src={work.logo} alt="" /> : <FileText className="ds-pv-ico" size={16} strokeWidth={1.75} />}
+          {work.logo ? <img className="ds-pv-ico" src={work.logo} alt="" /> : /\.pdf$/.test(work.name) ? <PdfMark /> : <FileText className="ds-pv-ico" size={16} strokeWidth={1.75} />}
           <span className="ds-pv-t">{work.name}</span>
           <span className="ds-pv-m d1-num">{work.meta}</span>
           <span className="d1-grow" />
@@ -1492,12 +1529,268 @@ function Side() {
   );
 }
 
+/* b39 (his notes, 4 Nov: "the manager analyzes the file ... Below expectation, Met it, Exceeded, Exceptional ... content
+   changes, some style changes ... why this is feedback and how we can make it better ... make it better and smaller", then
+   "the feedback comes in that chat, and when the chat is out of view, it comes to the top" and "there should be only one
+   manager profile"): her review is one card in the chat. The band on a bar of four, her verdict, then her notes in two
+   groups, numbered the way they are pinned on your page. You tick a note once you have made the change; a note opens to
+   why and how. No face on it, she is already at the top */
+const REVIEW_SEC = REVIEW_MS / 1000;
+const REVIEW_AGAIN_SEC = REVIEW_AGAIN_MS / 1000;
+const useHot = create<{ id: string | null }>(() => ({ id: null }));
+const useGradePin = create<{ open: boolean; away: boolean }>(() => ({ open: false, away: false }));
+/* a pin on the page opens its note, in the chat or in the bar pinned over it */
+/* her notes are numbered the way they sit on the page, top to bottom */
+const noteNo = (items: GradeItem[], it: GradeItem) => [...items].sort((a, b) => a.at - b.at).indexOf(it) + 1;
+const openNote = (id: string) => {
+  useHot.setState({ id });
+  if (useGradePin.getState().away) useGradePin.setState({ open: true });
+};
+
+function PdfMark() {
+  return (
+    <span className="ds-pdf" aria-hidden="true">
+      PDF
+    </span>
+  );
+}
+
+function Band({ band, small = false }: { band: number; small?: boolean }) {
+  return (
+    <span className="ds-band" data-small={small || undefined} data-band={band} role="img" aria-label={BANDS[band]}>
+      {BANDS_SHORT.map((b, i) => (
+        <i key={b} data-on={i <= band || undefined} />
+      ))}
+    </span>
+  );
+}
+
+function Note({ it, n, v }: { it: GradeItem; n: number; v: number }) {
+  const body = useRef<HTMLDivElement>(null);
+  const open = useHot((s) => s.id === it.id);
+  const done = useD1((s) => !!s.fixed[it.id]) || v === 2;
+  const can = useD1((s) => s.phase === 'feedback' && s.gradeV === 1 && v === 1);
+  useLayoutEffect(() => {
+    if (open) rise(body.current, { y: -6, blur: 6, ms: 380 });
+  }, [open]);
+  return (
+    <div className="ds-rv-it" data-open={open || undefined} data-done={done || undefined}>
+      <div className="ds-rv-row">
+        <button
+          type="button"
+          role="checkbox"
+          className="ds-rv-mk d1-num"
+          aria-checked={done}
+          aria-label={done ? 'Change made' : 'Mark this change made'}
+          title={can ? (done ? 'Change made' : 'Mark this change made') : undefined}
+          disabled={!can}
+          onClick={() => d1.fix(it.id)}
+        >
+          {done ? <Check size={10} strokeWidth={2.8} /> : n}
+        </button>
+        <button type="button" className="ds-rv-t" aria-expanded={open} onClick={() => useHot.setState({ id: open ? null : it.id })}>
+          <span>{it.title}</span>
+          <ChevronDown size={14} strokeWidth={2} className="ds-rv-c" />
+        </button>
+      </div>
+      {open && (
+        <div ref={body} className="ds-rv-x">
+          {v === 2 && (
+            <p>
+              <span className="ds-rv-l">In v2</span>
+              {it.fixed}
+            </p>
+          )}
+          <p>
+            <span className="ds-rv-l">Why this feedback</span>
+            {it.why}
+          </p>
+          <p>
+            <span className="ds-rv-l">How to make it better</span>
+            {it.how}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ResubmitKey({ up = false }: { up?: boolean }) {
+  const g = useD1((s) => specOf(s.stageId)?.grade);
+  const done = useD1((s) => (g ? g.items.filter((f) => s.fixed[f.id]).length : 0));
+  if (!g) return null;
+  const n = g.items.length;
+  const locked = done < n;
+  return (
+    <span className="ds-lock" data-locked={locked || undefined} data-up={up || undefined}>
+      <button
+        type="button"
+        className="ds-key ds-key-ink"
+        aria-disabled={locked}
+        onClick={() => {
+          if (locked) return;
+          useSubmitting.setState({ on: false });
+          d1.submit();
+        }}
+      >
+        {locked && <Lock size={12} strokeWidth={2} />}
+        Resubmit
+      </button>
+      {locked && (
+        <span className="ds-lock-tip" role="tooltip">
+          <span>Complete all feedback changes to unlock</span>
+          <span className="ds-lock-n d1-num">
+            {done} of {n} done
+          </span>
+        </span>
+      )}
+    </span>
+  );
+}
+
+function ReviewCard({ v, inPin = false }: { v: number; inPin?: boolean }) {
+  const g = useD1((s) => specOf(s.stageId)?.grade);
+  const phase = useD1((s) => s.phase);
+  const latest = useD1((s) => s.gradeV === v);
+  const name = useFlow((s) => s.project?.manager?.name.split(' ')[0] ?? 'She');
+  if (!g) return null;
+  const r = v === 2 ? g.v2 : g.v1;
+  return (
+    <section className="ds-rv" data-old={!latest || undefined} data-pin={inPin || undefined} aria-label={`Review v${v}, ${BANDS[r.band]}`}>
+      <div className="ds-rv-top">
+        <div className="ds-rv-bh">
+          <h3 className="ds-rv-band">{BANDS[r.band]}</h3>
+          <span className="ds-rv-ver d1-num">v{v}</span>
+        </div>
+        <Band band={r.band} />
+        {latest && (
+          <span className="ds-rv-scale">
+            {BANDS_SHORT.map((b, i) => (
+              <span key={b} data-on={i === r.band || undefined}>
+                {b}
+              </span>
+            ))}
+          </span>
+        )}
+        {latest && <p className="ds-rv-verdict">{r.verdict}</p>}
+      </div>
+      {latest &&
+        (['Content', 'Style'] as const).map((grp) => {
+          const list = g.items.filter((x) => x.group === grp).sort((a, b) => a.at - b.at);
+          return (
+            <div key={grp} className="ds-rv-g">
+              <h4 className="ds-rv-gh">{grp} changes</h4>
+              {list.map((it) => (
+                <Note key={it.id} it={it} n={noteNo(g.items, it)} v={v} />
+              ))}
+            </div>
+          );
+        })}
+      {latest && (
+        <footer className="ds-rv-f">
+          {phase === 'review' ? (
+            <span className="ds-rv-wait pv-lsn-t">{name} is reading v2</span>
+          ) : phase === 'feedback' ? (
+            <>
+              <button type="button" className={`ds-key ${v === 2 ? 'ds-key-ink' : 'ds-key-line'}`} onClick={() => d1.accept()}>
+                Continue
+              </button>
+              {v === 1 && <ResubmitKey up />}
+            </>
+          ) : (
+            <span className="ds-rv-done">
+              <Check size={12} strokeWidth={2.4} />
+              Continued at {BANDS[r.band].toLowerCase()}
+            </span>
+          )}
+        </footer>
+      )}
+    </section>
+  );
+}
+
+/* when her review scrolls out of view it waits at the top of the chat, the band and what is left, and opens there */
+function GradePin({ scroller }: { scroller: React.RefObject<HTMLDivElement | null> }) {
+  const v = useD1((s) => s.gradeV);
+  const on = useD1((s) => s.phase === 'feedback' || s.phase === 'review');
+  const n = useD1((s) => s.thread.length);
+  const g = useD1((s) => specOf(s.stageId)?.grade);
+  const done = useD1((s) => (g ? g.items.filter((f) => s.fixed[f.id]).length : 0));
+  const { open, away } = useGradePin();
+  const box = useRef<HTMLDivElement>(null);
+  const sheet = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const root = scroller.current;
+    const el = root?.querySelector(`[data-grade="${v}"]`);
+    if (!root || !el || !on) return void useGradePin.setState({ away: false, open: false });
+    /* out of view either way, after a beat, so a card arriving at the bottom never flashes the bar */
+    let t = 0;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        window.clearTimeout(t);
+        if (e.isIntersecting) useGradePin.setState({ away: false });
+        else t = window.setTimeout(() => useGradePin.setState({ away: true }), 260);
+      },
+      { root, threshold: 0 }
+    );
+    io.observe(el);
+    return () => (window.clearTimeout(t), io.disconnect());
+  }, [v, on, n, scroller]);
+  useEffect(() => {
+    if (!away) useGradePin.setState({ open: false });
+  }, [away]);
+  useEffect(() => {
+    if (!open) return;
+    const k = (e: KeyboardEvent) => e.key === 'Escape' && useGradePin.setState({ open: false });
+    const out = (e: PointerEvent) => !box.current?.contains(e.target as Node) && !(e.target as Element)?.closest?.('.ds-dpin') && useGradePin.setState({ open: false });
+    window.addEventListener('keydown', k);
+    window.addEventListener('pointerdown', out);
+    return () => {
+      window.removeEventListener('keydown', k);
+      window.removeEventListener('pointerdown', out);
+    };
+  }, [open]);
+  useLayoutEffect(() => {
+    if (open) rise(sheet.current, { y: -10, blur: 8, scale: 0.98, ms: 420 });
+  }, [open]);
+  useLayoutEffect(() => {
+    if (away) rise(box.current, { y: -8, blur: 6, ms: 360 });
+  }, [away]);
+  if (!g || !v || !on || !away) return null;
+  const r = v === 2 ? g.v2 : g.v1;
+  return (
+    <div ref={box} className="ds-pin ds-gpin" data-open={open || undefined}>
+      <button type="button" className="ds-pin-k" aria-expanded={open} onClick={() => useGradePin.setState({ open: !open })}>
+        <span className="ds-pin-t">{BANDS[r.band]}</span>
+        <Band band={r.band} small />
+        <span className="ds-pin-n">{v === 2 ? 'Ready to continue' : done < g.items.length ? `${done} of ${g.items.length} changes done` : 'Ready to resubmit'}</span>
+        <ChevronDown size={14} strokeWidth={2} className="ds-pin-c" />
+      </button>
+      {open && (
+        <div ref={sheet} className="ds-pin-s" role="region" aria-label="Her review">
+          <ReviewCard v={v} inPin />
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* b30 (his note: "it's not faster. It has to be like estimated 2 minutes"): under your link, while she looks at it */
 function Sent({ est }: { est: string }) {
   const name = useFlow((s) => s.project?.manager?.name.split(' ')[0] ?? 'She');
+  const g = useD1((s) => specOf(s.stageId)?.grade);
+  const again = useD1((s) => s.docV === 2);
+  const [k, setK] = useState(0);
+  /* b39: with a graded review, what she is checking right now, one line at a time */
+  useEffect(() => {
+    if (!g) return;
+    const step = ((again ? REVIEW_AGAIN_SEC : REVIEW_SEC) * 1000) / g.scan.length;
+    const id = window.setInterval(() => setK((v) => Math.min(g.scan.length - 1, v + 1)), step);
+    return () => window.clearInterval(id);
+  }, [g, again]);
   return (
     <span className="ds-sent" aria-live="polite">
-      <span className="ds-sent-t">{name} is reviewing</span>
+      <span className="ds-sent-t">{g ? g.scan[k] : `${name} is reviewing`}</span>
       <span className="ds-sent-e">Estimated {est}</span>
     </span>
   );
@@ -1678,7 +1971,7 @@ function Row({ it }: { it: Item }) {
         <div ref={row} className="d1-row d1-row-me">
           <button type="button" className="ds-att" aria-label={`Open ${it.name}`} onClick={() => openSide('work')}>
             <span className="ds-att-i" aria-hidden="true" data-logo={LINK_LOGO[it.meta] ? '' : undefined}>
-              {LINK_LOGO[it.meta] ? <img src={LINK_LOGO[it.meta]} alt="" draggable={false} /> : it.link ? <Link2 size={15} strokeWidth={1.75} /> : <FileText size={15} strokeWidth={1.75} />}
+              {LINK_LOGO[it.meta] ? <img src={LINK_LOGO[it.meta]} alt="" draggable={false} /> : /^PDF/.test(it.meta) ? <PdfMark /> : it.link ? <Link2 size={15} strokeWidth={1.75} /> : <FileText size={15} strokeWidth={1.75} />}
             </span>
             <span className="d1-file-t">
               <span>{it.name}</span>
@@ -1713,6 +2006,12 @@ function Row({ it }: { it: Item }) {
       return (
         <div ref={row} className="d1-row d1-row-her" data-fb>
           <FeedbackCard />
+        </div>
+      );
+    case 'grade':
+      return (
+        <div ref={row} className="d1-row d1-row-her" data-grade={it.v}>
+          <ReviewCard v={it.v} />
         </div>
       );
     case 'prompt':
@@ -1755,6 +2054,8 @@ function SubmitBox() {
   const project = useFlow((s) => s.project);
   const b = briefOf(stageId);
   const [link, setLink] = useState('');
+  const [picked, setPicked] = useState(false);
+  const hand = specOf(stageId)?.hand;
   const box = useRef<HTMLInputElement>(null);
   const card = useRef<HTMLDivElement>(null);
   const ok = /^https?:\/\/\S+\.\S+/i.test(link.trim());
@@ -1808,12 +2109,37 @@ function SubmitBox() {
           <X {...I} />
         </button>
       </div>
-      {isFile ? (
-        <label className="ds-sub-drop">
+      {/* b39 (his note: "submit the final deliverables and upload it as a PDF file"): the prototype picks your file for you,
+          no file dialog opens */}
+      {isFile && picked && hand ? (
+        <div className="ds-sub-file">
+          <PdfMark />
+          <span className="d1-file-t">
+            <span>{hand.name}</span>
+            <span className="d1-dim">{hand.meta}</span>
+          </span>
+          <span className="d1-grow" />
+          <button type="button" className="d1-ghost" aria-label="Remove the file" onClick={() => setPicked(false)}>
+            <X {...I} />
+          </button>
+          <button type="button" className="ds-sub-go" onClick={send}>
+            Submit
+          </button>
+        </div>
+      ) : isFile ? (
+        <button
+          type="button"
+          className="ds-sub-drop"
+          onClick={() => setPicked(true)}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            setPicked(true);
+          }}
+        >
           <Upload size={16} strokeWidth={1.75} />
-          Upload file
-          <input type="file" accept=".pdf,.csv,.pptx,.docx" hidden onChange={(e) => e.target.files?.length && send()} />
-        </label>
+          Drop your {/pdf/i.test(b.format) ? 'PDF' : 'file'} here, or browse
+        </button>
       ) : (
         <div className="ds-sub-row">
           <Link2 size={15} strokeWidth={1.75} />
@@ -2209,6 +2535,12 @@ function Chat() {
     if (checking && workOf(stageId)) useSide.setState({ view: 'work' });
     else if (!checking && useSide.getState().view === 'work') useSide.setState({ view: null });
   }, [checking, stageId]);
+  /* b39: her review opens on the right the moment she grades it */
+  /* b39: her scan of your page is on the right while she reads */
+  const scanning = useD1((s) => s.phase === 'review' && !!specOf(s.stageId)?.grade);
+  useEffect(() => {
+    if (scanning) useSide.setState({ view: 'work' });
+  }, [scanning]);
   const pvDrag = useSide((s) => s.drag);
   return (
     <section className="d1-chat" data-enter data-pv={pv || undefined} data-drag={pvDrag || undefined} style={pvW ? ({ '--pv-w': `${pvW}px` } as React.CSSProperties) : undefined}>
@@ -2238,6 +2570,7 @@ function Chat() {
         )}
       </div>
       <FbPin />
+      <GradePin scroller={scroller} />
       <div ref={scroller} className="d1-scroll">
         <div className="d1-thread">
           {/* b37 (his notes: "The one voice note from the manager comes ... Then you record, and then you send it, and
@@ -2704,7 +3037,7 @@ function ZqChat({ home }: { home: () => void }) {
             <p key={it.id} className="ds-zq-look">
               Reviewing
             </p>
-          ) : it.k === 'feedback' ? (
+          ) : it.k === 'feedback' || it.k === 'grade' ? (
             <button key={it.id} type="button" className="ds-zq-look ds-zq-look-k" onClick={home}>
               <ArrowUpRight size={12} strokeWidth={1.75} />
               Open her feedback in Zero

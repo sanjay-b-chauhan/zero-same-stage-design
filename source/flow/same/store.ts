@@ -17,6 +17,7 @@ export type Item =
   | { id: number; k: 'chips'; options: string[]; guide?: boolean }
   | { id: number; k: 'sent'; est: string }
   | { id: number; k: 'feedback' }
+  | { id: number; k: 'grade'; v: number }
   | { id: number; k: 'xp'; amount: number; label: string }
   | { id: number; k: 'prompt'; text: string }
   | { id: number; k: 'att'; name: string; meta: string; link?: boolean; img?: string; sheet?: boolean };
@@ -55,6 +56,9 @@ export interface D1 {
   pop: { id: string; n: number } | null;
   /* b23: how much of the brief she has put down so far, 0 to BRIEF_PARTS */
   briefN: number;
+  /* b39: the graded review. gradeV is the version she has graded (0 none yet), docV the version you sent last */
+  gradeV: number;
+  docV: number;
 }
 
 /* b23 (his note: "the brief reveals as she says it: deliverable, format, requirements, tools, training"): the parts she
@@ -104,8 +108,8 @@ const flush = () => {
 const DEV_ISSUES = ['duplicates', 'no currency', 'negative prices', 'test accounts', 'dates'];
 const DEV_LINK = 'https://docs.google.com/spreadsheets/d/spotify-clean';
 /* how long she takes to look, in the prototype. The estimate she gives is the real one */
-const REVIEW_MS = 4200;
-const REVIEW_AGAIN_MS = 2600;
+export const REVIEW_MS = 4200;
+export const REVIEW_AGAIN_MS = 2600;
 const CHECK_FIRST_MS = 1500;
 
 const fresh = (stageId: string): D1 => ({
@@ -133,6 +137,8 @@ const fresh = (stageId: string): D1 => ({
   prompt: '',
   askStep: 'issues',
   pop: null,
+  gradeV: 0,
+  docV: 1,
   briefN: 0,
 });
 
@@ -189,6 +195,11 @@ export const d1 = {
     if (s.phase === 'brief') return d1.start(), true;
     if (s.phase === 'approved') return d1.check(), true;
     if (s.phase === 'pou') return usePou.getState().ended ? false : (pouAnswerForMe(), true);
+    if (s.phase === 'feedback' && specOf(s.stageId)?.grade) {
+      if (s.gradeV !== 1) return d1.accept(), true;
+      specOf(s.stageId)?.grade?.items.forEach((f) => !useD1.getState().fixed[f.id] && d1.fix(f.id));
+      return d1.submit(), true;
+    }
     if (s.phase === 'feedback') {
       fixesOf(s.stageId).forEach((f) => !s.fixed[f.id] && d1.fix(f.id));
       return d1.submit(), true;
@@ -365,6 +376,7 @@ export const d1 = {
      ask) or she nudges you toward it. Never the answer for you */
   slot(sp: StageSpec, t: string) {
     const s = useD1.getState();
+    if (s.phase === 'feedback' && sp.grade) return say([s.gradeV === 1 ? 'Tick each note once you have made the change, then Resubmit. Or Continue if you are happy with it.' : 'Continue when you are ready.']);
     if (s.phase === 'feedback') return say([sp.feedback ? 'Tick each fix as you make it, then hit Resubmit.' : sp.after]);
     if (s.phase !== 'work') return say(['One sec, I am on it.']);
     const at = slotAt(sp, s);
@@ -436,6 +448,7 @@ export const d1 = {
   canSubmit(s: D1 = useD1.getState()) {
     const sp = specOf(s.stageId);
     if (s.phase === 'work') return !sp || !slotAt(sp, s);
+    if (s.phase === 'feedback' && sp?.grade) return s.gradeV === 1 && sp.grade.items.every((f) => s.fixed[f.id]);
     if (s.phase === 'feedback') return fixesOf(s.stageId).every((f) => s.fixed[f.id]);
     return false;
   },
@@ -446,7 +459,7 @@ export const d1 = {
     const again = s.phase === 'feedback';
     const sp = specOf(s.stageId);
     const r = sp ? (again ? sp.review.again : sp.review.first) : again ? REVIEW.again : REVIEW.first;
-    unstick({ phase: 'review', thread: s.thread.filter((i) => i.k !== 'chips') });
+    unstick({ phase: 'review', thread: s.thread.filter((i) => i.k !== 'chips'), docV: again ? 2 : 1 });
     if (again) push({ k: 'me', text: sp ? sp.fixedLine : "Fixed both. Here's the new one." });
     if (sp) {
       const n = again ? sp.hand.name.replace(/(\.\w+)?$/, '_v2$1') : sp.hand.name;
@@ -458,6 +471,17 @@ export const d1 = {
     const drop = () => useD1.setState((st) => ({ thread: st.thread.filter((it) => it.id !== sentId) }));
     say([r.got], { wait: 600 });
     const back = again ? REVIEW_AGAIN_MS : REVIEW_MS;
+    /* b39: she grades it. The band and her notes open on the right, the chat keeps a card that opens them again */
+    const g = sp?.grade;
+    if (g) {
+      later(back, () => {
+        drop();
+        const v = again ? 2 : 1;
+        useD1.setState({ phase: 'feedback', gradeV: v });
+        say([r.back, (again ? g.v2 : g.v1).line], { after: () => push({ k: 'grade', v }) });
+      });
+      return;
+    }
     if (!again && s.stageId === 'clean') {
       later(back, () => {
         drop();
@@ -483,6 +507,16 @@ export const d1 = {
       useD1.setState({ phase: 'approved', met: Object.fromEntries(reqs.map((q) => [q.id, true])) });
       say([r.back]);
     });
+  },
+
+  /* b39 (his note: "The users are like, 'Okay, I am good with meet, so continue'"): Continue takes the band you have */
+  accept() {
+    const s = useD1.getState();
+    const g = specOf(s.stageId)?.grade;
+    if (s.phase !== 'feedback' || !g || !s.gradeV) return;
+    const reqs = specOf(s.stageId)?.brief.requirements ?? [];
+    useD1.setState({ phase: 'approved', met: Object.fromEntries(reqs.map((q) => [q.id, true])) });
+    say([g.accept[s.gradeV === 2 ? 1 : 0]], { wait: 400 });
   },
 
   /* b30 (his note: "then the bottom chat has to convert into a CTA ... a proof of understanding stage ... a voice chat

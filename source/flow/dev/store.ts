@@ -81,10 +81,11 @@ export const DEV_STEPS: DevStep[] = [
   { id: 'ds:deck:done', group: 'Present to the stakeholder', label: 'Practice done, Join the call', jump: 'deck' },
   { id: 'call:lobby', group: 'Present to the stakeholder', label: 'The call, before you join', jump: 'deck' },
   { id: 'call:call', group: 'Present to the stakeholder', label: 'In the call, she says hello', jump: 'deck' },
-  { id: 'call:present', group: 'Present to the stakeholder', label: 'You present the deck', jump: 'deck' },
+  { id: 'call:check', group: 'Present to the stakeholder', label: 'Framing, slide and mic checks', jump: 'deck' },
+  { id: 'call:present', group: 'Present to the stakeholder', label: 'You present, the call in PiP', jump: 'deck' },
   { id: 'call:qa', group: 'Present to the stakeholder', label: 'Her questions', jump: 'deck' },
-  { id: 'call:report', group: 'Present to the stakeholder', label: 'Feedback, every moment', jump: 'deck' },
-  { id: 'call:scores', group: 'Present to the stakeholder', label: 'Feedback, the scores', jump: 'deck' },
+  { id: 'call:review', group: 'Present to the stakeholder', label: 'She writes it up', jump: 'deck' },
+  { id: 'call:report', group: 'Present to the stakeholder', label: 'Your presentation report', jump: 'deck' },
   { id: 'call:finish', group: 'Present to the stakeholder', label: 'The project ends', jump: 'deck' },
 ];
 

@@ -2,6 +2,14 @@
 
 The working notes kept while building, newest first: what each round changed, why, and which note from the reviews it answers.
 
+## ds b39 (4 Nov 2026), zero-same-stage-design.vercel.app + GitHub Pages, not yet reviewed
+- Stage 4 grade (same/stages.ts grade, store.ts gradeV/docV, StageSame.tsx ReviewCard, GradePin, ResubmitKey, DocPane pins): PDF upload box, scan line over the PDF, numbered pins, review card in the chat with the band, Content and Style notes (why, how), pinned bar when the card is out of view, lock tooltip on Resubmit. No manager name or face inside the review: one manager on screen.
+- Band colours on the dashes only (ds.css .ds-band[data-band]): Below red, Meets yellow, Exceeds green, Exceptional purple.
+- Stage 5 call (present/Call.tsx): greet ends on Start presenting 5:00, then the Checks sheet (framing corners, deck chip, mic meter, rings fill to green), the picker, presenting with Mini (draggable PiP, snaps to the nearest corner), Release once done, Review steps, Report (overview, Delivery and Understanding bands, moments with What you did and how to go up, Redo presentation recommended, or keep it). Scores tab gone.
+- Slides now scale with their frame (--u inherits); the picker thumbnail and the replay read right.
+- HUD panel zoom held between 0.94 and 1.1 (hud/Hud.tsx).
+- Dev list: call:check, call:review, call:report.
+
 ## ds b27 (3 Nov 2026), zero-same-stage-design.vercel.app, not yet reviewed
 - Source: zero-core-ui/worktrees/stage-proto/standalone/flow (git-ignored), same/StageSame.tsx + same/ds.css. Build dist-ds-bN with VITE_D1=1 VITE_DS=2.
 - Ask mode takes zero-stage-five b23 (V3): Open in Claude link in her words, file = preview card (MiniSheet) with Preview, Claude, Download; Preview and Claude open on the right behind one line (.ds-pv). Her link pops out to the fake desktop with the b23 dark bar (face, mic, Manager's ask, chat, Back to Zero; no resources).

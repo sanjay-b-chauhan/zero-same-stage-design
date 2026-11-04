@@ -10,7 +10,14 @@ export const CALL = {
   minutes: 5,
 } as const;
 
-export const CHECKS = ['Light', 'Framing', 'Sound'] as const;
+/* b39 (his note: "the quality checks, framing, slide, mic"): three checks before you share, each says what it is doing */
+export const CHECKS = [
+  { id: 'framing', l: 'Framing', s: 'Checking your framing' },
+  { id: 'slide', l: 'Slide', s: 'Opening your deck' },
+  { id: 'mic', l: 'Mic', s: 'Listening to your mic' },
+] as const;
+export const CHECKS_DONE = 'You’re all set';
+export const CHECK_H = 'Make sure Eryn can see and hear you';
 
 export const GREET = [
   'Hey, good to see you again.',
@@ -48,36 +55,46 @@ export const QA = {
   closing: ['That’s everything from me. Really nice work in there.', 'Give me a minute, I’ll write up your feedback.'],
 } as const;
 
+export const REVIEW_STEPS = [
+  'Watching your five minutes back',
+  'Marking the moments that landed',
+  'Checking your answers against the model',
+  'Writing it up',
+] as const;
+
 export type MomentKind = 'worked' | 'work';
+export type Crit = 'Delivery' | 'Understanding';
 
 export interface Moment {
   kind: MomentKind;
   title: string;
-  note: string;
   at: number;
   slide: number;
-  tag: string;
+  crit: Crit;
+  band: number;
+  did: string;
+  how: string;
 }
 
+/* b39 (his note: "that meeting expectation and all those things in the UI"): bands, not scores. 0 Below, 1 Meets,
+   2 Exceeds, 3 Exceptional, the same four dashes as the memo review */
 export const FEEDBACK = {
-  band: 'Exceeds expectations',
-  verdict: 'Name the churn number on the risk slide and this is ready for the VP.',
+  band: 2,
+  overview:
+    'You led with the ask and let two numbers carry the case, and your Germany answer held up. The risk slide is where it slipped. You read it out and never named the line we roll back at. Say that number in your own words and this goes to the VP as is.',
+  bands: [
+    { name: 'Delivery', v: 1 },
+    { name: 'Understanding', v: 2 },
+  ] as readonly { name: Crit; v: number }[],
   length: 300,
   moments: [
-    { kind: 'worked', title: 'You led with the ask', note: 'The VP knew what you wanted inside ten seconds.', at: 8, slide: 0, tag: 'Clarity' },
-    { kind: 'worked', title: 'The numbers did the arguing', note: '$4.82 against $12.68 made the case before you did.', at: 52, slide: 1, tag: 'Evidence' },
-    { kind: 'worked', title: 'You answered Germany with a number', note: 'No opinion, just the revenue gap and the last raise.', at: 200, slide: 1, tag: 'Q&A' },
-    { kind: 'work', title: 'The risk slide had no trigger', note: 'Say which churn number makes you roll it back.', at: 100, slide: 2, tag: 'Clarity' },
-    { kind: 'work', title: 'You read slide three out loud', note: 'Say the point, let the slide hold the words.', at: 135, slide: 2, tag: 'Delivery' },
-    { kind: 'work', title: 'The one step answer was soft', note: 'Lead with what one step teaches you in a month.', at: 268, slide: 0, tag: 'Q&A' },
+    { kind: 'worked', title: 'You led with the ask', at: 8, slide: 0, crit: 'Delivery', band: 2, did: 'Your first sentence was the ask. R$25.90, next month, one step. The VP knew what you wanted inside ten seconds.', how: 'Say what it earns in that same sentence, about 8 percent more a customer.' },
+    { kind: 'worked', title: 'The numbers did the arguing', at: 52, slide: 1, crit: 'Understanding', band: 3, did: '$4.82 against $12.68, and nobody left after the last raise. You let the gap make the case before you did.', how: 'Two numbers, then stop talking. Keep it exactly like this.' },
+    { kind: 'worked', title: 'You answered Germany with a number', at: 200, slide: 1, crit: 'Understanding', band: 2, did: 'Asked why not Germany, you went straight to the revenue gap and the last raise. No opinion, just the numbers.', how: 'Name what Germany would cost us too, and the answer has nothing left to push on.' },
+    { kind: 'work', title: 'The risk slide had no trigger', at: 100, slide: 2, crit: 'Understanding', band: 1, did: 'You said we watch churn every week, but not which number makes us roll it back.', how: 'Say the line out loud. If 2 of the 8 Brazil customers cancel in month one, we roll it back.' },
+    { kind: 'work', title: 'You read slide three out loud', at: 135, slide: 2, crit: 'Delivery', band: 1, did: 'You read the risk slide word for word, eyes on the screen.', how: 'Say the point in your own words and let the slide hold the detail.' },
+    { kind: 'work', title: 'The one step answer was soft', at: 268, slide: 0, crit: 'Understanding', band: 1, did: 'You said one step is what the model supports, then trailed off.', how: 'Lead with what one step teaches us in a month, then say when we decide the next one.' },
   ] as readonly Moment[],
-  scores: [
-    { name: 'Clarity', v: 8, note: 'The ask landed in the first ten seconds' },
-    { name: 'Evidence', v: 9, note: 'Every claim had a number behind it' },
-    { name: 'Structure', v: 7, note: 'Ask, numbers, risk, in that order' },
-    { name: 'Delivery', v: 6, note: 'You read the risk slide word for word' },
-    { name: 'Q&A', v: 7, note: 'Two sharp answers, one that went soft' },
-  ],
 } as const;
 
 export const FINISH = {

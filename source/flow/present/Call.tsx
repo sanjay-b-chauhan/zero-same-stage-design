@@ -5,16 +5,20 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactElement, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import {
+  ArrowRight,
   Captions,
   CaptionsOff,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Mic,
   MicOff,
   Pause,
   Play,
+  Presentation,
   RotateCcw,
+  ScanFace,
   ScreenShare,
   ScreenShareOff,
   Video,
@@ -25,12 +29,12 @@ import { hushSpeech, speak } from '../engine/speak';
 import { rise } from '../stage/parts/util';
 import { awardXp, intoLevel, levelOf, useXp, XP_START } from '../hud';
 import { fakeCam } from './fakeCam';
-import { CALL, CHECKS, DECK, ERYN, FEEDBACK, FINISH, GREET, ME, PRESENT_LINES, QA, type Moment } from './callScript';
-import { useLive } from './Live';
+import { BANDS, BANDS_SHORT } from '../same/stages';
+import { CALL, CHECK_H, CHECKS, CHECKS_DONE, DECK, ERYN, FEEDBACK, FINISH, GREET, ME, PRESENT_LINES, QA, REVIEW_STEPS, type Moment } from './callScript';
 import './call.css';
 
-export type CallStep = 'lobby' | 'call' | 'present' | 'qa' | 'report' | 'finish';
-type Phase = 'lobby' | 'greet' | 'pick' | 'present' | 'offer' | 'qa' | 'closing' | 'review' | 'report' | 'finish';
+export type CallStep = 'lobby' | 'call' | 'check' | 'present' | 'qa' | 'review' | 'report' | 'finish';
+type Phase = 'lobby' | 'greet' | 'check' | 'pick' | 'present' | 'offer' | 'qa' | 'closing' | 'review' | 'report' | 'finish';
 type Who = 'eryn' | 'me';
 interface Cap {
   who: Who;
@@ -38,11 +42,11 @@ interface Cap {
   n: number;
 }
 
-const START: Record<CallStep, Phase> = { lobby: 'lobby', call: 'greet', present: 'present', qa: 'offer', report: 'report', finish: 'finish' };
-const IN_CALL: readonly Phase[] = ['greet', 'pick', 'present', 'offer', 'qa', 'closing'];
+const START: Record<CallStep, Phase> = { lobby: 'lobby', call: 'greet', check: 'check', present: 'present', qa: 'offer', review: 'review', report: 'report', finish: 'finish' };
+const IN_CALL: readonly Phase[] = ['greet', 'check', 'pick', 'present', 'offer', 'qa', 'closing'];
 const WORD_MS = 290;
-const REVIEW_MS = 3400;
-const CHECK_MS = 1100;
+const REVIEW_MS = 5600;
+const CHECK_MS = 1300;
 const REPLAY_TICK = 100;
 
 const wait = (ms: number) => new Promise<void>((res) => clock.setTimeout(res, ms));
@@ -276,16 +280,178 @@ function HoldKey({ holding, onStart, onStop }: { holding: boolean; onStart: () =
       }}
     >
       <Mic size={16} strokeWidth={2} />
-      {holding ? 'Release to send' : 'Hold Space to answer'}
+      {holding ? 'Release once done' : 'Hold Space to answer'}
     </button>
   );
 }
 
-function Review() {
+/* b39: the same four dashes as the memo review, coloured by band (his note: "Only that dash is okay") */
+function Band({ band, small = false }: { band: number; small?: boolean }) {
   return (
-    <div className="zc-center">
+    <span className="ds-band" data-small={small || undefined} data-band={band} role="img" aria-label={BANDS[band]}>
+      {BANDS_SHORT.map((b, i) => (
+        <i key={b} data-on={i <= band || undefined} />
+      ))}
+    </span>
+  );
+}
+
+/* b39 (his note: "make a presentation UI, the quality checks"): before you share, one sheet over the call. Your camera is
+   the surface, framing corners close in on you, then the deck opens, then the mic listens. Each check has a ring that fills
+   and turns green, the line under it says what is happening right now, Continue only once all three are done */
+const CHECK_ICON = { framing: ScanFace, slide: Presentation, mic: Mic } as const;
+
+function Checks({ cam, mic, onCam, onMic, onDone }: { cam: boolean; mic: boolean; onCam: () => void; onMic: () => void; onDone: () => void }) {
+  const [n, setN] = useState(0);
+  const sheet = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => rise(sheet.current, { y: 16, blur: 6, scale: 0.98, ms: 460 }), []);
+  useEffect(() => {
+    const ids = CHECKS.map((_, i) => clock.setTimeout(() => setN(i + 1), 700 + (i + 1) * CHECK_MS));
+    return () => ids.forEach((id) => clock.clearTimeout(id));
+  }, []);
+  const all = n >= CHECKS.length;
+  const now = CHECKS[Math.min(n, CHECKS.length - 1)];
+  return (
+    <>
+      <div className="zc-scrim" />
+      <div className="zc-sheet zc-chk" ref={sheet} role="dialog" aria-label={CHECK_H}>
+        <h2 className="zc-sheet-h">{CHECK_H}</h2>
+        <div className="zc-chk-cam" data-framed={n >= 1} data-run={n === 0}>
+          {cam ? <SelfVideo /> : <Face who="me" />}
+          {(['tl', 'tr', 'bl', 'br'] as const).map((c) => (
+            <i key={c} className="zc-corner" data-c={c} />
+          ))}
+          <span className="zc-chk-deck" data-on={n >= 2}>
+            <img src="static/logos/logo-slides.svg" alt="" />
+            {DECK.file}
+            <span className="zc-num">{DECK.slides.length} slides</span>
+          </span>
+        </div>
+        <div className="zc-chk-row">
+          {CHECKS.map((c, i) => {
+            const Icon = CHECK_ICON[c.id];
+            const state = i < n ? 'ok' : i === n ? 'run' : 'wait';
+            return (
+              <span key={c.id} className="zc-chk-i" data-state={state} title={c.l} aria-label={`${c.l}, ${state === 'ok' ? 'done' : state === 'run' ? 'checking' : 'waiting'}`}>
+                <svg className="zc-chk-ring" viewBox="0 0 36 36" aria-hidden>
+                  <circle cx="18" cy="18" r="16.5" pathLength="100" />
+                </svg>
+                <Icon size={15} strokeWidth={2} />
+              </span>
+            );
+          })}
+          <span className="zc-chk-gap" />
+          <button type="button" className="zc-ctl" data-off={!mic} aria-label="Microphone" onClick={onMic}>
+            {mic ? <Mic size={16} strokeWidth={2} /> : <MicOff size={16} strokeWidth={2} />}
+          </button>
+          <button type="button" className="zc-ctl" data-off={!cam} aria-label="Camera" onClick={onCam}>
+            {cam ? <Video size={16} strokeWidth={2} /> : <VideoOff size={16} strokeWidth={2} />}
+          </button>
+        </div>
+        <div className="zc-sheet-f zc-chk-f">
+          <span className="zc-chk-s" data-ok={all} key={all ? 'done' : now.id}>
+            {!all && now.id === 'mic' && (
+              <span className="zc-meter" aria-hidden>
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+            )}
+            {all && <Check size={14} strokeWidth={2.4} />}
+            {all ? CHECKS_DONE : now.s}
+          </span>
+          <button type="button" className="zc-key" disabled={!all} onClick={onDone}>
+            Continue
+            <ArrowRight size={16} strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* b39 (his note: "present in PiP mode"): while you share, the call folds into one small window you can drag to any corner.
+   Her face with its voice ring on top, you under it */
+type Corner = 'tl' | 'tr' | 'bl' | 'br';
+function Mini({ speaking, cam, mic, holding }: { speaking: boolean; cam: boolean; mic: boolean; holding: boolean }) {
+  const [corner, setCorner] = useState<Corner>('br');
+  const el = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ x: number; y: number; id: number; moved: boolean } | null>(null);
+  const from = useRef<DOMRect | null>(null);
+  useLayoutEffect(() => {
+    const node = el.current;
+    const a = from.current;
+    if (!node || !a) return;
+    from.current = null;
+    const b = node.getBoundingClientRect();
+    node.style.transition = 'none';
+    node.style.transform = `translate(${a.left - b.left}px, ${a.top - b.top}px)`;
+    void node.offsetWidth;
+    node.style.transition = 'transform 420ms var(--zc-ease)';
+    node.style.transform = '';
+  }, [corner]);
+  return (
+    <div
+      ref={el}
+      className="zc-mini"
+      data-corner={corner}
+      data-dragging={drag.current?.moved || undefined}
+      onPointerDown={(e) => {
+        drag.current = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false };
+        e.currentTarget.setPointerCapture(e.pointerId);
+        e.currentTarget.style.transition = 'none';
+      }}
+      onPointerMove={(e) => {
+        const d = drag.current;
+        if (!d || d.id !== e.pointerId) return;
+        const dx = e.clientX - d.x;
+        const dy = e.clientY - d.y;
+        if (!d.moved && Math.hypot(dx, dy) < 6) return;
+        d.moved = true;
+        e.currentTarget.style.transform = `translate(${dx}px, ${dy}px)`;
+      }}
+      onPointerUp={(e) => {
+        const d = drag.current;
+        drag.current = null;
+        if (!d || !d.moved) return;
+        const node = e.currentTarget;
+        const box = node.parentElement!.getBoundingClientRect();
+        const r = node.getBoundingClientRect();
+        const cx = r.left + r.width / 2 - box.left;
+        const cy = r.top + r.height / 2 - box.top;
+        const next = `${cy < box.height / 2 ? 't' : 'b'}${cx < box.width / 2 ? 'l' : 'r'}` as Corner;
+        from.current = r;
+        if (next === corner) {
+          node.style.transition = 'transform 420ms var(--zc-ease)';
+          node.style.transform = '';
+          from.current = null;
+        } else setCorner(next);
+      }}
+    >
+      <div className="zc-mini-her" data-speaking={speaking}>
+        <Face who="eryn" speaking={speaking} />
+        <span className="zc-name">{ERYN.short}</span>
+      </div>
+      <Self cam={cam} mic={mic} speaking={holding} className="zc-mini-me" />
+    </div>
+  );
+}
+
+/* b39 (his note: "how that loading thing happens"): her face, one line of what she is doing right now, a line that fills */
+function Review() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = clock.setInterval(() => setI((v) => Math.min(REVIEW_STEPS.length - 1, v + 1)), REVIEW_MS / REVIEW_STEPS.length);
+    return () => clock.clearInterval(id);
+  }, []);
+  return (
+    <div className="zc-center zc-review">
       <Face who="eryn" speaking />
-      <p className="zc-center-t">Eryn is writing your feedback</p>
+      <p className="zc-center-t">Eryn is writing it up</p>
+      <p className="zc-review-s" key={i}>
+        {REVIEW_STEPS[i]}
+      </p>
       <span className="zc-track">
         <i style={{ animationDuration: `${REVIEW_MS}ms` }} />
       </span>
@@ -293,13 +459,46 @@ function Review() {
   );
 }
 
-/* b36 (his note: "too much container in the container doesn't make sense ... we just have a video as a surface thing. On
-   the right-hand side, it should be super highly detailed ... Everything should be on the ground only. Only one thing should
-   be on the surface"): the replay is the one raised thing, her verdict and every moment sit on the ground beside it */
-function Report() {
-  const [tab, setTab] = useState<'moments' | 'scores'>(() => useLive.getState().tab);
-  const [sel, setSel] = useState<Moment | null>(FEEDBACK.moments[3]);
-  const [t, setT] = useState(FEEDBACK.moments[3].at);
+const HOW = ['How to meet it next time', 'How to exceed next time', 'How to make it exceptional', 'Keep doing this'];
+
+function MomentRow({ m, open, onPick }: { m: Moment; open: boolean; onPick: () => void }) {
+  const body = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (open) rise(body.current, { y: 6, blur: 4, ms: 320 });
+  }, [open]);
+  return (
+    <div className="zc-mo" data-kind={m.kind} data-open={open}>
+      <button type="button" className="zc-mo-h" aria-expanded={open} onClick={onPick}>
+        <i className="zc-dot" />
+        <span className="zc-mo-t">{m.title}</span>
+        <ChevronDown className="zc-mo-c" size={14} strokeWidth={2} />
+      </button>
+      <span className="zc-mo-m">
+        <span className="zc-tag zc-num">{fmt(m.at)}</span>
+        <span className="zc-tag">{m.crit}</span>
+        <span className="zc-tag zc-mo-b">
+          <Band band={m.band} small />
+          {BANDS_SHORT[m.band]}
+        </span>
+      </span>
+      {open && (
+        <div className="zc-mo-x" ref={body}>
+          <span className="zc-mo-l">What you did</span>
+          <p>{m.did}</p>
+          <span className="zc-mo-l">{HOW[m.band]}</span>
+          <p>{m.how}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* b39 (his note: "how that final presentation also comes"): one screen. Left, her overview, the two bands and the replay
+   (the one surface), then Redo or keep it. Right, every moment on the ground, each opens to what you did and how to go up */
+function Report({ onRedo, onKeep }: { onRedo: () => void; onKeep: () => void }) {
+  const first = FEEDBACK.moments.find((m) => m.kind === 'work') ?? FEEDBACK.moments[0];
+  const [sel, setSel] = useState<Moment | null>(first);
+  const [t, setT] = useState(first.at);
   const [playing, setPlaying] = useState(false);
   const wrap = useRef<HTMLDivElement>(null);
   const { w, h } = useFit(wrap);
@@ -309,34 +508,22 @@ function Report() {
     return () => clock.clearInterval(id);
   }, [playing]);
   const pick = (m: Moment) => {
-    setSel(m);
+    setSel((s) => (s === m ? null : m));
     setT(m.at);
     setPlaying(false);
   };
   const qa = t >= 180;
-  const avg = FEEDBACK.scores.reduce((a, s) => a + s.v, 0) / FEEDBACK.scores.length;
   const count = (kind: Moment['kind']) => FEEDBACK.moments.filter((m) => m.kind === kind).length;
   const group = (kind: Moment['kind'], label: string) => (
     <section className="zc-mgroup" data-kind={kind}>
       <h4 className="zc-mgroup-h">
-        <i className="zc-dot" />
         {label}
         <span className="zc-num zc-mgroup-c">{count(kind)}</span>
       </h4>
       {FEEDBACK.moments
         .filter((m) => m.kind === kind)
         .map((m) => (
-          <button key={m.title} type="button" className="zc-moment" data-kind={m.kind} data-on={sel === m} onClick={() => pick(m)}>
-            <span className="zc-num zc-moment-at">{fmt(m.at)}</span>
-            <span className="zc-moment-b">
-              <span className="zc-moment-t">{m.title}</span>
-              <span className="zc-moment-n">{m.note}</span>
-              <span className="zc-moment-m">
-                <span className="zc-tag">{m.tag}</span>
-                <span className="zc-tag">{m.at >= 180 ? 'Questions' : `Slide ${m.slide + 1}`}</span>
-              </span>
-            </span>
-          </button>
+          <MomentRow key={m.title} m={m} open={sel === m} onPick={() => pick(m)} />
         ))}
     </section>
   );
@@ -350,7 +537,16 @@ function Report() {
             <span className="zc-rwho-r">{ERYN.role}</span>
           </span>
         </header>
-        <h1 className="zc-verdict">{FEEDBACK.verdict}</h1>
+        <p className="zc-over">{FEEDBACK.overview}</p>
+        <div className="zc-bands">
+          {FEEDBACK.bands.map((b) => (
+            <div key={b.name} className="zc-bandc">
+              <span className="zc-bandc-n">{b.name}</span>
+              <span className="zc-bandc-v">{BANDS[b.v]}</span>
+              <Band band={b.v} />
+            </div>
+          ))}
+        </div>
         <div className="zc-fit zc-replay-fit" ref={wrap}>
           {w > 0 && (
             <div className="zc-replay" style={{ width: w, height: h, ['--u' as string]: `${w / 100}px` }}>
@@ -391,52 +587,40 @@ function Report() {
                 style={{ left: `${(m.at / FEEDBACK.length) * 100}%` }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  pick(m);
+                  setSel(m);
+                  setT(m.at);
+                  setPlaying(false);
                 }}
               />
             ))}
           </div>
         </div>
+        <div className="zc-rkeys">
+          <span className="zc-rec-w">
+            <span className="zc-rec">Recommended</span>
+            <button type="button" className="zc-key" onClick={onRedo}>
+              <RotateCcw size={15} strokeWidth={2} />
+              Redo presentation
+            </button>
+          </span>
+          <button type="button" className="zc-pill zc-keep" onClick={onKeep}>
+            I’m happy with this, add it to my portfolio
+            <ArrowRight size={15} strokeWidth={2} />
+          </button>
+        </div>
       </div>
       <aside className="zc-side">
         <div className="zc-sum-top">
-          <span className="zc-num zc-avg-v">{avg.toFixed(1)}</span>
           <span className="zc-sum-top-t">
-            <span className="zc-band">{FEEDBACK.band}</span>
-            <span className="zc-sum-top-c">
-              {count('worked')} worked, {count('work')} to work on
-            </span>
+            <span className="zc-sum-top-c">Overall</span>
+            <span className="zc-sum-band">{BANDS[FEEDBACK.band]}</span>
           </span>
+          <Band band={FEEDBACK.band} />
         </div>
-        <div className="zc-tabs" role="tablist">
-          <button type="button" role="tab" data-on={tab === 'moments'} onClick={() => setTab('moments')}>
-            Moments
-          </button>
-          <button type="button" role="tab" data-on={tab === 'scores'} onClick={() => setTab('scores')}>
-            Scores
-          </button>
+        <div className="zc-side-b">
+          {group('worked', 'What worked')}
+          {group('work', 'What to work on')}
         </div>
-        {tab === 'moments' ? (
-          <div className="zc-side-b">
-            {group('worked', 'What worked')}
-            {group('work', 'What to work on')}
-          </div>
-        ) : (
-          <div className="zc-side-b">
-            {FEEDBACK.scores.map((s) => (
-              <div key={s.name} className="zc-score" data-band={s.v >= 8 ? 'high' : s.v <= 6 ? 'low' : 'mid'}>
-                <span className="zc-score-n">{s.name}</span>
-                <span className="zc-score-v zc-num">{s.v}</span>
-                <span className="zc-score-bar">
-                  {Array.from({ length: 10 }, (_, k) => (
-                    <i key={k} data-on={k < s.v} />
-                  ))}
-                </span>
-                <span className="zc-score-note">{s.note}</span>
-              </div>
-            ))}
-          </div>
-        )}
       </aside>
     </div>
   );
@@ -518,7 +702,6 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
   const [mic, setMic] = useState(true);
   const [cam, setCam] = useState(true);
   const [cc, setCc] = useState(true);
-  const [checked, setChecked] = useState(0);
   const [cue, setCue] = useState(from !== 'lobby' && from !== 'call');
   const [slide, setSlide] = useState(0);
   const [left, setLeft] = useState(CALL.minutes * 60);
@@ -547,17 +730,10 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
 
   useLayoutEffect(() => {
     stage.current?.querySelectorAll('[data-enter]').forEach((el, i) => rise(el, { y: 14, blur: 6, scale: 0.99, delay: i * 70, ms: 480 }));
-  }, [phase === 'pick' ? 'greet' : phase]);
+  }, [phase === 'pick' || phase === 'check' ? 'greet' : phase]);
 
   useEffect(() => {
-    if (phase !== 'lobby') return;
-    setChecked(0);
-    const ids = CHECKS.map((_, i) => clock.setTimeout(() => setChecked(i + 1), 700 + i * CHECK_MS));
-    return () => ids.forEach((id) => clock.clearTimeout(id));
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === 'pick') return;
+    if (phase === 'pick' || phase === 'check') return;
     const token = ++run.current;
     const alive = () => token === run.current;
     void (async () => {
@@ -660,6 +836,14 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
   }, [phase, start, stop]);
 
   const join = () => setPhase('greet');
+  const redo = () => {
+    hushSpeech();
+    setLeft(CALL.minutes * 60);
+    setSlide(0);
+    setTurn(0);
+    setCue(false);
+    setPhase('greet');
+  };
   const done = () => {
     hushSpeech();
     setPhase('offer');
@@ -670,9 +854,9 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
   const action = (): ReactElement | null => {
     if (phase === 'greet' && cue)
       return (
-        <button type="button" className="zc-key" onClick={() => setPhase('pick')}>
-          <ScreenShare size={16} strokeWidth={2} />
-          Share your screen
+        <button type="button" className="zc-key" onClick={() => setPhase('check')}>
+          Start presenting
+          <span className="zc-key-t zc-num">{fmt(CALL.minutes * 60)}</span>
         </button>
       );
     if (phase === 'present')
@@ -697,20 +881,12 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
         <div className="zc-lobby">
           <div className="zc-lobby-cam" data-enter>
             <Self cam={cam} mic={mic} className="zc-self-l" />
-            <div className="zc-checks">
-              {CHECKS.map((c, i) => (
-                <span key={c} className="zc-check" data-ok={i < checked}>
-                  {i < checked ? <Check size={12} strokeWidth={2.4} /> : <i />}
-                  {c}
-                </span>
-              ))}
-            </div>
           </div>
           <div className="zc-lobby-side" data-enter>
             <Person who="eryn" speaking={false} />
             <h1 className="zc-h">Ready to present?</h1>
             <p className="zc-sub">Eryn is in the call. Five minutes on your deck, then three questions.</p>
-            <button type="button" className="zc-key" disabled={checked < CHECKS.length} onClick={join}>
+            <button type="button" className="zc-key" onClick={join}>
               Join the call
             </button>
           </div>
@@ -718,23 +894,20 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
       );
     if (phase === 'present')
       return (
-        <div className="zc-present">
+        <div className="zc-present zc-present-pip">
           <div className="zc-present-main" data-enter>
             <span className="zc-sharing">
               <ScreenShare size={12} strokeWidth={2} />
               You are presenting
             </span>
             <Share slide={slide} onSlide={setSlide} />
-          </div>
-          <aside className="zc-rail" data-enter>
-            <Person who="eryn" speaking={ryn} />
-            <Self cam={cam} mic={mic} />
             <Caption cap={cap} on={cc} />
-          </aside>
+          </div>
+          <Mini speaking={ryn} cam={cam} mic={mic} holding={false} />
         </div>
       );
     if (phase === 'review') return <Review />;
-    if (phase === 'report') return <Report />;
+    if (phase === 'report') return <Report onRedo={redo} onKeep={() => setPhase('finish')} />;
     if (phase === 'finish') return <Finish onDone={onDone} />;
     return (
       <div className="zc-callview">
@@ -763,23 +936,10 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
                 {fmt(left)}
               </span>
             )}
-            {phase === 'report' ? (
-              <>
-                <button type="button" className="zc-pill" onClick={() => (setLeft(CALL.minutes * 60), setSlide(0), setCue(false), setPhase('greet'))}>
-                  <RotateCcw size={14} strokeWidth={2} />
-                  Redo
-                </button>
-                <button type="button" className="zc-key zc-key-s" onClick={() => setPhase('finish')}>
-                  Add to portfolio
-                </button>
-              </>
-            ) : (
-              phase !== 'finish' &&
-              phase !== 'review' && (
-                <button type="button" className="zc-pill" onClick={onExit}>
-                  Leave
-                </button>
-              )
+            {phase !== 'finish' && phase !== 'review' && phase !== 'report' && (
+              <button type="button" className="zc-pill" onClick={onExit}>
+                Leave
+              </button>
             )}
           </div>
         </header>
@@ -803,7 +963,7 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
               data-on={phase === 'present'}
               disabled={phase !== 'present' && !(phase === 'greet' && cue)}
               aria-label={phase === 'present' ? 'Stop sharing' : 'Share your screen'}
-              onClick={() => (phase === 'present' ? done() : cue && setPhase('pick'))}
+              onClick={() => (phase === 'present' ? done() : cue && setPhase('check'))}
             >
               {phase === 'present' ? <ScreenShareOff size={16} strokeWidth={2} /> : <ScreenShare size={16} strokeWidth={2} />}
             </button>
@@ -812,6 +972,7 @@ export function Call({ from, onExit, onDone }: { from: CallStep; onExit: () => v
           </footer>
         )}
       </div>
+      {phase === 'check' && <Checks cam={cam} mic={mic} onCam={() => setCam((v) => !v)} onMic={() => setMic((v) => !v)} onDone={() => setPhase('pick')} />}
       {phase === 'pick' && <Pick onCancel={() => setPhase('greet')} onShare={() => (setSlide(0), setPhase('present'))} />}
     </div>,
     document.body

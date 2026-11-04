@@ -31,6 +31,30 @@ export interface StageFile {
   url: string;
 }
 
+/* b39 (his note: "the manager analyzes the file, and then they give feedback on the right-hand side ... Below expectation,
+   Met it, Exceeded, Exceptional. Then there are some content changes, some style changes ... When you open it, you see why
+   this is feedback and how we can make it better ... Resubmit, Continue"): one band, one verdict, the notes in two groups */
+export const BANDS = ['Below expectations', 'Meets expectations', 'Exceeds expectations', 'Exceptional'] as const;
+export const BANDS_SHORT = ['Below', 'Meets', 'Exceeds', 'Exceptional'] as const;
+export interface GradeItem {
+  id: string;
+  group: 'Content' | 'Style';
+  title: string;
+  why: string;
+  how: string;
+  fixed: string;
+  /* the block of the page it points at */
+  at: number;
+}
+export interface Grade {
+  v1: { band: number; verdict: string; line: string };
+  v2: { band: number; verdict: string; line: string };
+  items: GradeItem[];
+  accept: [string, string];
+  /* what she checks while she reads, one line at a time */
+  scan: string[];
+}
+
 export interface StageSpec {
   brief: Brief;
   file: StageFile;
@@ -43,6 +67,8 @@ export interface StageSpec {
   sentLine: string;
   review: { first: { est: string; got: string; back: string }; again: { est: string; got: string; back: string } };
   feedback?: { head: string; items: FixItem[]; ask: string };
+  /* b39: a graded review on the right instead of fixes to tick */
+  grade?: Grade;
   fixedLine: string;
   checkIntro: string;
   check: CheckLine[];
@@ -260,7 +286,7 @@ const memo: StageSpec = {
     stage: 'Submit your final deliverables',
     deliverable: 'Pricing memo, with the model',
     deliverableLine: 'The memo carries the call, the model backs it up.',
-    format: 'Google Doc link',
+    format: 'PDF',
     formatLine: 'One page, the model linked at the bottom.',
     voice:
       "So this is the package that goes upstairs. A short memo, with your model linked under it. Leadership reads the first line and maybe the second, so put the ask right at the top. Then the numbers that prove it, then the risk and how we'd catch it early. Keep it to one page. If I have to scroll, it's too long.",
@@ -318,23 +344,59 @@ const memo: StageSpec = {
       sample: 'The revenue model, linked, so anyone can check it.',
     },
   ],
-  ready: "That's the package. Memo in a Doc, the model linked at the bottom, then send me the link.",
-  after: 'Send me the Doc link when it reads right.',
-  hand: { name: 'pricing_memo', meta: 'Google Docs', link: true },
+  ready: "That's the package. Write the memo, link the model at the bottom, and send it to me as a PDF.",
+  after: 'Send me the PDF when it reads right.',
+  hand: { name: 'pricing_memo.pdf', meta: 'PDF, 1 page' },
   sentLine: 'Memo and model sent',
   review: {
     first: { est: '2 min', got: "Got it. Give me two minutes, I'm reading it top to bottom.", back: 'Okay, read it.' },
-    again: { est: '30 sec', got: 'Okay, one sec.', back: "That's the one. I'd send this upstairs as is." },
+    again: { est: '30 sec', got: 'Okay, one sec.', back: 'Much better.' },
   },
-  feedback: {
-    head: 'Close. Two things.',
+  grade: {
+    v1: { band: 1, verdict: 'The call is right and the numbers hold. It reads like a long note, not a one pager yet.', line: 'It meets the bar. Two notes on content, two on style. I pinned each one on the page.' },
+    v2: { band: 2, verdict: "One page, the gain in line one, a line we roll back at. I'd send this upstairs as is.", line: 'It exceeds the bar now. Continue when you are ready.' },
     items: [
-      { id: 'f1', text: 'Cut the memo to one page', why: 'Leadership stops reading at the scroll.' },
-      { id: 'f2', text: 'Say how we catch it early', why: 'A risk with no signal is just a worry.' },
+      {
+        id: 'c1',
+        group: 'Content',
+        title: 'Say what it earns, next to the ask',
+        why: 'Line one says what to do, not what we get. The pricing lead approves a number.',
+        how: 'Put the gain in the same line: about 8 percent more from every Brazil Individual customer.',
+        fixed: 'Line one carries the gain now.',
+        at: 0,
+      },
+      {
+        id: 'c2',
+        group: 'Content',
+        title: 'Name the line we roll back at',
+        why: '"If churn moves" is not something anyone can act on. Who calls it, and at what number?',
+        how: 'Pick the number and the window: roll it back if 2 of the 8 Brazil customers cancel in the first month.',
+        fixed: 'The roll back line is set: 2 of 8, in the first month.',
+        at: 3,
+      },
+      {
+        id: 's1',
+        group: 'Style',
+        title: 'Keep it to one page',
+        why: 'It runs onto a second page. Leadership stops reading at the scroll.',
+        how: 'Drop Why not further. The model already holds the US and UK numbers for anyone who checks.',
+        fixed: 'One page now. The US and UK numbers live in the model.',
+        at: 2,
+      },
+      {
+        id: 's2',
+        group: 'Style',
+        title: 'Make each heading its point',
+        why: 'The proof and The risk say where you are, not what you learn. A skimmer reads only the headings.',
+        how: 'Write each heading as the point, like Nobody left Brazil, or We catch it in week one.',
+        fixed: 'Every heading is its point now.',
+        at: 1,
+      },
     ],
-    ask: 'What should the early signal be?',
+    accept: ['Fair. It does the job.', 'Good. Now tell me why it works.'],
+    scan: ['Reading the ask', 'Checking the numbers against your model', 'Checking the risk', 'Checking it fits one page'],
   },
-  fixedLine: "Cut to one page, and the signal's in. Here's the new one.",
+  fixedLine: "Took all four notes. Here's v2.",
   checkIntro: 'Great. A few questions, then it goes up.',
   check: [
     {
@@ -478,10 +540,9 @@ export interface Slide {
 }
 export type Work =
   | { kind: 'sheet'; name: string; meta: string; logo: string; file: StageFile }
-  | { kind: 'doc'; name: string; meta: string; logo?: string; title: string; to?: string; blocks: DocBlock[] }
+  | { kind: 'doc'; name: string; meta: string; logo?: string; title: string; to?: string; blocks: DocBlock[]; v2?: DocBlock[] }
   | { kind: 'deck'; name: string; meta: string; logo: string; slides: Slide[] };
 
-const DOCS = 'static/logos/logo-docs.svg';
 const SLIDES = 'static/logos/logo-slides.svg';
 const HELD: string[][] = [
   ['Market', 'Active', 'Left', 'Per customer'],
@@ -509,15 +570,22 @@ export const WORK: Record<string, Work> = {
   },
   memo: {
     kind: 'doc',
-    name: 'pricing_memo',
-    meta: 'Google Docs',
-    logo: DOCS,
+    name: 'pricing_memo.pdf',
+    meta: 'PDF, 1 page',
     title: 'Brazil Individual price',
     to: 'To the pricing lead',
     blocks: [
       { p: 'Approve raising Brazil Individual to R$25.90 next month.' },
       { h: 'The proof', p: 'Zero churn in Brazil, and $4.82 a customer, the lowest of the markets that held.' },
-      { h: 'The risk', p: 'Go too far and people leave, like the US did. We watch Brazil cancellations every week and roll it back if churn moves in the first month.' },
+      { h: 'Why not further', p: 'When the price went too far, the US lost 6 of 14 customers and the UK 2 of 8. One step keeps us clear of that.' },
+      { h: 'The risk', p: 'Go too far and people leave. We watch Brazil cancellations and roll it back if churn moves.' },
+      { h: 'The model', p: 'Every number above comes from the model. Anyone with the link can check the math.', link: 'revenue_model' },
+    ],
+    /* b39: what she reads after Resubmit, her four notes taken */
+    v2: [
+      { p: 'Approve raising Brazil Individual to R$25.90 next month, about 8 percent more from every customer there.' },
+      { h: 'Nobody left Brazil', p: 'Zero churn, and $4.82 a customer, the lowest of the markets that held.' },
+      { h: 'We catch it in week one', p: 'We watch Brazil cancellations every week for the first month, and roll it back if 2 of the 8 customers cancel.' },
       { h: 'The model', p: 'Every number above comes from the model. Anyone with the link can check the math.', link: 'revenue_model' },
     ],
   },

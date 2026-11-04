@@ -5319,6 +5319,9 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
   margin-right: calc(440px + max(0px, calc((100% - 440px - var(--ds-col)) / 2)));
 }
 .d1.ds2 .d1-chat[data-pv] > .ds-pin {
+  /* b39: beside the open page the bar takes the chat's width, never the page's */
+  width: auto;
+  margin-left: 0;
   margin-right: var(--pv-w);
 }
 @keyframes ds-pin-in {
@@ -6761,3 +6764,407 @@ html[data-ds-bg='warm'] .zs2.d1.ds2:not([data-mode='dark']) { --ds-paper: #f6f5f
   max-width: 100%;
   margin: 0 auto;
 }
+
+/* ======================================================================================================================
+   b39 (his notes, 4 Nov: "the manager analyzes the file ... Below expectation, Met it, Exceeded, Exceptional ... content
+   changes, some style changes ... why this is feedback and how we can make it better ... make it better and smaller",
+   "the feedback comes in that chat, and when the chat is out of view, it comes to the top", "only one manager profile"):
+   her review is one outlined card in the chat, her scan runs on your page on the right
+   ====================================================================================================================== */
+.d1.ds2 .ds-rv {
+  width: min(520px, 100%);
+  padding: 16px 16px 12px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px var(--ds-subtle);
+}
+.d1.ds2 .ds-rv[data-old] {
+  width: min(360px, 100%);
+  padding: 12px 14px;
+}
+.d1.ds2 .ds-rv[data-old] .ds-rv-band {
+  font-size: 13px;
+}
+.d1.ds2 .ds-rv[data-pin] {
+  width: 100%;
+  box-shadow: none;
+  padding: 4px 4px 0;
+}
+.d1.ds2 .ds-rv-bh {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.d1.ds2 .ds-rv-band {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.d1.ds2 .ds-rv-ver {
+  color: var(--ds-ink-3);
+  font-size: 12px;
+}
+.d1.ds2 .ds-band {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.d1.ds2 .ds-band i {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ds-wash);
+}
+.d1.ds2 .ds-band i[data-on] {
+  background: var(--ds-ink);
+  animation: ds-band-in 520ms var(--b-ease) both;
+}
+.d1.ds2 .ds-band i[data-on]:nth-child(2) {
+  animation-delay: 90ms;
+}
+.d1.ds2 .ds-band i[data-on]:nth-child(3) {
+  animation-delay: 180ms;
+}
+.d1.ds2 .ds-band i[data-on]:nth-child(4) {
+  animation-delay: 270ms;
+}
+@keyframes ds-band-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+.d1.ds2 .ds-band i {
+  transform-origin: left center;
+}
+.d1.ds2 .ds-band[data-small] {
+  flex: none;
+  width: 52px;
+  gap: 3px;
+}
+.d1.ds2 .ds-band[data-small] i {
+  height: 4px;
+  border-radius: 2px;
+}
+.d1.ds2 .ds-rv-scale {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-top: 6px;
+  color: var(--ds-ink-4);
+  font-size: 12px;
+}
+.d1.ds2 .ds-rv-scale [data-on] {
+  color: var(--ds-ink);
+}
+.d1.ds2 .ds-rv-verdict {
+  margin: 14px 0 0;
+  color: var(--ds-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.d1.ds2 .ds-rv-g {
+  margin-top: 16px;
+}
+.d1.ds2 .ds-rv-gh {
+  margin: 0 0 6px;
+  color: var(--ds-ink-3);
+  font-size: 12px;
+  font-weight: 500;
+}
+.d1.ds2 .ds-rv-it {
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--ds-hair);
+  transition: box-shadow 160ms var(--b-ease);
+}
+.d1.ds2 .ds-rv-it + .ds-rv-it {
+  margin-top: 4px;
+}
+.d1.ds2 .ds-rv-it:hover,
+.d1.ds2 .ds-rv-it[data-open] {
+  box-shadow: inset 0 0 0 1px var(--ds-strong);
+}
+.d1.ds2 .ds-rv-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+}
+.d1.ds2 .ds-rv-mk {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ds-ink-2);
+  font: inherit;
+  font-size: 11px;
+  box-shadow: inset 0 0 0 1px var(--ds-strong);
+  cursor: pointer;
+  transition: background-color 160ms var(--b-ease), box-shadow 160ms var(--b-ease), transform 120ms var(--b-ease);
+}
+.d1.ds2 .ds-rv-mk:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1.5px var(--ds-ink-3);
+}
+.d1.ds2 .ds-rv-mk:active:not(:disabled) {
+  transform: scale(0.9);
+}
+.d1.ds2 .ds-rv-mk:disabled {
+  cursor: default;
+}
+.d1.ds2 .ds-rv-it[data-done] .ds-rv-mk {
+  background: var(--ds-green);
+  color: #fff;
+  box-shadow: none;
+}
+.d1.ds2 .ds-rv-t {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 10px 12px 10px 0;
+  border: 0;
+  background: none;
+  color: var(--ds-ink);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+.d1.ds2 .ds-rv-t > span {
+  flex: 1;
+  min-width: 0;
+}
+.d1.ds2 .ds-rv-it[data-done] .ds-rv-t > span {
+  color: var(--ds-ink-2);
+}
+.d1.ds2 .ds-rv-c {
+  flex: none;
+  color: var(--ds-ink-3);
+  transition: transform 260ms var(--b-ease);
+}
+.d1.ds2 .ds-rv-it[data-open] .ds-rv-c {
+  transform: rotate(180deg);
+}
+.d1.ds2 .ds-rv-x {
+  padding: 0 14px 12px 40px;
+}
+.d1.ds2 .ds-rv-x p {
+  margin: 0;
+  color: var(--ds-ink-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.d1.ds2 .ds-rv-x p + p {
+  margin-top: 10px;
+}
+.d1.ds2 .ds-rv-l {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ds-ink-3);
+  font-size: 12px;
+  font-weight: 500;
+}
+.d1.ds2 .ds-rv-f {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+.d1.ds2 .ds-rv-wait {
+  margin-right: auto;
+  font-size: 12px;
+}
+.d1.ds2 .ds-rv-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  color: var(--ds-ink-3);
+  font-size: 12px;
+}
+
+/* Resubmit, locked until every note is ticked. Hover says what unlocks it */
+.d1.ds2 .ds-lock {
+  position: relative;
+  display: inline-flex;
+}
+.d1.ds2 .ds-lock[data-locked] > .ds-key {
+  background: var(--ds-cream);
+  color: var(--ds-ink-3);
+  box-shadow: inset 0 0 0 1px var(--ds-hair);
+  cursor: not-allowed;
+  transform: none;
+}
+.d1.ds2 .ds-lock-tip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--ds-ink);
+  color: var(--ds-white);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: left;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  filter: blur(4px);
+  transform-origin: top right;
+  transition: opacity 160ms var(--b-ease), transform 220ms var(--b-ease), filter 220ms var(--b-ease);
+}
+.d1.ds2 .ds-lock[data-up] .ds-lock-tip {
+  top: auto;
+  bottom: calc(100% + 8px);
+  transform: translateY(4px) scale(0.98);
+  transform-origin: bottom right;
+}
+.d1.ds2 .ds-lock:hover .ds-lock-tip,
+.d1.ds2 .ds-lock:focus-within .ds-lock-tip {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.d1.ds2 .ds-lock-n {
+  opacity: 0.6;
+}
+
+/* the review waiting at the top of the chat */
+.d1.ds2 .ds-gpin .ds-pin-k {
+  gap: 10px;
+}
+.d1.ds2 .ds-gpin .ds-pin-s {
+  max-height: min(70vh, 560px);
+  overflow: auto;
+}
+
+/* PDF: the red mark Acrobat and Drive use, as a tile */
+.d1.ds2 .ds-pdf {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #e5252a;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.d1.ds2 .ds-sub-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 6px 0 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+.d1.ds2[data-mode='dark'] .ds-sub-file {
+  background: rgba(19, 20, 23, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(19, 20, 23, 0.14);
+}
+.d1.ds2 .ds-sub-file .d1-file-t {
+  min-width: 0;
+}
+
+/* her scan: one line down the page, the blocks she flags get a numbered pin in the margin */
+.d1.ds2 .ds-doc {
+  position: relative;
+}
+.d1.ds2 .ds-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: #1a73e8;
+  animation: ds-scan var(--scan, 4s) cubic-bezier(0.45, 0, 0.55, 1) both;
+  pointer-events: none;
+}
+@keyframes ds-scan {
+  from {
+    top: 24px;
+  }
+  to {
+    top: calc(100% - 24px);
+  }
+}
+.d1.ds2 .ds-doc-b {
+  position: relative;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: background-color 220ms var(--b-ease);
+}
+.d1.ds2 .ds-doc-b[data-hot] {
+  background: rgba(251, 188, 4, 0.18);
+}
+.d1.ds2 .ds-dpin {
+  position: absolute;
+  top: 4px;
+  left: -32px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fbbc04;
+  color: #1f1f1f;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 160ms var(--b-ease), background-color 160ms var(--b-ease);
+}
+.d1.ds2 .ds-dpin + .ds-dpin {
+  top: 28px;
+}
+.d1.ds2 .ds-dpin:hover,
+.d1.ds2 .ds-dpin[data-hot] {
+  transform: scale(1.12);
+}
+.d1.ds2 .ds-dpin[data-done] {
+  background: var(--ds-green);
+  color: #fff;
+}
+.d1.ds2 .ds-dpin[data-scan] {
+  animation: ds-dpin-in 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes ds-dpin-in {
+  from {
+    transform: scale(0);
+    filter: blur(4px);
+  }
+}
+
+/* b39 (his note: colour on the dash only. Meets yellow, Exceeds medium green, Exceptional purple) */
+.d1.ds2 .ds-band { --band: var(--ds-ink); }
+.d1.ds2 .ds-band[data-band="0"] { --band: #e5484d; }
+.d1.ds2 .ds-band[data-band="1"] { --band: #f5b300; }
+.d1.ds2 .ds-band[data-band="2"] { --band: #30a46c; }
+.d1.ds2 .ds-band[data-band="3"] { --band: #8e4ec6; }
+.d1.ds2 .ds-band i[data-on] { background: var(--band); }

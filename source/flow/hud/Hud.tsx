@@ -34,6 +34,11 @@ const TABS_PAD_TOP = 8; /* PANEL_BOX.tabsPad, '8px 8px 0' */
 const EDGE = 26; /* the pill's right inset, kept on both sides when the panel is zoomed to fit */
 /* b28 (his note: "decrease the size of the Level and the Coach ... around 20% smaller") */
 const SMALL = 0.8;
+/* b39 (his note: "It's too small ... the scaling was for the bigger screen"): 20% smaller only ever trims the big screen.
+   On a laptop (about 1512 by 800) the product's zoom times 0.8 came to 0.67, so its 13px text read at 9px. The open panel
+   now holds between 0.94 and 1.1: about its real size on the laptop, a touch bigger on the 2560 monitor */
+const ZOOM_MIN = 0.94;
+const ZOOM_MAX = 1.1;
 const FOOT = 16; /* room under the open panel */
 
 /* the real panels read the product's stores; they are filled before anything mounts, so no query ever starts */
@@ -73,7 +78,7 @@ export default function Hud() {
   const copy = usePillCopy().data;
   const screenSize = useSurfaceZoom();
   const panelW = PANEL_WIDTH[view];
-  const zoom = fitZoom(screenSize.zoom, panelW, screenSize.width - 2 * EDGE) * SMALL;
+  const zoom = fitZoom(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, screenSize.zoom * SMALL)), panelW, screenSize.width - 2 * EDGE);
   const skin = PANEL_SKIN[tab];
   const tabsH = (TABS_PAD_TOP + PANEL_BOX.tabHeight) * zoom;
   const [top, setTop] = useState(24);

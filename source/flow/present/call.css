@@ -3,6 +3,7 @@
    tile is 16:9. */
 
 .zs2.d1.ds2.zc {
+  --u: 10px;
   --zc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --zc-rail: 264px;
   position: fixed;
@@ -534,7 +535,6 @@
 
 /* ---------- the slide: the tool stays the tool (Google Slides, Arial) ---------- */
 .zc .zc-slide {
-  --u: 10px;
   position: absolute;
   inset: 0;
   display: flex;
@@ -1469,4 +1469,455 @@
 .zc .zc-side-b {
   margin: 0 -12px;
   padding: 2px 12px 12px;
+}
+
+/* ---------- b39: the presentation flow, rebuilt (his notes, 4 Nov) ---------- */
+/* the key's time, the five minutes you are about to start */
+.zc .zc-key-t {
+  height: 22px;
+  margin-right: -10px;
+  padding: 0 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ds-white) 28%, transparent);
+  font-size: 12px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+/* the checks: one sheet, your camera is its surface */
+.zc .zc-chk {
+  width: min(520px, calc(100vw - 32px));
+  padding: 24px;
+}
+.zc .zc-chk .zc-sheet-h {
+  text-align: center;
+}
+.zc .zc-chk-cam {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--ds-paper);
+  isolation: isolate;
+}
+.zc .zc-chk-cam .zc-media {
+  z-index: -1;
+}
+.zc .zc-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid rgba(255, 255, 255, 0.78);
+  transition: inset 700ms var(--zc-ease), border-color 300ms var(--zc-ease);
+}
+.zc .zc-corner[data-c='tl'] { left: 12px; top: 12px; border-left-width: 2px; border-top-width: 2px; border-top-left-radius: 8px; }
+.zc .zc-corner[data-c='tr'] { right: 12px; top: 12px; border-right-width: 2px; border-top-width: 2px; border-top-right-radius: 8px; }
+.zc .zc-corner[data-c='bl'] { left: 12px; bottom: 12px; border-left-width: 2px; border-bottom-width: 2px; border-bottom-left-radius: 8px; }
+.zc .zc-corner[data-c='br'] { right: 12px; bottom: 12px; border-right-width: 2px; border-bottom-width: 2px; border-bottom-right-radius: 8px; }
+.zc .zc-chk-cam[data-run='true'] .zc-corner[data-c='tl'] { left: 26%; top: 10%; }
+.zc .zc-chk-cam[data-run='true'] .zc-corner[data-c='tr'] { right: 26%; top: 10%; }
+.zc .zc-chk-cam[data-run='true'] .zc-corner[data-c='bl'] { left: 26%; bottom: 12%; }
+.zc .zc-chk-cam[data-run='true'] .zc-corner[data-c='br'] { right: 26%; bottom: 12%; }
+.zc .zc-chk-cam[data-framed='true'] .zc-corner {
+  border-color: var(--ds-green);
+}
+.zc .zc-chk-deck {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px 0 8px;
+  border-radius: 999px;
+  background: rgba(12, 13, 15, 0.66);
+  color: #f2f2f4;
+  font-size: 12px;
+  line-height: 16px;
+  translate: 0 8px;
+  scale: 0.96;
+  filter: blur(4px);
+  opacity: 0;
+  transition: translate 420ms var(--zc-ease), scale 420ms var(--zc-ease), filter 420ms var(--zc-ease), opacity 260ms var(--zc-ease);
+}
+.zc .zc-chk-deck[data-on='true'] {
+  translate: 0 0;
+  scale: 1;
+  filter: none;
+  opacity: 1;
+}
+.zc .zc-chk-deck img {
+  width: 14px;
+  height: 14px;
+}
+.zc .zc-chk-deck .zc-num {
+  color: rgba(242, 242, 244, 0.6);
+}
+.zc .zc-chk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.zc .zc-chk-gap {
+  flex: 1;
+}
+.zc .zc-chk-i {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ds-ink-4);
+  transition: color 240ms var(--zc-ease);
+}
+.zc .zc-chk-i .zc-chk-ring {
+  position: absolute;
+  inset: 0;
+  rotate: -90deg;
+}
+.zc .zc-chk-i circle {
+  fill: none;
+  stroke: var(--ds-subtle);
+  stroke-width: 1.5;
+}
+.zc .zc-chk-i[data-state='run'] {
+  color: var(--ds-ink);
+}
+.zc .zc-chk-i[data-state='run'] circle {
+  stroke: var(--ds-ink);
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: zc-ring-fill 1300ms linear forwards;
+}
+.zc .zc-chk-i[data-state='ok'] {
+  color: var(--ds-green);
+}
+.zc .zc-chk-i[data-state='ok'] circle {
+  stroke: var(--ds-green);
+}
+@keyframes zc-ring-fill {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.zc .zc-chk .zc-ctl {
+  width: 36px;
+  height: 36px;
+}
+.zc .zc-chk-f {
+  align-items: center;
+  justify-content: space-between;
+}
+.zc .zc-chk-s {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ds-ink-2);
+  animation: zc-line-in 360ms var(--zc-ease) both;
+}
+.zc .zc-chk-s[data-ok='true'] {
+  color: var(--ds-green);
+}
+@keyframes zc-line-in {
+  from {
+    translate: 0 6px;
+    filter: blur(4px);
+  }
+}
+.zc .zc-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+}
+.zc .zc-meter i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--ds-ink-2);
+  transform-origin: center;
+  animation: zc-meter 760ms ease-in-out infinite;
+}
+.zc .zc-meter i:nth-child(2) { animation-delay: -180ms; }
+.zc .zc-meter i:nth-child(3) { animation-delay: -420ms; }
+.zc .zc-meter i:nth-child(4) { animation-delay: -90ms; }
+@keyframes zc-meter {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.zc .zc-chk-f .zc-key {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+/* presenting: the slide takes the whole stage, the call is one small window on top */
+.zc .zc-present-pip {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+}
+.zc .zc-present-pip .zc-present-main {
+  grid-template-rows: 24px minmax(0, 1fr) 64px;
+  padding: 0 0 0;
+}
+.zc .zc-present-pip .zc-cap {
+  width: min(720px, 100%);
+  justify-self: center;
+  text-align: center;
+}
+.zc .zc-mini {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  gap: 6px;
+  width: 216px;
+  padding: 6px;
+  border-radius: 16px;
+  background: var(--ds-white);
+  box-shadow: var(--ds-sh-lg), inset 0 0 0 1px var(--ds-hair);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.zc .zc-mini[data-dragging] {
+  cursor: grabbing;
+}
+.zc .zc-mini[data-corner='br'] { right: 0; bottom: 72px; }
+.zc .zc-mini[data-corner='bl'] { left: 0; bottom: 72px; }
+.zc .zc-mini[data-corner='tr'] { right: 0; top: 32px; }
+.zc .zc-mini[data-corner='tl'] { left: 0; top: 32px; }
+.zc .zc-mini-her {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  border-radius: 11px;
+  background: var(--ds-paper);
+}
+.zc .zc-mini-her .zc-face {
+  --s: 52px;
+}
+.zc .zc-mini-her .zc-name {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.zc .zc-mini .zc-mini-me {
+  border-radius: 11px;
+}
+
+/* the review: one line of what she is doing now */
+.zc .zc-review-s {
+  min-height: 20px;
+  margin-top: -8px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ds-ink-3);
+  animation: zc-line-in 420ms var(--zc-ease) both;
+}
+.zc .zc-review .zc-track {
+  width: 200px;
+}
+
+/* the report: her overview, two bands, the replay, then the way out */
+.zc .zc-replay-col {
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+}
+.zc .zc-over {
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--ds-ink);
+}
+.zc .zc-bands {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.zc .zc-bandc {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  row-gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--ds-hair);
+}
+.zc .zc-bandc-n {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ds-ink-3);
+}
+.zc .zc-bandc-v {
+  justify-self: end;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--ds-ink);
+}
+.zc .zc-bandc .ds-band {
+  grid-column: 1 / -1;
+}
+.zc .zc-rkeys {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 4px;
+}
+.zc .zc-rec-w {
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+.zc .zc-rec {
+  position: absolute;
+  top: -10px;
+  z-index: 1;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--ds-paper);
+  box-shadow: inset 0 0 0 1px var(--ds-subtle);
+  color: var(--ds-ink-2);
+  font-size: 11px;
+  line-height: 18px;
+}
+.zc .zc-rkeys .zc-key {
+  height: 40px;
+  font-size: 13px;
+}
+.zc .zc-keep {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* the side: overall band on top, the moments open in place */
+.zc .zc-sum-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  align-items: end;
+  gap: 16px;
+}
+.zc .zc-sum-band {
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ds-ink);
+}
+.zc .zc-sum-top .ds-band {
+  margin-bottom: 8px;
+}
+.zc .zc-mgroup-h {
+  font-size: 12px;
+  line-height: 16px;
+}
+.zc .zc-mo {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  transition: box-shadow 140ms var(--zc-ease);
+}
+.zc .zc-mo:hover {
+  box-shadow: inset 0 0 0 1px var(--ds-hair);
+}
+.zc .zc-mo[data-open='true'] {
+  box-shadow: inset 0 0 0 1px var(--ds-subtle);
+}
+.zc .zc-mo-h {
+  display: grid;
+  grid-template-columns: 6px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+.zc .zc-mo .zc-dot {
+  width: 6px;
+  height: 6px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--ds-green);
+}
+.zc .zc-mo[data-kind='work'] .zc-dot {
+  background: var(--zc-amber);
+}
+.zc .zc-mo-t {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--ds-ink);
+}
+.zc .zc-mo-c {
+  color: var(--ds-ink-3);
+  transition: rotate 220ms var(--zc-ease);
+}
+.zc .zc-mo[data-open='true'] .zc-mo-c {
+  rotate: 180deg;
+}
+.zc .zc-mo-m {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-left: 16px;
+}
+.zc .zc-mo-b {
+  gap: 6px;
+}
+.zc .zc-mo-b .ds-band[data-small] {
+  width: 28px;
+  gap: 2px;
+}
+.zc .zc-mo-b .ds-band[data-small] i {
+  height: 3px;
+}
+.zc .zc-mo-x {
+  display: grid;
+  gap: 2px;
+  padding: 6px 0 2px 16px;
+}
+.zc .zc-mo-l {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ds-ink-3);
+}
+.zc .zc-mo-x p {
+  font-size: 13px;
+  line-height: 19px;
+  color: var(--ds-ink-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zc .zc-corner,
+  .zc .zc-chk-deck {
+    transition: none;
+  }
+  .zc .zc-meter i {
+    animation: none;
+  }
+}
+.zc .zc-side {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+/* b39: the replay keeps to its own 16:9 and the room that is left, so the scrub and the keys sit right under it */
+.zc .zc-replay-col {
+  grid-template-rows: repeat(6, auto);
+  align-content: start;
+}
+.zc .zc-replay-fit {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: calc(100dvh - 410px);
 }
