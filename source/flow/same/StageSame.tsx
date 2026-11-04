@@ -2365,8 +2365,6 @@ function Composer() {
   const box = useRef<HTMLTextAreaElement>(null);
   const canStuck = phase === 'work' || phase === 'feedback';
   if (phase === 'brief') return null;
-  /* b41: the last stage has no work to hand in, only the call */
-  if (phase === 'work' && specOf(stageId)?.call) return <Cta label="Join the call now" onClick={joinCall} />;
   if (submitting) return <SubmitBox />;
   const manager = project?.manager.name.split(' ')[0] ?? 'her';
   if (phase === 'approved') return <Cta label={`Explain it to ${manager}`} onClick={() => d1.check()} />;

@@ -461,7 +461,7 @@ const deck: StageSpec = {
     'Here is everything. Your deck is built from the memo, three slides.',
     'The model is here too, in case anyone asks for a number.',
     { file: true },
-    'Five minutes on the deck, then my questions. Join the call when you are ready.',
+    'Five minutes on the deck, then my questions. Ask me anything first, and join the call when you are ready.',
   ],
   slots: [
     {

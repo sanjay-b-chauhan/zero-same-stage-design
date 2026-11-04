@@ -2,6 +2,9 @@
 
 The working notes kept while building, newest first: what each round changed, why, and which note from the reviews it answers.
 
+## ds b42 (4 Nov 2026), not yet reviewed
+- His note: "At the bottom, that should be a normal chat like we had it. You can chat with the manager, and only then can you join the call". The Join the call now Cta above the chat is gone; the normal composer stays. answer() on a call stage uses CALL_REPLY (VP, time, questions, nerves, deck) or CALL_ELSE, never the slot asks. Join the call only in the top key. Her last pack line invites questions first.
+
 ## ds b41 (4 Nov 2026), not yet reviewed
 - His note: "No PO experience, no final submission, nothing. It's like directly you are joining the call". StageSpec.call (deck): start() says only her pack (deck, model file, a plan line), next() never submits, the Composer shows Join the call now, SubmitKey becomes Join the call at the top ("the option at the top will be Join the call where we had the submit CTA"). To-dos show the three slides as plain lines under In the call. Dev list: one deck step, her pack then Join the call.
 - "The pure black is super hard to read": the call root redefines paper #1d1e22, surface #2a2b30, stronger ink-2, ink-3 and hairlines.

@@ -183,6 +183,16 @@ export const minutesIn = (s: D1 = useD1.getState()) => (Date.now() - s.startedAt
 /* leave stuck mode: bank what it burned */
 const unstick = (extra: Partial<D1> = {}) => useD1.setState((s) => ({ stuck: false, burnMin: s.burnMin + burning(s), ...extra }));
 
+/* b42: what she says before the call, scripted */
+const CALL_REPLY: { re: RegExp; say: string }[] = [
+  { re: /\b(vp|who|audience|stakeholder)\b/i, say: 'The VP of pricing. She reads numbers fast and cuts long answers short, so lead with the ask.' },
+  { re: /\b(long|time|minute|minutes)\b/i, say: 'Five minutes on the deck, then I ask the questions she would. Plan on about a minute a slide.' },
+  { re: /\b(question|questions|ask me|q&a)\b/i, say: 'Expect three. One on the number, one on the risk, one on why Brazil and not Germany.' },
+  { re: /\b(nervous|scared|ready|practi[cs]e)\b/i, say: 'You know this better than anyone in the room. Say the ask in one line before you show anything.' },
+  { re: /\b(deck|slide|slides)\b/i, say: 'Three slides is right. Talk to them, do not read them. The risk slide needs the line we roll back at.' },
+];
+const CALL_ELSE = 'Good one, bring it into the call and we can go through it there.';
+
 export const d1 = {
   /* b23: the one Next for the stage. A wait in progress plays out at once, otherwise your side of the moment is
      played: Got it, the next issue, the prompt, the link, the fixes, her check-in. False when the stage is done */
@@ -357,6 +367,12 @@ export const d1 = {
       return say([step.help], { guide: true });
     }
     const sp = specOf(s.stageId);
+    /* b42 (his note: "at the bottom, a normal chat like we had it. You can chat with the manager, and only then join the
+       call"): before the call she answers like a manager getting you ready, never asks for work */
+    if (sp?.call) {
+      const hit = CALL_REPLY.find((r) => r.re.test(t));
+      return say([hit ? hit.say : CALL_ELSE]);
+    }
     if (sp) return d1.slot(sp, t);
     if (s.ask && s.stageId === 'clean' && s.phase === 'work') {
       if (s.askStep === 'prompt') {
